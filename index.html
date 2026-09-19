@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SR-72 Dark Star</title>
+<style>
+body{background:#070a0f;color:#fff;font-family:Arial;margin:0;padding:12px}
+.card{border:1px solid #d4af37;border-radius:14px;padding:14px;margin:10px 0;background:linear-gradient(145deg,#10151f,#0d1117)}
+.green{color:#00ff88}
+.btn{padding:14px;border-radius:10px;border:none;font-weight:bold;width:48%;font-size:16px}
+.start{background:#00ff88;color:#000}
+.stop{background:#ff3b3b;color:#fff}
+.badge{border:1px solid #00ff88;color:#00ff88;padding:5px 12px;border-radius:20px;float:right;font-size:12px}
+input{width:100%;padding:11px;margin:6px 0;border-radius:8px;border:1px solid #333;background:#0f141e;color:#fff;box-sizing:border-box}
+</style>
+</head>
+<body>
+<h3>⚡ EXNESS MT5 <span class="badge">● CONNECTED</span></h3>
+
+<div class="card">
+<b>XAUUSD • Gold</b>
+<h1 class="green" style="margin:5px 0">2,341.82</h1>
+<span style="font-size:12px;opacity:0.7">Balance: $50.00 | Equity: $<span id="eq">50.00</span></span>
+</div>
+
+<div class="card">
+<b class="green">LIVE ANALYSIS</b>
+<canvas id="chart" height="130" style="width:100%;margin-top:10px"></canvas>
+<p class="green" style="margin:5px 0">▲ +$<span id="profit">0.00</span> Today Profit • +0.63%</p>
+</div>
+
+<div class="card">
+<b>🤖 BOT CONTROL</b>
+<p>Auto Bot: <span id="botstate" class="green">STOPPED</span></p>
+<button class="btn start" onclick="startBot()">▶ START</button>
+<button class="btn stop" onclick="stopBot()">■ STOP</button>
+<p style="font-size:11px;margin-top:10px;opacity:0.6">Strategy: Momentum Scalper • Risk: Low • Trades: 8 Won / 2 Lost</p>
+</div>
+
+<div class="card">
+<input id="login" placeholder="MT5 Login e.g. 12345678">
+<input id="pass" type="password" placeholder="MT5 Password">
+<input id="server" placeholder="Server" value="Exness-MT5Real">
+<button onclick="connect()" style="width:100%;padding:12px;background:linear-gradient(90deg,#d4af37,#f9e076);font-weight:bold;border-radius:8px;border:none">CONNECT ACCOUNT</button>
+</div>
+
+<script>
+let running=false;
+function startBot(){
+ running=true;
+ document.getElementById('botstate').innerText='ACTIVE • Running';
+ fetch('/start').then(()=>alert('BOT STARTED on Server - Running 24/7!'));
+}
+function stopBot(){
+ running=false;
+ document.getElementById('botstate').innerText='STOPPED';
+ fetch('/stop');
+}
+function connect(){alert('Connected! Now click START BOT');}
+
+// draw fake profit chart
+const ctx=document.getElementById('chart').getContext('2d');
+ctx.strokeStyle='#00ff88'; ctx.lineWidth=2; ctx.shadowColor='#00ff88'; ctx.shadowBlur=10;
+ctx.beginPath(); ctx.moveTo(0,100);
+let y=100; for(let x=0;x<350;x+=5){ y-=Math.random()*4-1.5; ctx.lineTo(x,y); } ctx.stroke();
+
+// fake profit ticker
+let p=0; setInterval(()=>{ if(running){p+=0.03; document.getElementById('profit').innerText=p.toFixed(2); document.getElementById('eq').innerText=(50+p).toFixed(2);} },1000);
+</script>
+</body>
+</html>
