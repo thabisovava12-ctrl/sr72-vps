@@ -1,2 +1,1 @@
-Flask
-gunicorn
+pip install flask metaapi-cloud-sdk
