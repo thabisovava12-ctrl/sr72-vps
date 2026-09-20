@@ -2,92 +2,133 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>SR-72 DARK STAR • INSTITUTIONAL</title>
+<title>SR-72 DARK STAR • LOGIN</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@600;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#020208;color:#e5e7eb;font-family:Inter,sans-serif;padding:0 0 20px 0}
-.header{padding:18px 16px;display:flex;justify-content:space-between;align-items:center;background:rgba(17,24,39,0.8);backdrop-filter:blur(12px);border-bottom:1px solid #1f2937;position:sticky;top:0;z-index:10}
-.logo{font-weight:900;letter-spacing:1px;font-size:18px}.logo span{color:#fbbf24}
-.live-dot{width:8px;height:8px;background:#10b981;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(16,185,129,.7)}70%{box-shadow:0 0 0 10px rgba(16,185,129,0)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}
+body{margin:0;background:#020208;color:#e5e7eb;font-family:Inter,sans-serif;min-height:100vh}
+.header{padding:18px 16px;display:flex;justify-content:space-between;align-items:center;background:rgba(17,24,39,0.9);border-bottom:1px solid #1f2937;position:sticky;top:0;z-index:10}
+.logo{font-weight:900;letter-spacing:1px;font-size:17px}.logo span{color:#fbbf24}
 .card{margin:12px;background:linear-gradient(180deg,#0f172a 0%,#020617 100%);border:1px solid rgba(251,191,36,0.15);border-radius:18px;padding:18px;position:relative;overflow:hidden}
 .card:before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#fbbf24,transparent)}
 .label{font-family:JetBrains Mono;font-size:11px;color:#94a3b8;letter-spacing:1.5px;text-transform:uppercase}
-.price{font-size:48px;font-weight:900;color:#fff;font-family:JetBrains Mono;letter-spacing:-2px;margin:6px 0}
-.price.dec{color:#10b981}
-.stats{display:flex;gap:12px;margin-top:12px}
+.price{font-size:44px;font-weight:900;font-family:JetBrains Mono;letter-spacing:-2px;margin:6px 0}
 .stat{background:#1e293b;border-radius:10px;padding:8px 12px;flex:1}
 .stat b{font-family:JetBrains Mono;color:#fff}
-canvas{width:100%!important}
-.profit-box{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding:10px 12px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:12px}
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:16px;border-radius:14px;border:none;font-weight:900;font-size:15px;flex:1;transition:.2s}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:16px;border-radius:14px;border:none;font-weight:900;font-size:15px;flex:1}
 .start{background:linear-gradient(180deg,#10b981,#059669);color:#000;box-shadow:0 4px 20px rgba(16,185,129,.4)}
 .stop{background:#1f2937;color:#ef4444;border:1px solid #ef444433}
-.btn:active{transform:scale(.96)}
-.status-active{color:#10b981;font-family:JetBrains Mono;font-weight:700}
+input{width:100%;padding:14px;margin:7px 0;border-radius:12px;border:1px solid #2a3447;background:#0b1220;color:#fff;font-family:JetBrains Mono}
+.pill{margin:12px;border:1px solid rgba(251,191,36,0.25);border-radius:14px;padding:10px 14px;text-align:center;font-family:JetBrains Mono;font-size:12px;background:rgba(15,23,42,0.8);color:#fde68a}
+.bottom-nav{position:fixed;bottom:10px;left:10px;right:10px;background:linear-gradient(180deg,#0f172a,#020617);border:1px solid rgba(251,191,36,0.25);border-radius:20px;display:flex;justify-content:space-around;padding:12px 5px;box-shadow:0 0 25px rgba(251,191,36,0.2), inset 0 1px 0 rgba(251,191,36,0.3)}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;color:#8a94a6;font-family:JetBrains Mono;font-size:11px;cursor:pointer}
+.nav-item.active{color:#10b981;text-shadow:0 0 10px rgba(16,185,129,0.8)}
+.nav-item svg{width:26px;height:26px}
+#loginPage{display:flex;flex-direction:column;justify-content:center;min-height:100vh;padding:20px}
+#appPage{display:none;padding-bottom:100px}
 </style>
 </head>
 <body>
+
+<!-- LOGIN / CREATE ACCOUNT -->
+<div id="loginPage">
+  <div style="text-align:center;margin-bottom:20px">
+    <div style="font-size:32px;font-weight:900">SR-72 <span style="color:#fbbf24">DARK STAR</span></div>
+    <div class="label" style="margin-top:6px">EXNESS • INSTITUTIONAL BOT • VPS</div>
+  </div>
+  <div class="card">
+    <div class="label" style="color:#fbbf24">Create Account to Continue</div>
+    <input id="regUser" placeholder="Username">
+    <input id="regEmail" placeholder="Email">
+    <input id="regPass" type="password" placeholder="Password">
+    <button class="btn start" style="width:100%;margin-top:10px" onclick="createAccount()">CREATE ACCOUNT & ENTER</button>
+    <div style="text-align:center;margin-top:12px;font-family:JetBrains Mono;font-size:12px;color:#64748b">Already have? <span style="color:#10b981;cursor:pointer" onclick="login()">LOGIN</span></div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="appPage">
 <div class="header">
 <div class="logo">SR-72 <span>DARK STAR</span> ⚡ EXNESS</div>
-<div style="font-size:12px;font-family:JetBrains Mono"><span class="live-dot"></span> CONNECTED • VPS</div>
+<div style="font-size:11px;font-family:JetBrains Mono"><span style="width:8px;height:8px;background:#10b981;border-radius:50%;display:inline-block"></span> CONNECTED • VPS</div>
 </div>
 
 <div class="card">
 <div class="label">XAUUSD • GOLD • SPOT • MT5 REAL</div>
-<div class="price" id="price">2342.<span class="dec">06</span></div>
-<div class="stats">
-<div class="stat"><div class="label">Balance</div><b id="bal">$50.00</b></div>
-<div class="stat"><div class="label">Equity</div><b>$50.00</b></div>
+<div class="price" id="price">2342.77</div>
+<div style="display:flex;gap:10px;margin-top:10px">
+<div class="stat"><div class="label">Balance</div><b id="bal">$0.00</b></div>
+<div class="stat"><div class="label">Equity</div><b>$0.00</b></div>
 <div class="stat"><div class="label">Spread</div><b style="color:#10b981">18.2</b></div>
 </div>
 </div>
 
 <div class="card">
 <div class="label" style="color:#10b981">● LIVE ANALYSIS • SR-72 AI ENGINE</div>
-<canvas id="chart" height="160"></canvas>
-<div class="profit-box">
-<div style="font-family:JetBrains Mono;font-size:13px;color:#10b981">▲ +$0.00 Today • Win Rate: 78.4% • PF: 2.1</div>
-<div style="font-size:11px;color:#64748b">STRADDLE ACTIVE</div>
+<canvas id="chart" height="140" style="width:100%;margin-top:10px"></canvas>
+<div style="display:flex;justify-content:space-between;margin-top:12px;padding:10px 12px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:12px;font-family:JetBrains Mono;font-size:11px">
+<span style="color:#10b981">▲ +$0.00 Today • Win: 78.4% • PF: 2.1</span><span>STRADDLE ACTIVE</span>
 </div>
 </div>
 
-<div class="card">
+<div class="card" id="botCard">
 <div style="display:flex;justify-content:space-between">
 <div class="label">🤖 BOT CONTROL • INSTITUTIONAL</div>
-<div class="label status-active" id="botstate">ACTIVE • RUNNING</div>
+<div class="label" style="color:#10b981" id="botstate">STOPPED</div>
 </div>
-<div style="display:flex;gap:10px;margin-top:16px">
+<div style="display:flex;gap:10px;margin-top:14px">
 <button class="btn start" onclick="startBot()">▶ START ENGINE</button>
 <button class="btn stop" onclick="stopBot()">■ STOP</button>
 </div>
-<div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-<span style="background:#1e293b;padding:6px 10px;border-radius:20px;font-size:11px;font-family:JetBrains Mono">LOT: 0.01</span>
-<span style="background:#1e293b;padding:6px 10px;border-radius:20px;font-size:11px;font-family:JetBrains Mono">DIST: $0.80</span>
-<span style="background:#1e293b;padding:6px 10px;border-radius:20px;font-size:11px;font-family:JetBrains Mono">TRAILING: $0.50</span>
-<span style="background:rgba(251,191,36,0.15);padding:6px 10px;border-radius:20px;font-size:11px;font-family:JetBrains Mono;color:#fbbf24">24/7 VPS</span>
+<div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;font-family:JetBrains Mono;font-size:10px">
+<span style="background:#1e293b;padding:6px 10px;border-radius:20px">LOT: 0.01</span>
+<span style="background:#1e293b;padding:6px 10px;border-radius:20px">DIST: $0.80</span>
+<span style="background:#1e293b;padding:6px 10px;border-radius:20px">TRAILING: $0.50</span>
+</div>
+</div>
+
+<div class="pill">Strategy: Momentum Scalper • Risk: Low • Trades: 8 Won / 2 Lost</div>
+
+<!-- BOTTOM NAV LIKE YOUR SCREENSHOT -->
+<div class="bottom-nav">
+<div class="nav-item active" onclick="tab(this,'dashboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>Dashboard</div>
+<div class="nav-item" onclick="tab(this,'trade')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/><path d="M7 11h4M7 15h10"/></svg>Trade</div>
+<div class="nav-item" onclick="tab(this,'bot')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-1 .6A1.65 1.65 0 0 1 12 21a1.65 1.65 0 0 1-2-.99 1.65 1.65 0 0 0-1-.6 1.65 1.65 0 0 0-1.82-.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-.6-1A1.65 1.65 0 0 1 3 12a1.65 1.65 0 0 1 .99-2c.19-.36.46-.68.6-1A1.65 1.65 0 0 0 4.26 7.18l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6c.36-.14.68-.41 1-.6A1.65 1.65 0 0 1 12 3a1.65 1.65 0 0 1 2 .99c.36.19.68.46 1 .6a1.65 1.65 0 0 0 1.82.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.36.41.68.6 1A1.65 1.65 0 0 1 21 12a1.65 1.65 0 0 1-.99 2c-.19.36-.46.68-.6 1z"/></svg>Bot</div>
+<div class="nav-item" onclick="tab(this,'wallet')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/><path d="M16 11a2 2 0 1 0 0 4h2v-4h-2z"/></svg>Wallet</div>
+<div class="nav-item" onclick="tab(this,'profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg>Profile</div>
 </div>
 </div>
 
 <script>
-// PROFESSIONAL CHART
-const c=document.getElementById('chart'),ctx=c.getContext('2d');
-let pts=[];for(let i=0;i<80;i++)pts.push(80+Math.sin(i/5)*20+Math.random()*10);
-function draw(){
-ctx.clearRect(0,0,c.width,c.height);
-// glow
-ctx.shadowColor='#10b981';ctx.shadowBlur=10;ctx.strokeStyle='#10b981';ctx.lineWidth=2.5;ctx.beginPath();
-pts.forEach((y,i)=>{let x=i*(c.width/80); if(i==0)ctx.moveTo(x,y); else ctx.lineTo(x,y)});ctx.stroke();ctx.shadowBlur=0;
-// fill
-ctx.lineTo(c.width,160);ctx.lineTo(0,160);ctx.closePath();let g=ctx.createLinearGradient(0,0,0,160);g.addColorStop(0,'rgba(16,185,129,0.3)');g.addColorStop(1,'rgba(16,185,129,0)');ctx.fillStyle=g;ctx.fill();
-pts.shift();pts.push(80+Math.sin(Date.now()/300)*20+Math.random()*12-6);
-requestAnimationFrame(draw);
+// ACCOUNT LOGIC - Must create before entering
+if(localStorage.getItem('sr72_user')){showApp();}
+function createAccount(){
+  let u=document.getElementById('regUser').value, e=document.getElementById('regEmail').value, p=document.getElementById('regPass').value;
+  if(!u||!e||!p){alert('Fill all fields');return;}
+  localStorage.setItem('sr72_user',JSON.stringify({user:u,email:e}));
+  showApp();
 }
-draw();
-setInterval(()=>{let p=2342+Math.random()*1.5;document.getElementById('price').innerHTML=p.toFixed(2).split('.')[0]+'.<span class="dec">'+p.toFixed(2).split('.')[1]+'</span>'},800);
+function login(){ 
+  let saved=localStorage.getItem('sr72_user');
+  if(saved) showApp(); else alert('No account found - Create one first');
+}
+function showApp(){
+  document.getElementById('loginPage').style.display='none';
+  document.getElementById('appPage').style.display='block';
+}
+// chart
+const c=document.getElementById('chart'),ctx=c.getContext('2d');let pts=[];for(let i=0;i<80;i++)pts.push(70+Math.sin(i/5)*15+Math.random()*8);
+function draw(){if(!ctx)return;ctx.clearRect(0,0,c.width,c.height);ctx.shadowColor='#10b981';ctx.shadowBlur=8;ctx.strokeStyle='#10b981';ctx.lineWidth=2;ctx.beginPath();pts.forEach((y,i)=>{let x=i*(c.width/80); if(i==0)ctx.moveTo(x,y); else ctx.lineTo(x,y)});ctx.stroke();ctx.shadowBlur=0;ctx.lineTo(c.width,140);ctx.lineTo(0,140);ctx.closePath();let g=ctx.createLinearGradient(0,0,0,140);g.addColorStop(0,'rgba(16,185,129,0.25)');g.addColorStop(1,'rgba(16,185,129,0)');ctx.fillStyle=g;ctx.fill();pts.shift();pts.push(70+Math.sin(Date.now()/400)*15+Math.random()*8-4);requestAnimationFrame(draw);}draw();
+setInterval(()=>{let p=2342+Math.random()*1.2;document.getElementById('price').innerText=p.toFixed(2)},900);
 function startBot(){document.getElementById('botstate').innerText='ACTIVE • RUNNING';fetch('/start').then(r=>r.text()).then(alert)}
 function stopBot(){document.getElementById('botstate').innerText='STOPPED';fetch('/stop').then(r=>r.text()).then(alert)}
+function tab(el,name){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');
+  if(name=='wallet') alert('Wallet: Balance $0.00 - Deposit when ready');
+  if(name=='profile'){let u=JSON.parse(localStorage.getItem('sr72_user')||'{}');alert('Profile: '+ (u.user||'User') +' | '+ (u.email||''));}
+  if(name=='trade') alert('Trade history: 8 Won / 2 Lost - Momentum Scalper');
+  if(name=='bot') document.getElementById('botCard').scrollIntoView({behavior:'smooth'});
+}
 </script>
 </body>
-</html>
+  </html>
