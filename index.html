@@ -1,29 +1,78 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SR-72 Dark Star</title>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SR-72 Dark Star - EXNESS</title>
 <style>
-body{background:#070a0f;color:#fff;font-family:Arial;margin:0;padding:15px}
-.card{border:1px solid #d4af37;border-radius:12px;padding:15px;margin:10px 0;background:#10151f}
-.green{color:#00ff88}.btn{padding:15px 25px;border-radius:10px;border:none;font-weight:bold;width:48%}
-.start{background:#00ff88}.stop{background:#ff3b3b;color:#fff}
-.status{border:1px solid #00ff88;color:#00ff88;padding:5px 12px;border-radius:20px;float:right}
+body{background:#02060f;color:#fff;font-family:Inter,Arial;margin:0;padding:12px}
+.top{display:flex;justify-content:space-between;align-items:center;padding:10px 5px}
+.badge{border:1px solid #00ff7f;color:#00ff7f;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:bold;background:rgba(0,255,127,0.08)}
+.card{background:linear-gradient(180deg,#111927,#0a0f1c);border:1px solid #d4af37;border-radius:16px;padding:16px;margin:12px 0;box-shadow:0 0 20px rgba(212,175,55,0.15)}
+.price{font-size:42px;color:#00ff88;font-weight:800;margin:8px 0}
+.small{color:#8a94a6;font-size:13px}
+.profit{color:#00ff88;font-weight:bold;margin-top:10px}
+.btnrow{display:flex;gap:10px;margin-top:12px}
+.btn{flex:1;padding:16px;border-radius:12px;border:none;font-weight:900;font-size:16px}
+.start{background:#00ff88;color:#000}.stop{background:#ff2e2e;color:#fff}
+input{width:100%;padding:13px;margin:6px 0;border-radius:10px;border:1px solid #333;background:#0f1623;color:#fff;box-sizing:border-box}
+h2{margin:0;font-size:22px;letter-spacing:0.5px}
 </style>
 </head>
 <body>
-<h2>⚡ EXNESS MT5 <span class="status">● CONNECTED</span></h2>
-<div class="card">
-<b>XAUUSD • Gold</b><h1 class="green">2,341.82</h1>
-<span>Balance: $50.00 | Equity: $50</span>
+<div class="top">
+<h2>⚡ EXNESS MT5</h2>
+<span class="badge" id="con">● CONNECTED</span>
 </div>
+
 <div class="card">
-<b class="green">LIVE ANALYSIS</b><br>
-<p class="green">▲ +$0.00 Today Profit</p>
+<div class="small">XAUUSD • Gold • LIVE</div>
+<div class="price" id="price">2,341.82</div>
+<div class="small" id="bal">Balance: $50.00 | Equity: $50.00 | Spread: 22</div>
 </div>
+
 <div class="card">
-<b>🤖 BOT CONTROL</b><p>Auto Trading Bot: <span class="green">STOPPED</span></p>
-<button class="btn start">▶ START</button>
-<button class="btn stop">■ STOP</button>
+<div style="color:#00ff88;font-weight:800;margin-bottom:8px">LIVE ANALYSIS • SR-72</div>
+<canvas id="chart" height="130" style="width:100%"></canvas>
+<div class="profit">▲ +$<span id="profit">0.00</span> Today Profit • Win: 78%</div>
 </div>
+
+<div class="card">
+<div style="font-weight:800">🤖 BOT CONTROL</div>
+<div class="small" style="margin:8px 0">Auto Trading Bot: <span id="botstate" style="color:#ff3b3b;font-weight:bold">STOPPED</span></div>
+<div class="btnrow">
+<button class="btn start" onclick="startBot()">▶ START</button>
+<button class="btn stop" onclick="stopBot()">■ STOP</button>
+</div>
+<div class="small" style="margin-top:10px;text-align:center">Strategy: SR-72 Straddle + Trailing | Lot: 0.01 | Dist: $0.80</div>
+</div>
+
+<script>
+function startBot(){
+  document.getElementById('botstate').innerText='ACTIVE • RUNNING';
+  document.getElementById('botstate').style.color='#00ff88';
+  fetch('/start').then(r=>r.text()).then(t=>alert(t));
+}
+function stopBot(){
+  document.getElementById('botstate').innerText='STOPPED';
+  document.getElementById('botstate').style.color='#ff3b3b';
+  fetch('/stop').then(r=>r.text()).then(t=>alert(t));
+}
+// live fake chart + price ticker
+const ctx=document.getElementById('chart').getContext('2d');
+let data=[];
+for(let i=0;i<50;i++) data.push(100+Math.random()*20);
+function draw(){
+  ctx.clearRect(0,0,300,130);
+  ctx.strokeStyle='#00ff88';ctx.lineWidth=2;ctx.beginPath();
+  data.forEach((v,i)=>{ if(i==0)ctx.moveTo(i*6,v); else ctx.lineTo(i*6,v); });
+  ctx.stroke();
+  data.shift();data.push(100+Math.random()*20-Math.random()*5);
+}
+setInterval(draw,150);
+setInterval(()=>{
+  let p = 2341 + Math.random()*2;
+  document.getElementById('price').innerText = p.toFixed(2);
+},1000);
+</script>
 </body>
 </html>
