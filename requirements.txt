@@ -1,1 +1,2 @@
-pip install flask metaapi-cloud-sdk
+flask
+metaapi-cloud-sdk
