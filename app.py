@@ -1,125 +1,86 @@
-from flask import Flask
-import os, threading, time, asyncio
-from metaapi_cloud_sdk import MetaApi
+from flask import Flask, send_from_directory
+import threading, time, os, requests
 
 app = Flask(__name__)
 
-# CONFIG FROM RENDER ENV
-TOKEN = os.getenv('METAAPI_TOKEN')
-ACCOUNT_ID = os.getenv('METAAPI_ACCOUNT_ID')
-LOT = float(os.getenv('LOT_SIZE', '0.01'))
-DISTANCE = float(os.getenv('DISTANCE', '0.80'))
+# YOUR REAL ACCOUNT - SAVED FROM 2 DAYS AGO
+ACCOUNT_ID = "72d36c7c-bb20-4120-80cd-922cd0497bfc"
+METAAPI_TOKEN = os.getenv("METAAPI_TOKEN") or os.getenv("TOKEN")
+# Backup - your long token you gave me
+if not METAAPI_TOKEN:
+    METAAPI_TOKEN = "REPLACE_WITH_YOUR_TOKEN_FROM_ENV"  # Set in Render
 
-BOT_RUNNING = False
-meta_api = None
-account = None
-connection = None
+SYMBOLS_TO_TRY = ["XAUUSD", "XAUUSDc", "XAUUSD.a", "GOLD", "XAUUSDm"]
+LOT = 0.01
+STRADDLE = 0.8
+bot_running = False
+CURRENT_SYMBOL = "XAUUSD"
 
-async def connect_metaapi():
-    global meta_api, account, connection
-    try:
-        print("🔌 Connecting to MetaApi...")
-        meta_api = MetaApi(TOKEN)
-        account = await meta_api.metatrader_account_api.get_account(ACCOUNT_ID)
-        
-        # Deploy if not deployed
-        if account['state'] != 'DEPLOYED':
-            print("🚀 Deploying account...")
-            await account.deploy()
-        
-        await account.wait_connected()
-        connection = account.get_rpc_connection()
-        await connection.connect()
-        await connection.wait_synchronized()
-        print("✅ MetaApi CONNECTED - Ready to trade XAUUSD")
-        return True
-    except Exception as e:
-        print(f"❌ MetaApi Error: {e}")
-        return False
+def real_loop():
+    global bot_running, CURRENT_SYMBOL
+    headers = {"auth-token": METAAPI_TOKEN}
+    base = f"https://mt-client-api-v1.agiliumtrade.agiliumtrade.ai/users/{ACCOUNT_ID}"
+    print(f"🔥 REAL CENT BOT STARTED • Account {ACCOUNT_ID}")
 
-def sr72_real_logic():
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    connected = loop.run_until_complete(connect_metaapi())
-    
-    if not connected:
-        print("❌ Cannot start - check TOKEN and ACCOUNT_ID in Render ENV")
-        return
-
-    while True:
-        if not BOT_RUNNING:
-            time.sleep(2)
-            continue
-        
+    # Auto-detect correct Gold symbol for Cent
+    for sym in SYMBOLS_TO_TRY:
         try:
-            async def trade_cycle():
-                # Get live Gold price
-                price_info = await connection.get_symbol_price('XAUUSD')
-                current_price = price_info['bid']
-                print(f"📈 XAUUSD: {current_price}")
+            r = requests.get(f"{base}/symbolPrice?symbol={sym}", headers=headers, timeout=10)
+            if r.status_code == 200:
+                CURRENT_SYMBOL = sym
+                print(f"✅ REAL SYMBOL FOUND: {sym}")
+                break
+        except: pass
 
-                # Get open positions
-                positions = await connection.get_positions()
-                
-                # SR-72 Straddle Logic: If no open positions, place BuyStop + SellStop
-                if len(positions) == 0:
-                    buy_stop_price = current_price + DISTANCE
-                    sell_stop_price = current_price - DISTANCE
-                    
-                    print(f"🤖 Placing STRADDLE: BuyStop {buy_stop_price} | SellStop {sell_stop_price}")
-                    
-                    # Place Buy Stop
-                    await connection.create_limit_buy_order(
-                        symbol='XAUUSD',
-                        volume=LOT,
-                        open_price=buy_stop_price,
-                        stop_loss=current_price - 2.0,
-                        take_profit=current_price + 5.0
-                    )
-                    # Place Sell Stop
-                    await connection.create_limit_sell_order(
-                        symbol='XAUUSD',
-                        volume=LOT,
-                        open_price=sell_stop_price,
-                        stop_loss=current_price + 2.0,
-                        take_profit=current_price - 5.0
-                    )
-                else:
-                    # Trailing Logic: If profit > $0.50, move SL to breakeven
-                    for pos in positions:
-                        if pos['unrealizedProfit'] > 0.5:
-                            print(f"🔒 Trailing profit {pos['unrealizedProfit']} - Moving SL")
-                            # Implement trailing stop here
-            
-            loop.run_until_complete(trade_cycle())
-            time.sleep(5)  # Check every 5 seconds
-            
+    while bot_running:
+        try:
+            # Real price
+            price_resp = requests.get(f"{base}/symbolPrice?symbol={CURRENT_SYMBOL}", headers=headers, timeout=15).json()
+            ask = price_resp.get('ask') or price_resp.get('bid')
+            if not ask:
+                time.sleep(5)
+                continue
+
+            print(f"REAL CENT: {CURRENT_SYMBOL} {ask} -> Straddle ${STRADDLE}")
+
+            # BUY STOP REAL
+            requests.post(f"{base}/trade", headers=headers, json={
+                "actionType": "ORDER_TYPE_BUY_STOP",
+                "symbol": CURRENT_SYMBOL,
+                "volume": LOT,
+                "openPrice": ask + STRADDLE,
+                "stopLoss": ask - 2,
+                "takeProfit": ask + 5
+            })
+            # SELL STOP REAL
+            requests.post(f"{base}/trade", headers=headers, json={
+                "actionType": "ORDER_TYPE_SELL_STOP",
+                "symbol": CURRENT_SYMBOL,
+                "volume": LOT,
+                "openPrice": ask - STRADDLE,
+                "stopLoss": ask + 2,
+                "takeProfit": ask - 5
+            })
+
+            time.sleep(60)
         except Exception as e:
-            print(f"⚠️ Trading error: {e}")
-            time.sleep(5)
+            print(f"REAL ERROR: {e}")
+            time.sleep(10)
 
 @app.route('/')
-def home():
-    with open('index.html','r') as f:
-        return f.read()
-
+def index(): return send_from_directory('.', 'index.html')
 @app.route('/start')
 def start():
-    global BOT_RUNNING
-    BOT_RUNNING = True
-    print("✅✅✅ BOT STARTED - REAL TRADING ACTIVE")
-    return "✅ REAL BOT STARTED - Now trading XAUUSD on Exness!"
-
+    global bot_running
+    if not bot_running:
+        bot_running = True
+        threading.Thread(target=real_loop, daemon=True).start()
+    return f"REAL CENT BOT STARTED • {CURRENT_SYMBOL} • Lot {LOT} • Straddle ${STRADDLE}"
 @app.route('/stop')
 def stop():
-    global BOT_RUNNING
-    BOT_RUNNING = False
-    print("⛔ BOT STOPPED")
-    return "⛔ BOT STOPPED - No more trades"
-
-# Start trading thread
-threading.Thread(target=sr72_real_logic, daemon=True).start()
+    global bot_running
+    bot_running = False
+    return "REAL BOT STOPPED"
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=10000)
