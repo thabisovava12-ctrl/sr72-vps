@@ -8,15 +8,12 @@ TOKEN = (os.getenv("METAAPI_TOKEN") or "").strip()
 LOT = 0.01
 STRADDLE = 2.00
 SL_DIST = 2.50
-BE = 1.00
-TRAIL_START = 1.20
-TRAIL_STEP = 0.40
 def H(): return {"auth-token": TOKEN, "Content-Type":"application/json"}
 def base(): return f"https://mt-client-api-v1.{REGION}.agiliumtrade.ai/users/current/accounts/{ACCOUNT_ID}"
 @app.route('/')
 def idx(): return send_from_directory('.','index.html')
 @app.route('/health')
-def health(): return "OK V28.1 MERGED VIDEO 0.01"
+def health(): return "OK V28.1 MERGED ON V13 - VIDEO 0.01"
 @app.route('/api/balance')
 def bal():
     r = requests.get(f"{base()}/accountInformation", headers=H(), timeout=15, verify=False)
@@ -33,10 +30,21 @@ def positions():
 def orders():
     r = requests.get(f"{base()}/orders", headers=H(), timeout=10, verify=False)
     return r.text, r.status_code
-@app.route('/api/history')
-def history():
+@app.route('/api/historyOrders')
+def historyOrders():
     r = requests.get(f"{base()}/historyOrders", headers=H(), timeout=15, verify=False)
     return r.text, r.status_code
+@app.route('/api/deals')
+def deals():
+    try:
+        r = requests.get(f"{base()}/historyOrders?limit=100", headers=H(), timeout=15, verify=False).json()
+        # format for your V13 display
+        out=[]
+        for o in r[-30:]:
+            out.append({"time":o.get('doneTime') or o.get('updateTime'),"type":o.get('type'),"profit":o.get('profit',0)})
+        return jsonify(out)
+    except:
+        return jsonify([])
 @app.route('/api/start_straddle', methods=['POST'])
 def start_straddle():
     pr = requests.get(f"{base()}/symbols/{SYMBOL}/current-price", headers=H(), timeout=10, verify=False).json()
@@ -47,7 +55,7 @@ def start_straddle():
     s1 = {"actionType":"ORDER_TYPE_SELL_STOP","symbol":SYMBOL,"volume":LOT,"openPrice":sell_p,"stopLoss":round(sell_p+SL_DIST,2)}
     requests.post(f"{base()}/trade", headers=H(), json=b1, timeout=15, verify=False)
     requests.post(f"{base()}/trade", headers=H(), json=s1, timeout=15, verify=False)
-    return jsonify({"buy":buy_p,"sell":sell_p,"lot":LOT,"mode":"VIDEO 0.01"})
+    return jsonify({"buy_stop":buy_p,"sell_stop":sell_p,"lot":LOT,"mode":"VIDEO CLONE 0.01"})
 @app.route('/api/trail', methods=['POST'])
 def trail():
     logs=[]
@@ -57,27 +65,27 @@ def trail():
         bid, ask = pr['bid'], pr['ask']
         orders_r = requests.get(f"{base()}/orders", headers=H(), timeout=10, verify=False).json()
         for pos in pos_r:
-            if pos['symbol']!=SYMBOL: continue
+            if pos.get('symbol')!=SYMBOL: continue
             entry=pos['openPrice']; sl=pos.get('stopLoss',0) or 0; pid=pos['id']
             if pos['type']=='POSITION_TYPE_BUY':
                 prof=ask-entry
-                if prof>=BE and sl<entry:
+                if prof>=1.00 and sl<entry:
                     ns=round(entry+0.10,2)
                     requests.post(f"{base()}/trade", headers=H(), json={"actionType":"ORDER_TYPE_BUY","symbol":SYMBOL,"volume":pos['volume'],"positionId":pid,"stopLoss":ns}, timeout=10, verify=False)
                     logs.append(f"BUY BE->{ns}")
-                elif prof>=TRAIL_START:
-                    ns=round(ask-TRAIL_STEP,2)
+                elif prof>=1.20:
+                    ns=round(ask-0.40,2)
                     if ns>sl:
                         requests.post(f"{base()}/trade", headers=H(), json={"actionType":"ORDER_TYPE_BUY","symbol":SYMBOL,"volume":pos['volume'],"positionId":pid,"stopLoss":ns}, timeout=10, verify=False)
                         logs.append(f"BUY TRAIL->{ns}")
             else:
                 prof=entry-bid
-                if prof>=BE and (sl==0 or sl>entry):
+                if prof>=1.00 and (sl==0 or sl>entry):
                     ns=round(entry-0.10,2)
                     requests.post(f"{base()}/trade", headers=H(), json={"actionType":"ORDER_TYPE_SELL","symbol":SYMBOL,"volume":pos['volume'],"positionId":pid,"stopLoss":ns}, timeout=10, verify=False)
                     logs.append(f"SELL BE->{ns}")
-                elif prof>=TRAIL_START:
-                    ns=round(bid+TRAIL_STEP,2)
+                elif prof>=1.20:
+                    ns=round(bid+0.40,2)
                     if sl==0 or ns<sl:
                         requests.post(f"{base()}/trade", headers=H(), json={"actionType":"ORDER_TYPE_SELL","symbol":SYMBOL,"volume":pos['volume'],"positionId":pid,"stopLoss":ns}, timeout=10, verify=False)
                         logs.append(f"SELL TRAIL->{ns}")
@@ -87,7 +95,7 @@ def trail():
             s1={"actionType":"ORDER_TYPE_SELL_STOP","symbol":SYMBOL,"volume":LOT,"openPrice":sell_p,"stopLoss":round(sell_p+SL_DIST,2)}
             requests.post(f"{base()}/trade", headers=H(), json=b1, timeout=15, verify=False)
             requests.post(f"{base()}/trade", headers=H(), json=s1, timeout=15, verify=False)
-            logs.append(f"AUTO RE-STRADDLE {buy_p}/{sell_p}")
+            logs.append(f"AUTO {buy_p}/{sell_p}")
         return jsonify({"logs":logs,"bid":bid,"ask":ask})
     except Exception as e:
         return jsonify({"error":str(e),"logs":logs}),500
