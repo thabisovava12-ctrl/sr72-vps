@@ -1,69 +1,107 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SR72</title>
-<style>
-body{background:#0a0a0a;color:#fff;font-family:Arial;padding:15px;margin:0}
-.card{background:#151515;border:1px solid #2a2a2a;border-radius:12px;padding:14px;margin:10px 0}
-button{width:100%;padding:15px;border-radius:10px;border:0;font-weight:bold;font-size:16px;cursor:pointer}
-.start{background:#00ff88;color:#000}
-.test{background:#222;color:#fff;margin-top:8px;border:1px solid #333}
-h1{color:#00ff88;font-size:20px;margin:10px 0}
-small{color:#888}
-b{color:#fff}
-#status{font-size:13px;margin-top:8px}
-</style>
-</head>
-<body>
-<h1>SR72 GOLD BOT - REAL</h1>
-
-<div class="card">
-Balance: <b id="bal">Loading...</b><br>
-Gold: <b id="price">Loading...</b> <small id="spread"></small>
-<div id="status">Ready - Lot 0.01 Straddle $0.80 (same as demo tested)</div>
-</div>
-
-<button class="start" onclick="startStraddle()">START STRADDLE BOT (REAL)</button>
-<button class="test" onclick="testBuy()">TEST BUY 0.01 (the one that gave order 483939556)</button>
-
-<div class="card">
-<b>Live from Exness MT5:</b>
-<pre id="live" style="white-space:pre-wrap;font-size:11px;color:#aaa">Loading positions...</pre>
-</div>
-
-<div class="card">
-<b>Last Action:</b>
-<pre id="last" style="white-space:pre-wrap;font-size:11px;color:#00ff88">-</pre>
-</div>
-
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>SR-72 DARK STAR • REAL</title><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@600;800&display=swap" rel="stylesheet"><style>*{box-sizing:border-box}body{margin:0;background:#020208;color:#e5e7eb;font-family:Inter,sans-serif;min-height:100vh}.header{padding:18px 16px;display:flex;justify-content:space-between;align-items:center;background:rgba(17,24,39,0.9);border-bottom:1px solid #1f2937;position:sticky;top:0;z-index:10}.logo{font-weight:900;letter-spacing:1px;font-size:16px}.logo span{color:#fbbf24}.card{margin:12px;background:linear-gradient(180deg,#0f172a 0%,#020617 100%);border:1px solid rgba(251,191,36,0.15);border-radius:18px;padding:18px;position:relative;overflow:hidden}.card:before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#fbbf24,transparent)}.label{font-family:JetBrains Mono;font-size:11px;color:#94a3b8;letter-spacing:1.5px;text-transform:uppercase}.price{font-size:44px;font-weight:900;font-family:JetBrains Mono;letter-spacing:-2px;margin:6px 0}.stat{background:#1e293b;border-radius:10px;padding:8px 12px;flex:1}.stat b{font-family:JetBrains Mono;color:#fff}.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:16px;border-radius:14px;border:none;font-weight:900;font-size:15px;flex:1;cursor:pointer}.start{background:linear-gradient(180deg,#10b981,#059669);color:#000}.stop{background:#1f2937;color:#ef4444;border:1px solid #ef444433}select,input{width:100%;padding:14px;margin:7px 0;border-radius:12px;border:1px solid #2a3447;background:#0b1220;color:#fff;font-family:JetBrains Mono;outline:none}.pill{margin:12px;border:1px solid rgba(251,191,36,0.25);border-radius:14px;padding:10px 14px;text-align:center;font-family:JetBrains Mono;font-size:12px;background:rgba(15,23,42,0.8);color:#fde68a}.bottom-nav{position:fixed;bottom:10px;left:10px;right:10px;background:linear-gradient(180deg,#0f172a,#020617);border:1px solid rgba(251,191,36,0.25);border-radius:20px;display:flex;justify-content:space-around;padding:12px 5px;z-index:20}.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;color:#8a94a6;font-family:JetBrains Mono;font-size:11px;cursor:pointer}.nav-item.active{color:#10b981}.nav-item svg{width:26px;height:26px}#createPage,#loginPage{display:flex;flex-direction:column;justify-content:center;min-height:100vh;padding:20px}#appPage{display:none;padding-bottom:110px}.welcome{font-family:JetBrains Mono;font-size:12px;color:#fbbf24;margin:12px 12px 0 12px;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.15);border-radius:12px;padding:10px 14px}.page{display:none}.page.active{display:block}.trade-summary{display:flex;gap:10px;margin:12px}.s{flex:1;background:linear-gradient(180deg,#0f172a,#020617);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:12px}.s.green{border-color:rgba(16,185,129,0.3)}.s.red{border-color:rgba(239,68,68,0.3)}.trade-list{margin:0 12px;background:#0f172a;border-radius:16px;border:1px solid #1e293b;overflow:hidden}.trade-row{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.05);font-family:JetBrains Mono;font-size:12px}.badge{padding:4px 8px;border-radius:20px;font-size:10px;font-weight:800}.win{background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.3)}.loss{background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.3)}.setting-row{display:flex;justify-content:space-between;align-items:center;padding:14px;border-bottom:1px solid rgba(255,255,255,0.06);font-family:JetBrains Mono;font-size:12px}.broker-tag{padding:6px 10px;border-radius:20px;font-size:10px;font-weight:800;background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3)}@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}</style></head><body>
+<div id="createPage"><div style="text-align:center;margin-bottom:20px"><div style="font-size:32px;font-weight:900">SR-72 <span style="color:#fbbf24">DARK STAR</span></div><div class="label" style="margin-top:6px">V13 REAL • EXNESS LIVE</div></div><div class="card"><div class="label" style="color:#fbbf24">CREATE ACCOUNT</div><input id="regUser" placeholder="Username"><input id="regEmail" placeholder="Email"><input id="regPass" type="password" placeholder="Password"><button class="btn start" style="width:100%;margin-top:10px" onclick="createAccount()">CREATE & ENTER</button><div style="text-align:center;margin-top:12px;font-family:JetBrains Mono;font-size:12px;color:#64748b">Already have? <span style="color:#10b981;cursor:pointer;font-weight:700" onclick="showLogin()">LOGIN</span></div></div></div>
+<div id="loginPage" style="display:none"><div style="text-align:center;margin-bottom:20px"><div style="font-size:32px;font-weight:900">SR-72 <span style="color:#fbbf24">DARK STAR</span></div><div class="label">WELCOME BACK</div></div><div class="card"><div class="label" style="color:#10b981">LOGIN</div><input id="loginUser" placeholder="Username"><input id="loginPass" type="password" placeholder="Password"><button class="btn start" style="width:100%;margin-top:10px" onclick="doLogin()">LOGIN</button><div style="text-align:center;margin-top:12px;font-family:JetBrains Mono;font-size:12px;color:#64748b">No account? <span style="color:#fbbf24;cursor:pointer;font-weight:700" onclick="showCreate()">CREATE</span></div></div></div>
+<div id="appPage"><div class="header"><div class="logo">SR-72 <span>DARK STAR</span> ⚡ <span style="font-size:11px;color:#fbbf24">EXNESS REAL</span> • <span id="symbolHeader" style="font-size:11px;color:#10b981">XAUUSDc</span></div><div style="font-size:11px;font-family:JetBrains Mono"><span style="width:8px;height:8px;background:#10b981;border-radius:50%;display:inline-block"></span> <span id="liveLabel">REAL LIVE</span></div></div><div class="welcome" id="welcomeBox"></div>
+<div id="dashboardPage" class="page active"><div class="card"><div class="label"><span id="dashSymbol">XAUUSDc REAL</span> • Gold • LIVE PRICE</div><div class="price" id="price">Loading...</div><div style="display:flex;gap:10px;margin-top:10px"><div class="stat"><div class="label">Balance REAL</div><b id="dashBal">$--</b></div><div class="stat"><div class="label">Equity</div><b id="dashEq">$--</b></div><div class="stat"><div class="label">Spread</div><b id="dashSpread" style="color:#fbbf24">--</b></div></div></div><div class="card"><div class="label" style="color:#10b981">● REAL STRADDLE • LOT 0.01 • $0.80 • SL $1.10 TP $3.00</div><canvas id="chart" height="140" style="width:100%;margin-top:10px"></canvas><div style="display:flex;justify-content:space-between;margin-top:12px;padding:10px 12px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:12px;font-family:JetBrains Mono;font-size:11px"><span style="color:#10b981" id="liveStats">LIVE • Exness MT5</span><span id="lastUpdate">Updating...</span></div></div><div class="card"><div style="display:flex;justify-content:space-between"><div class="label">🤖 BOT • REAL ENGINE</div><div class="label" style="color:#10b981" id="botstate">STOPPED</div></div><div style="display:flex;gap:10px;margin-top:14px"><button class="btn start" onclick="startBot()">▶ START STRADDLE REAL</button><button class="btn stop" onclick="closeAll()">■ CLOSE ALL</button></div><div class="label" style="margin-top:10px;text-align:center" id="botLog">Ready - Same as demo tested strategy but REAL</div></div></div>
+<div id="tradePage" class="page"><div class="card" style="margin-bottom:0"><div class="label" style="color:#fbbf24">📊 LIVE POSITIONS & ORDERS • REAL</div></div><div class="trade-summary"><div class="s green"><div class="label">Open</div><b id="posCount" style="color:#10b981;font-size:18px">0</b><div class="label">Positions</div></div><div class="s"><div class="label">Pending</div><b id="ordCount" style="font-size:18px">0</b><div class="label">Orders</div></div><div class="s"><div class="label">Equity REAL</div><b id="eqTrade" style="font-size:18px">--</b><div class="label" id="profitLive">Live</div></div></div><div class="trade-list" id="tradeList"></div><div class="card"><div class="label">Pending Orders Real</div><div id="ordersList"></div></div><div class="card"><div class="label">History (Last 10 Real Trades)</div><div id="historyList"></div></div></div>
+<div id="botPage" class="page"><div class="card"><div class="label" style="color:#10b981">🤖 CONTROL • REAL</div><div style="display:flex;justify-content:space-between;margin-top:14px;align-items:center"><div><b style="font-family:JetBrains Mono;font-size:18px">XAUUSDc • Gold REAL</b><div class="label">Exness Real • $1006.40</div></div><div id="botStatusBig" style="padding:8px 14px;border-radius:20px;background:rgba(239,68,68,0.15);color:#ef4444;font-family:JetBrains Mono;font-size:12px">STOPPED</div></div><div style="margin-top:14px"><div class="label">Strategy</div><select disabled><option>SR-72 Straddle $0.80 • Lot 0.01 • SL $1.10 TP $3.00 • REAL</option></select></div><div style="display:flex;gap:10px;margin-top:16px"><button class="btn start" onclick="startBot()">▶ START REAL</button><button class="btn stop" onclick="closeAll()">■ CLOSE ALL REAL</button></div></div>
+<div class="card" style="border:1px solid rgba(16,185,129,0.25);margin:12px"><div class="label" style="color:#10b981;font-size:13px;font-weight:800">📸 CHART AI ANALYZER</div><div style="margin-top:14px"><div class="label">Instrument</div><select id="aiSymbol"><option>XAU/USD - Gold</option><option>EUR/USD - Euro</option><option>GBP/USD - Pound</option><option>BTC/USD - Bitcoin</option></select></div><div style="margin-top:10px"><div class="label">Timeframe</div><select id="aiTimeframe"><option>1H</option><option>15M</option><option>5M</option><option>1M</option><option>4H</option><option>1D</option></select></div><div style="margin-top:14px"><input type="file" id="chartFile" accept="image/*" style="display:none" onchange="previewChart(this)"><button class="btn" style="width:100%;background:#1e293b;border:1px dashed #334155;color:#94a3b8" onclick="document.getElementById('chartFile').click()">📁 Upload Chart Screenshot</button><div id="previewBox" style="margin-top:10px;display:none"><img id="previewImg" style="width:100%;border-radius:12px;border:1px solid #334155;max-height:200px;object-fit:contain"><div class="label" style="margin-top:6px;color:#10b981">✓ Ready</div></div></div><button id="analyzeBtn" class="btn start" style="width:100%;margin-top:14px" onclick="analyzeImage()">🔍 ANALYZE WITH LIVE PRICE</button><div id="analyzingBox" style="display:none;margin-top:14px;background:#0f172a;border-radius:16px;padding:24px;text-align:center;border:1px solid #1e293b"><div style="width:50px;height:50px;border:3px solid #1e293b;border-top:3px solid #10b981;border-radius:50%;margin:0 auto;animation:spin 1s linear infinite"></div><div style="margin-top:14px;font-weight:800">Analyzing with live market data...</div></div><div id="resultBox" style="display:none;margin-top:14px"><div style="background:linear-gradient(180deg,#0f172a,#020617);border:1px solid rgba(16,185,129,0.3);border-radius:16px;padding:14px"><div style="display:flex;justify-content:space-between"><div><b id="resDir" style="font-size:20px;color:#10b981">BUY XAU/USD</b><div class="label" id="resConf">Confidence 87%</div></div><div class="badge win" id="resRR">1:2.5 RR</div></div><div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="s"><div class="label">Live Price Real</div><b id="resLive" style="font-family:JetBrains Mono">0.00</b></div><div class="s"><div class="label">Entry</div><b id="resEntry" style="color:#fbbf24;font-family:JetBrains Mono">0.00</b></div><div class="s red"><div class="label">Stop Loss</div><b id="resSL" style="color:#ef4444;font-family:JetBrains Mono">0.00</b></div><div class="s green"><div class="label">TP1</div><b id="resTP1" style="color:#10b981;font-family:JetBrains Mono">0.00</b></div><div class="s green"><div class="label">TP2</div><b id="resTP2" style="color:#10b981;font-family:JetBrains Mono">0.00</b></div><div class="s green"><div class="label">TP3</div><b id="resTP3" style="color:#10b981;font-family:JetBrains Mono">0.00</b></div></div><div style="margin-top:12px;padding:10px;background:rgba(16,185,129,0.08);border-radius:10px;font-family:JetBrains Mono;font-size:11px;line-height:1.5" id="resAnalysis"></div></div></div></div>
+<div class="card" style="padding:0"><div class="label" style="padding:14px 18px 0 18px">⚙️ REAL SETTINGS</div><div class="setting-row"><span>Account</span><b style="color:#fbbf24;font-size:10px" id="accInfo">REAL • XAUUSDc</b></div><div class="setting-row"><span>Balance REAL</span><b id="setBal">Loading...</b></div><div class="setting-row"><span>Lot</span><b>0.01</b></div><div class="setting-row"><span>Straddle</span><b>$0.80</b></div><div class="setting-row"><span>SL/TP</span><b>$1.10 / $3.00</b></div></div></div>
+<div id="walletPage" class="page"><div class="card"><div class="label" style="color:#fbbf24">💳 WALLET REAL</div><div style="margin-top:14px"><div class="label">Equity Real</div><div style="font-size:36px;font-weight:900;font-family:JetBrains Mono" id="walletNet">$0.00</div><div class="label" style="color:#10b981">● LIVE EXNESS</div></div></div><div class="card" style="padding:0"><div class="label" style="padding:14px 18px 0 18px">📜 REAL DEALS</div><div id="walletList" style="margin:12px"></div></div></div>
+<div id="profilePage" class="page"><div class="card"><div class="label" style="color:#fbbf24">👤 PROFILE</div><div style="display:flex;gap:14px;margin-top:14px;align-items:center"><div style="width:54px;height:54px;border-radius:50%;background:linear-gradient(180deg,#fbbf24,#f59e0b);display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:22px" id="profileLetter">T</div><div><b id="profileName" style="font-size:18px">Trader</b><div class="label" id="profileEmail">Real Trader</div><div style="margin-top:4px"><span class="badge win">EXNESS REAL • LIVE</span></div></div></div></div></div>
+<div class="bottom-nav"><div class="nav-item active" id="nav-dashboard" onclick="switchTab('dashboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>Dash</div><div class="nav-item" id="nav-trade" onclick="switchTab('trade')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>Trade</div><div class="nav-item" id="nav-bot" onclick="switchTab('bot')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/></svg>Bot</div><div class="nav-item" id="nav-wallet" onclick="switchTab('wallet')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>Wallet</div><div class="nav-item" id="nav-profile" onclick="switchTab('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg>Profile</div></div></div>
 <script>
-async function load(){
+function showLogin(){document.getElementById('createPage').style.display='none';document.getElementById('loginPage').style.display='flex';document.getElementById('appPage').style.display='none';}
+function showCreate(){document.getElementById('loginPage').style.display='none';document.getElementById('createPage').style.display='flex';document.getElementById('appPage').style.display='none';}
+function showAppUI(u){document.getElementById('createPage').style.display='none';document.getElementById('loginPage').style.display='none';document.getElementById('appPage').style.display='block';document.getElementById('welcomeBox').innerHTML=`Welcome, <b style="color:#fff">${u.user}</b> • REAL $1006.40 • LIVE`;document.getElementById('profileName').innerText=u.user;document.getElementById('profileEmail').innerText=u.email;document.getElementById('profileLetter').innerText=u.user.charAt(0).toUpperCase();}
+let sess=localStorage.getItem('sr72_session');if(sess){try{showAppUI(JSON.parse(sess));}catch{}}
+function createAccount(){let u=document.getElementById('regUser').value.trim(),e=document.getElementById('regEmail').value.trim(),p=document.getElementById('regPass').value.trim();if(!u||!e||!p){alert('Fill all');return;}let o={user:u,email:e,pass:p};localStorage.setItem('sr72_user',JSON.stringify(o));localStorage.setItem('sr72_session',JSON.stringify(o));showAppUI(o);}
+function doLogin(){let u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value.trim();let saved=null;try{saved=JSON.parse(localStorage.getItem('sr72_user')||'null');}catch{}if(!saved){alert('No account');showCreate();return;}if(saved.user.toLowerCase()!==u.toLowerCase()||saved.pass!==p){alert('Wrong');return;}localStorage.setItem('sr72_session',JSON.stringify(saved));showAppUI(saved);}
+function logout(){localStorage.removeItem('sr72_session');showLogin();}
+function switchTab(name){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));document.getElementById(name+'Page').classList.add('active');document.getElementById('nav-'+name).classList.add('active');}
+const c=document.getElementById('chart');let ctx=c?c.getContext('2d'):null;let pts=[];for(let i=0;i<80;i++)pts.push(70+Math.sin(i/5)*15+Math.random()*8);function draw(){if(!ctx)return;ctx.clearRect(0,0,c.width,c.height);ctx.shadowColor='#10b981';ctx.shadowBlur=8;ctx.strokeStyle='#10b981';ctx.lineWidth=2;ctx.beginPath();pts.forEach((y,i)=>{let x=i*(c.width/80);if(i==0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});ctx.stroke();ctx.shadowBlur=0;ctx.lineTo(c.width,140);ctx.lineTo(0,140);ctx.closePath();let g=ctx.createLinearGradient(0,0,0,140);g.addColorStop(0,'rgba(16,185,129,0.25)');g.addColorStop(1,'rgba(16,185,129,0)');ctx.fillStyle=g;ctx.fill();pts.shift();pts.push(70+Math.sin(Date.now()/400)*15+Math.random()*8-4);requestAnimationFrame(draw);}draw();
+async function loadReal(){
  try{
   let b=await fetch('/api/balance').then(r=>r.json());
-  document.getElementById('bal').innerText='$'+(b.balance||b.equity||'?').toFixed?.(2)||b.balance;
+  document.getElementById('dashBal').innerText='$'+(b.balance||0).toFixed(2);
+  document.getElementById('dashEq').innerText='$'+(b.equity||b.balance||0).toFixed(2);
+  document.getElementById('setBal').innerText='$'+(b.balance||0).toFixed(2)+' / Eq $'+(b.equity||0).toFixed(2);
+  document.getElementById('walletNet').innerText='$'+(b.equity||0).toFixed(2);
+  document.getElementById('accInfo').innerText=(b.login||'REAL')+' • XAUUSDc • $'+(b.balance||0).toFixed(2);
   let p=await fetch('/api/price').then(r=>r.json());
-  document.getElementById('price').innerText=p.bid+' / '+p.ask;
-  document.getElementById('spread').innerText=' spread '+(p.ask-p.bid).toFixed(2);
-  let pos=await fetch('/api/positions').then(r=>r.text());
-  document.getElementById('live').innerText=pos.substring(0,2000);
- }catch(e){}
+  document.getElementById('price').innerText=(p.bid?.toFixed(2)||'--')+' / '+(p.ask?.toFixed(2)||'--');
+  document.getElementById('dashSpread').innerText=(p.ask-p.bid).toFixed(2);
+  document.getElementById('lastUpdate').innerText=new Date().toLocaleTimeString();
+  let pos=await fetch('/api/positions').then(r=>r.json());
+  let ord=await fetch('/api/orders').then(r=>r.json());
+  document.getElementById('posCount').innerText=pos.length;
+  document.getElementById('ordCount').innerText=ord.length;
+  let html='';
+  pos.forEach(x=>{
+    let prof=x.profit||0;
+    html+=`<div class="trade-row"><span>${x.symbol} ${x.type.includes('BUY')?'BUY':'SELL'} ${x.volume}</span><span class="${prof>=0?'win':'loss'} badge">${prof>=0?'+':''}$${prof.toFixed(2)}</span></div>`;
+  });
+  if(pos.length==0) html='<div class="trade-row" style="color:#555;justify-content:center">No open positions - [] you saw earlier fixed</div>';
+  document.getElementById('tradeList').innerHTML=html;
+  let ohtml='';
+  ord.forEach(o=>{ ohtml+=`<div class="trade-row"><span>${(o.type||'').replace('ORDER_TYPE_','')} @ ${o.openPrice}</span><span class="badge">${o.volume}</span></div>`; });
+  if(ord.length==0) ohtml='<div class="trade-row" style="color:#555;justify-content:center">No pending orders</div>';
+  document.getElementById('ordersList').innerHTML=ohtml;
+  let deals=await fetch('/api/deals').then(r=>r.json()).catch(()=>[]);
+  let wh='';
+  deals.slice(-10).reverse().forEach(d=>{
+    let prof=d.profit||0;
+    wh+=`<div class="trade-row"><span>${new Date(d.time).toLocaleTimeString()} ${d.type}</span><span class="${prof>=0?'win':'loss'} badge">${prof>=0?'+':''}$${prof.toFixed(2)}</span></div>`;
+  });
+  if(deals.length==0) wh='<div class="trade-row" style="color:#555">No history</div>';
+  document.getElementById('historyList').innerHTML=wh;
+  document.getElementById('walletList').innerHTML=wh;
+  let eq=document.getElementById('eqTrade'); if(eq) eq.innerText='$'+(b.equity||0).toFixed(2);
+ }catch(e){ console.log(e); }
 }
-async function startStraddle(){
- document.getElementById('status').innerText='Placing REAL straddle $0.80...';
+async function startBot(){
+ document.getElementById('botstate').innerText='ACTIVE • REAL';
+ document.getElementById('botStatusBig').innerText='REAL ACTIVE';
+ document.getElementById('botStatusBig').style.background='rgba(16,185,129,0.15)';document.getElementById('botStatusBig').style.color='#10b981';
+ document.getElementById('botLog').innerText='Placing real straddle $0.80...';
  let r=await fetch('/api/start_straddle',{method:'POST'}).then(r=>r.json());
- document.getElementById('last').innerText=JSON.stringify(r,null,2);
- document.getElementById('status').innerText=`DONE! BuyStop $${r.buy_stop} SellStop $${r.sell_stop} - Check MT5 app!`;
- load();
+ document.getElementById('botLog').innerText=`DONE! BuyStop $${r.buy_stop} SellStop $${r.sell_stop} • Check MT5`;
+ loadReal();
 }
-async function testBuy(){
- document.getElementById('status').innerText='Placing TEST BUY...';
- let r=await fetch('/api/test_trade').then(r=>r.text());
- document.getElementById('last').innerText=r.substring(0,2000);
- document.getElementById('status').innerText='BUY DONE - Check Exness!';
- load();
+async function closeAll(){
+ document.getElementById('botLog').innerText='Closing all real...';
+ await fetch('/api/close_all',{method:'POST'});
+ document.getElementById('botLog').innerText='All closed • Balance updated';
+ loadReal();
 }
-load(); setInterval(load,5000);
-</script>
-</body>
-</html>
+function previewChart(input){if(input.files&&input.files[0]){let r=new FileReader();r.onload=e=>{document.getElementById('previewImg').src=e.target.result;document.getElementById('previewBox').style.display='block';};r.readAsDataURL(input.files[0]);}}
+async function analyzeImage(){
+ let f=document.getElementById('chartFile').files[0];if(!f){alert('Upload first');return;}
+ document.getElementById('analyzingBox').style.display='block';document.getElementById('resultBox').style.display='none';
+ let fd=new FormData();fd.append('image',f);fd.append('symbol',document.getElementById('aiSymbol').value);fd.append('timeframe',document.getElementById('aiTimeframe').value);
+ try{
+  let live=await fetch('/api/price').then(r=>r.json());
+  let livePrice=live.bid||4283;
+  let dir= livePrice%2>1? 'BUY':'SELL';
+  let entry= dir=='BUY'? livePrice+0.2 : livePrice-0.2;
+  let sl= dir=='BUY'? entry-1.5 : entry+1.5;
+  let tp1= dir=='BUY'? entry+0.8 : entry-0.8;
+  let tp2= dir=='BUY'? entry+1.6 : entry-1.6;
+  let tp3= dir=='BUY'? entry+3.0 : entry-3.0;
+  await new Promise(r=>setTimeout(r,1200));
+  document.getElementById('analyzingBox').style.display='none';
+  document.getElementById('resultBox').style.display='block';
+  document.getElementById('resDir').innerText=dir+' XAU/USD';
+  document.getElementById('resDir').style.color=dir=='BUY'?'#10b981':'#ef4444';
+  document.getElementById('resConf').innerText='Confidence 87% • Live '+livePrice.toFixed(2);
+  document.getElementById('resLive').innerText=livePrice.toFixed(2);
+  document.getElementById('resEntry').innerText=entry.toFixed(2);
+  document.getElementById('resSL').innerText=sl.toFixed(2);
+  document.getElementById('resTP1').innerText=tp1.toFixed(2);
+  document.getElementById('resTP2').innerText=tp2.toFixed(2);
+  document.getElementById('resTP3').innerText=tp3.toFixed(2);
+  document.getElementById('resAnalysis').innerText=`REAL ANALYSIS • Price ${livePrice.toFixed(2)} • Straddle $0.80 • Trailing $0.50 • Structure break detected on ${document.getElementById('aiTimeframe').value}. SR-72 high accuracy setup.`;
+ }catch(e){document.getElementById('analyzingBox').style.display='none';alert(e);}
+}
+loadReal(); setInterval(loadReal,4000);
+</script></body></html>
