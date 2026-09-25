@@ -24,14 +24,14 @@ def get_candles(tf, limit=120):
 def sma(vals, p):
     return sum(vals[-p:])/p if len(vals)>=p else None
 
-def do_blue():
+def do_sr72():
     c1m=get_candles("1m", 120)
     try:
         pr=requests.get(f"{base()}/symbols/{SYMBOL}/current-price", headers=H(), timeout=10, verify=False).json()
         live=float(pr.get('bid') or pr.get('ask') or 0)
     except: live=0
     if len(c1m)<60:
-        return {"error":f"Need 60 1m candles, got {len(c1m)} — wait for market data","live":live or 0}
+        return {"error":f"Need 60 1m candles, got {len(c1m)}","live":live or 0}
     closes=[float(c['close']) for c in c1m]
     highs=[float(c['high']) for c in c1m]
     lows=[float(c['low']) for c in c1m]
@@ -70,7 +70,7 @@ def do_blue():
 @app.route('/')
 def idx(): return send_from_directory('.','index.html')
 @app.route('/health')
-def health(): return "OK V53 SCANNER ONLY - NO BOT"
+def health(): return "OK SR-72 DARK STAR AI CHART - SCANNER ONLY"
 @app.route('/api/positions')
 def positions(): return requests.get(f"{base()}/positions", headers=H(), timeout=10, verify=False).text, 200
 @app.route('/api/orders')
@@ -80,7 +80,7 @@ def orders(): return requests.get(f"{base()}/orders", headers=H(), timeout=10, v
 def scan_image():
     try:
         file = request.files.get('image')
-        res = do_blue()
+        res = do_sr72()
         res['uploaded']=True
         res['filename']=file.filename if file else "chart.jpg"
         return jsonify(res)
@@ -92,12 +92,10 @@ def scan_image():
 def enter():
     j=request.get_json() or {}; plan=j.get('plan')
     side=plan['side']; act="ORDER_TYPE_BUY_LIMIT" if side=="BUY" else "ORDER_TYPE_SELL_LIMIT"
-    resps=[]
     for tp in [plan['tp1'], plan['tp2']]:
-        order={"actionType":act,"symbol":SYMBOL,"volume":LOT,"openPrice":plan['entry_mid'],"stopLoss":plan['sl'],"takeProfit":tp,"comment":"SCANNER ONLY"}
-        r=requests.post(f"{base()}/trade", headers={"auth-token": TOKEN, "Content-Type":"application/json"}, json=order, timeout=15, verify=False)
-        resps.append(r.text[:200])
-    return jsonify({"placed":plan,"resps":resps})
+        order={"actionType":act,"symbol":SYMBOL,"volume":LOT,"openPrice":plan['entry_mid'],"stopLoss":plan['sl'],"takeProfit":tp,"comment":"SR-72 DARK STAR AI CHART"}
+        requests.post(f"{base()}/trade", headers={"auth-token": TOKEN, "Content-Type":"application/json"}, json=order, timeout=15, verify=False)
+    return jsonify({"placed":plan})
 
 @app.route('/api/close_all', methods=['POST'])
 def close_all():
