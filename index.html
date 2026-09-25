@@ -1,29 +1,69 @@
 <!DOCTYPE html>
-<html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>SR72 REAL</title>
-<style>body{background:#000;color:#fff;font-family:Arial;padding:12px} .card{background:#111;border:1px solid #333;border-radius:12px;padding:12px;margin:10px 0} button{width:100%;padding:14px;border-radius:10px;border:0;font-weight:bold} .buy{background:#00ff88;color:#000} .close{background:#222;color:#fff;margin-top:8px;border:1px solid #444} .win{color:#00ff88} .loss{color:#ff4444} table{width:100%;font-size:12px;border-collapse:collapse} th{color:#888;text-align:left} td{padding:6px 0;border-bottom:1px solid #222}</style>
-</head><body>
-<h2 style="color:#00ff88">SR72 REAL — Live + History</h2>
-<div class="card">Balance: <b id="bal">...</b> | Gold: <b id="price">...</b> <span id="spread" style="color:#888"></span><div id="status" style="margin-top:6px;color:#aaa;font-size:12px">Same strategy as demo: Straddle $0.80 Lot 0.01</div></div>
-<button class="buy" onclick="start()">START REAL STRADDLE BOT</button>
-<button class="close" onclick="closeAll()">CLOSE ALL</button>
-<div class="card"><b>Open / Pending (from MT5)</b><pre id="open" style="white-space:pre-wrap;font-size:11px">-</pre></div>
-<div class="card"><b>Trade History (from MT5 — 100% same as Exness app)</b><table id="hist"><tr><th>Time</th><th>Symbol</th><th>Type</th><th>Profit</th></tr></table></div>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SR72</title>
+<style>
+body{background:#0a0a0a;color:#fff;font-family:Arial;padding:15px;margin:0}
+.card{background:#151515;border:1px solid #2a2a2a;border-radius:12px;padding:14px;margin:10px 0}
+button{width:100%;padding:15px;border-radius:10px;border:0;font-weight:bold;font-size:16px;cursor:pointer}
+.start{background:#00ff88;color:#000}
+.test{background:#222;color:#fff;margin-top:8px;border:1px solid #333}
+h1{color:#00ff88;font-size:20px;margin:10px 0}
+small{color:#888}
+b{color:#fff}
+#status{font-size:13px;margin-top:8px}
+</style>
+</head>
+<body>
+<h1>SR72 GOLD BOT - REAL</h1>
+
+<div class="card">
+Balance: <b id="bal">Loading...</b><br>
+Gold: <b id="price">Loading...</b> <small id="spread"></small>
+<div id="status">Ready - Lot 0.01 Straddle $0.80 (same as demo tested)</div>
+</div>
+
+<button class="start" onclick="startStraddle()">START STRADDLE BOT (REAL)</button>
+<button class="test" onclick="testBuy()">TEST BUY 0.01 (the one that gave order 483939556)</button>
+
+<div class="card">
+<b>Live from Exness MT5:</b>
+<pre id="live" style="white-space:pre-wrap;font-size:11px;color:#aaa">Loading positions...</pre>
+</div>
+
+<div class="card">
+<b>Last Action:</b>
+<pre id="last" style="white-space:pre-wrap;font-size:11px;color:#00ff88">-</pre>
+</div>
+
 <script>
 async function load(){
- let b=await fetch('/api/balance').then(r=>r.json()); document.getElementById('bal').innerText='$'+(b.balance?.toFixed(2)||'?');
- let p=await fetch('/api/price').then(r=>r.json()); document.getElementById('price').innerText=p.bid; document.getElementById('spread').innerText=' spread '+(p.ask-p.bid).toFixed(2);
- let pos=await fetch('/api/positions').then(r=>r.json()); let ord=await fetch('/api/orders').then(r=>r.json());
- document.getElementById('open').innerText='Positions:\n'+JSON.stringify(pos,null,2)+'\n\nPending:\n'+JSON.stringify(ord,null,2);
- let deals=await fetch('/api/deals').then(r=>r.json());
- let html='<tr><th>Time</th><th>Symbol</th><th>Type</th><th>Profit</th></tr>';
- deals.slice(-20).reverse().forEach(d=>{
-   let profit=d.profit||0; let cls=profit>=0?'win':'loss';
-   let time=new Date(d.time).toLocaleTimeString();
-   html+=`<tr><td>${time}</td><td>${d.symbol||'XAUUSDc'}</td><td>${d.type||''}</td><td class="${cls}">${profit>=0?'+':''}$${profit.toFixed(2)}</td></tr>`;
- });
- document.getElementById('hist').innerHTML=html;
+ try{
+  let b=await fetch('/api/balance').then(r=>r.json());
+  document.getElementById('bal').innerText='$'+(b.balance||b.equity||'?').toFixed?.(2)||b.balance;
+  let p=await fetch('/api/price').then(r=>r.json());
+  document.getElementById('price').innerText=p.bid+' / '+p.ask;
+  document.getElementById('spread').innerText=' spread '+(p.ask-p.bid).toFixed(2);
+  let pos=await fetch('/api/positions').then(r=>r.text());
+  document.getElementById('live').innerText=pos.substring(0,2000);
+ }catch(e){}
 }
-async function start(){ document.getElementById('status').innerText='Placing REAL pending orders...'; let r=await fetch('/api/start_straddle',{method:'POST'}).then(r=>r.json()); document.getElementById('status').innerText=`REAL PLACED! BuyStop $${r.buy_stop} SellStop $${r.sell_stop} — Check MT5!`; load(); }
-async function closeAll(){ await fetch('/api/close_all',{method:'POST'}); load(); }
-load(); setInterval(load,4000);
-</script></body></html>
+async function startStraddle(){
+ document.getElementById('status').innerText='Placing REAL straddle $0.80...';
+ let r=await fetch('/api/start_straddle',{method:'POST'}).then(r=>r.json());
+ document.getElementById('last').innerText=JSON.stringify(r,null,2);
+ document.getElementById('status').innerText=`DONE! BuyStop $${r.buy_stop} SellStop $${r.sell_stop} - Check MT5 app!`;
+ load();
+}
+async function testBuy(){
+ document.getElementById('status').innerText='Placing TEST BUY...';
+ let r=await fetch('/api/test_trade').then(r=>r.text());
+ document.getElementById('last').innerText=r.substring(0,2000);
+ document.getElementById('status').innerText='BUY DONE - Check Exness!';
+ load();
+}
+load(); setInterval(load,5000);
+</script>
+</body>
+</html>
