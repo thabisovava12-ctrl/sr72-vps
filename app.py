@@ -8,8 +8,8 @@ REGION = "new-york"
 TOKEN = (os.getenv("METAAPI_TOKEN") or "").strip()
 
 LOT = 0.01
-STRADDLE = 2.00
-SL_DIST = 2.50
+STRADDLE = 0.80   # TIGHT like V13 video - was 2.00 too wide
+SL_DIST = 1.10    # TIGHT like video - was 2.50 too wide
 
 def H(): return {"auth-token": TOKEN, "Content-Type":"application/json"}
 def base(): return f"https://mt-client-api-v1.{REGION}.agiliumtrade.ai/users/current/accounts/{ACCOUNT_ID}"
@@ -17,33 +17,28 @@ def base(): return f"https://mt-client-api-v1.{REGION}.agiliumtrade.ai/users/cur
 @app.route('/')
 def idx(): return send_from_directory('.','index.html')
 @app.route('/health')
-def health(): return "OK V28.2 MERGED CLEAN 0.01 - NO STACK"
+def health(): return "OK V28.4 FINAL TIGHT VIDEO CLONE 0.01 - SL 1.10 STRADDLE 0.80"
 
 @app.route('/api/balance')
 def bal():
     r = requests.get(f"{base()}/accountInformation", headers=H(), timeout=15, verify=False)
     return r.text, r.status_code
-
 @app.route('/api/price')
 def price():
     r = requests.get(f"{base()}/symbols/{SYMBOL}/current-price", headers=H(), timeout=10, verify=False)
     return r.text, r.status_code
-
 @app.route('/api/positions')
 def positions():
     r = requests.get(f"{base()}/positions", headers=H(), timeout=10, verify=False)
     return r.text, r.status_code
-
 @app.route('/api/orders')
 def orders():
     r = requests.get(f"{base()}/orders", headers=H(), timeout=10, verify=False)
     return r.text, r.status_code
-
 @app.route('/api/historyOrders')
 def historyOrders():
     r = requests.get(f"{base()}/historyOrders", headers=H(), timeout=15, verify=False)
     return r.text, r.status_code
-
 @app.route('/api/deals')
 def deals():
     try:
@@ -52,32 +47,28 @@ def deals():
         for o in r[-30:]:
             out.append({"time":o.get('doneTime') or o.get('updateTime'),"type":o.get('type'),"profit":o.get('profit',0)})
         return jsonify(out)
-    except:
-        return jsonify([])
+    except: return jsonify([])
 
-# --- START: CLEAN OLD FIRST = FIXES YOUR SCREENSHOT ---
 @app.route('/api/start_straddle', methods=['POST'])
 def start_straddle():
     try:
-        o = requests.get(f"{base()}/orders", headers=H(), timeout=10, verify=False).json()
-        for od in o:
-            if od.get('symbol')==SYMBOL:
-                requests.post(f"{base()}/trade", headers=H(), json={"actionType":"ORDER_TYPE_CANCEL","orderId":od['id']}, timeout=10, verify=False)
+        existing = requests.get(f"{base()}/orders", headers=H(), timeout=10, verify=False).json()
+        existing = [o for o in existing if o.get('symbol')==SYMBOL]
+        if len(existing) >= 2:
+            return jsonify({"error":"Already 2 orders - close first","blocked":True})
+        for od in existing:
+            requests.post(f"{base()}/trade", headers=H(), json={"actionType":"ORDER_TYPE_CANCEL","orderId":od['id']}, timeout=10, verify=False)
     except: pass
-    
     pr = requests.get(f"{base()}/symbols/{SYMBOL}/current-price", headers=H(), timeout=10, verify=False).json()
     bid, ask = pr['bid'], pr['ask']
     buy_p = round(ask + STRADDLE, 2)
     sell_p = round(bid - STRADDLE, 2)
-    
     b1 = {"actionType":"ORDER_TYPE_BUY_STOP","symbol":SYMBOL,"volume":LOT,"openPrice":buy_p,"stopLoss":round(buy_p-SL_DIST,2)}
     s1 = {"actionType":"ORDER_TYPE_SELL_STOP","symbol":SYMBOL,"volume":LOT,"openPrice":sell_p,"stopLoss":round(sell_p+SL_DIST,2)}
-    
     requests.post(f"{base()}/trade", headers=H(), json=b1, timeout=15, verify=False)
     requests.post(f"{base()}/trade", headers=H(), json=s1, timeout=15, verify=False)
-    return jsonify({"buy_stop":buy_p,"sell_stop":sell_p,"lot":LOT,"cleaned":True,"mode":"VIDEO 0.01 CLEAN"})
+    return jsonify({"buy_stop":buy_p,"sell_stop":sell_p,"sl":SL_DIST,"straddle":STRADDLE,"lot":LOT})
 
-# --- TRAIL ONLY - NO AUTO STACK ---
 @app.route('/api/trail', methods=['POST'])
 def trail():
     logs=[]
