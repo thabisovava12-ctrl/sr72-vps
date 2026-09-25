@@ -1,31 +1,151 @@
-i<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>BLUE SCANNER ONLY V53</title><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@600;800&display=swap" rel="stylesheet"><style>*{box-sizing:border-box}body{margin:0;background:#f1f5f9;color:#0f172a;font-family:Inter,sans-serif;min-height:100vh}.header{padding:16px;background:#fff;border-bottom:1px solid #e2e8f0;position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center}.card{margin:12px;background:#fff;border-radius:16px;padding:18px;border:1px solid #e2e8f0}.label{font-family:JetBrains Mono;font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:1px}.btn{padding:14px;border-radius:12px;border:none;font-weight:900;flex:1;cursor:pointer;font-family:JetBrains Mono}.start{background:#0f172a;color:#fff}.stop{background:#fff;color:#ef4444;border:1px solid #fecaca}.bottom-nav{position:fixed;bottom:10px;left:10px;right:10px;background:#0f172a;border-radius:20px;display:flex;justify-content:space-around;padding:12px;z-index:20}.nav-item{color:#94a3b8;font-family:JetBrains Mono;font-size:11px;cursor:pointer}.nav-item.active{color:#fbbf24}.badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:800;display:inline-block}.buy{background:#dcfce7;color:#15803d}.sell{background:#fee2e2;color:#b91c1c}.confidence{background:#dbeafe;color:#1d4ed8;font-family:JetBrains Mono}.trendBox{background:#f8fafc;border-radius:12px;padding:14px;margin-top:10px;line-height:1.6;font-size:13px;color:#334155}.planBox{background:#f8fafc;border-radius:12px;padding:14px;margin-top:8px}canvas{width:100%;border-radius:12px;border:1px solid #e2e8f0;background:#020617;min-height:180px}</style></head><body>
-<div class="header"><div style="font-weight:900">BLUE COMP <span style="color:#3b82f6">V53 SCANNER ONLY • NO BOT</span></div><div class="badge confidence" id="confTop">Upload first</div></div>
+<!DOCTYPE html>
+<html><head><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>SR-72 DARK STAR AI CHART</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0b0e14;color:#e4e7ec;font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased}
+.header{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:#11151f;border-bottom:1px solid #1e2433;position:sticky;top:0;z-index:10}
+.logo{font-weight:800;letter-spacing:-0.02em;font-size:13px}.logo span{color:#fbbf24}.logo em{font-style:normal;color:#e4e7ec}.logo small{font-weight:400;color:#6b7280;font-size:10px;margin-left:8px;font-family:JetBrains Mono}
+.hdr-right{display:flex;gap:8px;align-items:center}
+.pill{padding:6px 12px;border-radius:20px;font-family:JetBrains Mono;font-size:11px;font-weight:500;border:1px solid #1e2433;background:#151a28;color:#8b949e}
+.container{max-width:720px;margin:0 auto;padding:16px 16px 100px}
+.card{background:#11151f;border:1px solid #1e2433;border-radius:12px;padding:20px;margin-bottom:12px}
+.label{font-family:JetBrains Mono;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#6b7280;font-weight:500}
+.divider{height:1px;background:#1e2433;margin:16px 0}
+.upload-area{border:1px dashed #2a344b;border-radius:10px;padding:24px;text-align:center;background:#0e1220;cursor:pointer;transition:0.2s}
+.upload-area:hover{border-color:#fbbf24;background:#1a160f}
+canvas{width:100%;border-radius:10px;border:1px solid #1e2433;background:#080a10;margin-top:16px;min-height:200px;display:none}
+canvas.has-img{display:block}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.metric{background:#0e1220;border:1px solid #1e2433;border-radius:8px;padding:10px 12px;flex:1;min-width:90px}
+.metric.k{font-family:JetBrains Mono;font-size:10px;color:#6b7280;text-transform:uppercase}
+.metric.v{font-family:JetBrains Mono;font-size:13px;font-weight:600;margin-top:4px;color:#e4e7ec}
+.analysis-box{background:#0e1220;border-radius:10px;padding:16px;border:1px solid #1e2433;margin-top:12px}
+.trend-lbl{font-weight:600;font-size:12px;margin-bottom:8px;color:#e4e7ec}
+.trend-txt{font-size:13px;line-height:1.6;color:#a0aec0}
+.plan{border-radius:12px;overflow:hidden;border:1px solid}
+.plan.agg{border-color:#1f3d2f;background:linear-gradient(180deg,#111f16,#11151f)}
+.plan.cons{border-color:#3d331f;background:linear-gradient(180deg,#1f1a11,#11151f)}
+.plan-hdr{padding:14px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1e2433}
+.plan-hdr.t{font-weight:600;font-size:12px}
+.plan-body{padding:16px 18px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media(max-width:480px){.grid-3{grid-template-columns:1fr}}
+.f{font-family:JetBrains Mono;font-size:10px;color:#6b7280;text-transform:uppercase;margin-bottom:4px}
+.fv{font-family:JetBrains Mono;font-size:13px;font-weight:600;color:#e4e7ec}
+.fv.sl{color:#f87171}.fv.tp{color:#34d399}
+.desc{font-size:12px;line-height:1.5;color:#8b949e;margin-top:12px;padding-top:12px;border-top:1px solid #1e2433}
+.btn{padding:12px 16px;border-radius:8px;border:none;font-family:Inter;font-weight:600;font-size:13px;cursor:pointer;transition:0.15s;display:flex;align-items:center;justify-content:center;gap:6px;width:100%}
+.btn:disabled{opacity:0.35;pointer-events:none}
+.btn-primary{background:#fbbf24;color:#000}.btn-primary:hover{background:#f59e0b}
+.btn-danger{background:#1f1414;color:#f87171;border:1px solid #3d1f1f}
+.actions{display:flex;gap:10px;margin-top:12px}
+.conf-badge{padding:6px 12px;border-radius:20px;font-family:JetBrains Mono;font-size:11px;font-weight:600}
+.conf-high{background:#0f2218;color:#34d399;border:1px solid #1f4d32}
+.conf-med{background:#221f0f;color:#fbbf24;border:1px solid #4d3d1f}
+.conf-low{background:#221511;color:#f87171;border:1px solid #4d1f1f}
+.conf-none{background:#151a28;color:#6b7280;border:1px solid #1e2433}
+</style>
+</head><body>
+<div class="header">
+  <div class="logo">SR-72 <em>DARK STAR</em> <span>AI CHART</span> <small>SCANNER ONLY • PROFESSIONAL</small></div>
+  <div class="hdr-right"><div class="pill" id="confTop">CONF --%</div><div class="pill" style="background:#1a160f;color:#fbbf24;border-color:#3d331f">UPLOAD FIRST</div></div>
+</div>
 
-<div class="card" style="border-color:#3b82f6"><div class="label" style="color:#3b82f6">🖼️ STEP 1 — Upload chart screenshot</div><div style="margin-top:8px;font-size:12px;color:#64748b">Upload your XAU 1m chart like Blue Comp website, then press SCAN. Live key levels (20 SMA / 50 SMA / swing low / period high) will be calculated.</div><input type="file" id="fileInput" accept="image/*" style="margin-top:12px;width:100%;padding:12px;border:1px dashed #94a3b8;border-radius:12px"><canvas id="scanCanvas"></canvas><div id="uploadStatus" style="font-family:JetBrains Mono;font-size:11px;margin-top:8px;color:#0f172a"></div></div>
+<div class="container">
+  <div class="card">
+    <div class="label">Step 1 — Chart Input • SR-72 DARK STAR</div>
+    <div style="font-size:13px;font-weight:600;margin-top:6px">Upload XAUUSD 1M Screenshot</div>
+    <div style="font-size:12px;color:#6b7280;margin-top:4px;line-height:1.4">SR-72 DARK STAR AI CHART will calculate live levels: 20 SMA / 50 SMA / swing low / period high using SR-72 hypersonic logic. Image is for reference and validation.</div>
+    <div class="upload-area" id="dropZone" style="margin-top:16px" onclick="document.getElementById('fileInput').click()">
+      <div style="width:40px;height:40px;border-radius:10px;background:#1f1a11;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:18px;border:1px solid #3d331f">✈️</div>
+      <div style="font-size:13px;font-weight:600">Click to upload or drag & drop</div>
+      <div style="font-size:11px;color:#6b7280;margin-top:4px;font-family:JetBrains Mono">PNG, JPG, WEBP • Max 10MB • SR-72 TARGET LOCK</div>
+      <input type="file" id="fileInput" accept="image/*" hidden>
+    </div>
+    <canvas id="scanCanvas"></canvas>
+    <div id="uploadStatus" style="font-family:JetBrains Mono;font-size:11px;margin-top:10px;color:#fbbf24"></div>
+  </div>
 
-<div class="card"><div class="label">XAUUSD · 1m · English <span style="float:right" class="badge confidence" id="conf">Confidence --%</span></div><div style="margin-top:10px;font-weight:800;font-size:18px">Structured analysis</div><div class="trendBox"><div style="font-weight:800;margin-bottom:6px">Trend</div><div id="analysis">Upload image first to enable SCAN</div></div><div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap"><div class="label">Live: <b id="live" style="color:#0f172a">--</b></div><div class="label">20 SMA: <b id="sma20" style="color:#0f172a">--</b></div><div class="label">50 SMA: <b id="sma50" style="color:#0f172a">--</b></div><div class="label">High: <b id="ph" style="color:#0f172a">--</b></div></div></div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div><div class="label">SR-72 DARK STAR • XAUUSD • 1M • English</div><div style="font-size:18px;font-weight:700;margin-top:4px;letter-spacing:-0.02em">Structured Analysis</div></div>
+      <div class="conf-badge conf-none" id="conf">CONFIDENCE --%</div>
+    </div>
+    <div class="analysis-box">
+      <div class="trend-lbl">Trend • SR-72 DARK STAR AI</div>
+      <div class="trend-txt" id="analysis">Upload chart image first to enable SR-72 DARK STAR AI CHART scanner. Professional analysis will appear here.</div>
+    </div>
+    <div class="row" style="margin-top:14px">
+      <div class="metric"><div class="k">Live</div><div class="v" id="live">--</div></div>
+      <div class="metric"><div class="k">20 SMA</div><div class="v" id="sma20">--</div></div>
+      <div class="metric"><div class="k">50 SMA</div><div class="v" id="sma50">--</div></div>
+      <div class="metric"><div class="k">Period High</div><div class="v" id="ph">--</div></div>
+    </div>
+  </div>
 
-<div class="card" id="aggressiveCard" style="display:none"><div style="display:flex;justify-content:space-between;align-items:center"><div style="font-weight:800">Aggressive plan (direct entry — higher potential risk)</div><span class="badge buy" id="aggSide">BUY</span></div><div class="planBox" style="font-family:JetBrains Mono;font-size:13px"><div>Entry: <b id="aggEntry">--</b></div><div style="margin-top:8px">Take Profit (TP): <b id="aggTP">--</b></div><div style="margin-top:8px">Stop Loss (SL): <b id="aggSL">--</b></div></div><div style="margin-top:10px;font-size:12px;color:#475569;line-height:1.5" id="aggDesc"></div><button class="btn start" style="width:100%;margin-top:12px" onclick="placeAggressive()">PLACE ORDER (2 TPs - 0.01 lot)</button></div>
+  <div class="card plan agg" id="aggressiveCard" style="display:none">
+    <div class="plan-hdr"><div class="t" style="color:#34d399">SR-72 AGGRESSIVE PLAN • Direct Entry</div><div class="conf-badge conf-high" id="aggSide" style="font-size:10px">BUY</div></div>
+    <div class="plan-body">
+      <div class="grid-3">
+        <div><div class="f">Entry Zone</div><div class="fv" id="aggEntry">--</div></div>
+        <div><div class="f">Stop Loss</div><div class="fv sl" id="aggSL">--</div></div>
+        <div><div class="f">Take Profit</div><div class="fv tp" id="aggTP">--</div></div>
+      </div>
+      <div class="desc" id="aggDesc"></div>
+      <button class="btn btn-primary" style="margin-top:14px" onclick="placeAggressive()">Place SR-72 Aggressive Order (2 TPs • 0.01 lot)</button>
+    </div>
+  </div>
 
-<div class="card" id="conservativeCard" style="display:none"><div style="display:flex;justify-content:space-between;align-items:center"><div style="font-weight:800">Conservative plan (wait for pullback — potentially lower risk)</div><span class="badge buy" id="consSide">BUY</span></div><div class="planBox" style="font-family:JetBrains Mono;font-size:13px"><div>Entry: <b id="consEntry">--</b></div><div style="margin-top:8px">Take Profit (TP): <b id="consTP">--</b></div><div style="margin-top:8px">Stop Loss (SL): <b id="consSL">--</b></div></div><div style="margin-top:10px;font-size:12px;color:#475569;line-height:1.5" id="consDesc"></div><button class="btn start" style="width:100%;margin-top:12px;background:#fbbf24;color:#000" onclick="placeConservative()">PLACE CONSERVATIVE (2 TPs)</button></div>
+  <div class="card plan cons" id="conservativeCard" style="display:none">
+    <div class="plan-hdr"><div class="t" style="color:#fbbf24">SR-72 CONSERVATIVE PLAN • Breakout</div><div class="conf-badge" id="consSide" style="font-size:10px;background:#1f1a11;color:#fbbf24;border-color:#3d331f">BUY</div></div>
+    <div class="plan-body">
+      <div class="grid-3">
+        <div><div class="f">Entry Zone</div><div class="fv" id="consEntry">--</div></div>
+        <div><div class="f">Stop Loss</div><div class="fv sl" id="consSL">--</div></div>
+        <div><div class="f">Take Profit</div><div class="fv tp" id="consTP">--</div></div>
+      </div>
+      <div class="desc" id="consDesc"></div>
+      <button class="btn" style="margin-top:14px;background:#fbbf24;color:#000;border:none;font-weight:700" onclick="placeConservative()">Place SR-72 Conservative Order (2 TPs)</button>
+    </div>
+  </div>
 
-<div class="card"><div style="display:flex;gap:10px"><button class="btn start" id="scanBtn" onclick="scanUploaded()" disabled style="opacity:0.4">🔍 SCAN UPLOADED CHART</button><button class="btn stop" onclick="closeAll()">■ CLOSE ALL</button></div><div class="label" style="margin-top:10px" id="log">Scanner only — upload first, then scan</div><div id="tradeList" style="margin-top:10px;font-family:JetBrains Mono;font-size:11px"></div><div id="ordersList" style="margin-top:6px;font-family:JetBrains Mono;font-size:11px"></div></div>
+  <div class="card">
+    <div class="label">Execution • SR-72 DARK STAR AI CHART • Scanner Only</div>
+    <div class="actions">
+      <button class="btn btn-primary" id="scanBtn" onclick="scanUploaded()" disabled style="flex:1">Scan with SR-72 DARK STAR AI</button>
+      <button class="btn btn-danger" onclick="closeAll()" style="width:120px">Close All</button>
+    </div>
+    <div style="font-family:JetBrains Mono;font-size:11px;color:#6b7280;margin-top:12px" id="log">SR-72 DARK STAR AI CHART • Professional scanner • Upload first, then scan • No bot auto-trading</div>
+    <div class="divider"></div>
+    <div id="tradeList"></div>
+    <div id="ordersList" style="margin-top:8px"></div>
+  </div>
+</div>
 
 <script>
 let lastAgg=null,lastCons=null,uploadedFile=null;
-document.getElementById('fileInput').addEventListener('change',function(e){
- const file=e.target.files[0]; if(!file)return; uploadedFile=file;
- const img=new Image(); img.onload=()=>{
-   const c=document.getElementById('scanCanvas'); c.width=img.width; c.height=img.height; c.getContext('2d').drawImage(img,0,0);
-   document.getElementById('uploadStatus').innerText=`Uploaded: ${file.name} (${Math.round(file.size/1024)}KB) - Ready to SCAN`;
-   document.getElementById('scanBtn').disabled=false; document.getElementById('scanBtn').style.opacity='1';
-   document.getElementById('log').innerText='Image uploaded — now press SCAN UPLOADED CHART';
- }; img.src=URL.createObjectURL(file);
-});
-
+const fileInput=document.getElementById('fileInput'), dropZone=document.getElementById('dropZone'), canvas=document.getElementById('scanCanvas'), ctx=canvas.getContext('2d');
+function handleFile(file){
+  if(file.size>10*1024*1024){alert('Max 10MB');return}
+  uploadedFile=file;
+  const img=new Image();
+  img.onload=()=>{
+    canvas.width=img.width; canvas.height=img.height; canvas.classList.add('has-img');
+    ctx.drawImage(img,0,0);
+    document.getElementById('uploadStatus').innerText=`✓ SR-72 TARGET LOCKED: ${file.name} • ${(file.size/1024).toFixed(0)}KB • Ready to scan`;
+    document.getElementById('scanBtn').disabled=false;
+    document.getElementById('log').innerText=`SR-72 DARK STAR chart uploaded • Press Scan with SR-72 DARK STAR AI`;
+  };
+  img.src=URL.createObjectURL(file);
+}
+fileInput.addEventListener('change',e=>{ if(e.target.files[0]) handleFile(e.target.files[0]); });
+dropZone.addEventListener('dragover',e=>{e.preventDefault(); dropZone.style.borderColor='#fbbf24'});
+dropZone.addEventListener('dragleave',()=>dropZone.style.borderColor='#2a344b');
+dropZone.addEventListener('drop',e=>{e.preventDefault(); if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);});
 async function scanUploaded(){
  if(!uploadedFile){alert('Upload chart first'); return;}
- document.getElementById('analysis').innerText='Analyzing uploaded chart with Blue Comp logic (20/50 SMA + support + period high)...';
+ document.getElementById('analysis').innerText='SR-72 DARK STAR AI CHART analyzing: 20 SMA / 50 SMA / Support / Period High • Mach 6 logic...';
  let fd=new FormData(); fd.append('image', uploadedFile);
  let r=await fetch('/api/scan_image',{method:'POST',body:fd}).then(r=>r.json());
  if(r.error){document.getElementById('analysis').innerText=r.error; return;}
@@ -33,8 +153,8 @@ async function scanUploaded(){
  document.getElementById('sma20').innerText=r.sma20?.toFixed(2);
  document.getElementById('sma50').innerText=r.sma50?.toFixed(2);
  document.getElementById('ph').innerText=r.period_high?.toFixed(2);
- document.getElementById('conf').innerText=`Confidence ${r.confidence}%`;
- document.getElementById('confTop').innerText=`Confidence ${r.confidence}% — ${r.filename}`;
+ const confEl=document.getElementById('conf'); confEl.innerText=`CONFIDENCE ${r.confidence}%`; confEl.className='conf-badge '+(r.confidence>=70?'conf-high':r.confidence>=55?'conf-med':'conf-low');
+ document.getElementById('confTop').innerText=`${r.confidence}%`;
  document.getElementById('analysis').innerText=r.trend;
  if(r.aggressive){
    lastAgg=r.aggressive;
@@ -42,7 +162,6 @@ async function scanUploaded(){
    document.getElementById('aggTP').innerText=`${r.aggressive.tp1}, ${r.aggressive.tp2}`;
    document.getElementById('aggSL').innerText=r.aggressive.sl;
    document.getElementById('aggSide').innerText=r.aggressive.side;
-   document.getElementById('aggSide').className=`badge ${r.aggressive.side=='BUY'?'buy':'sell'}`;
    document.getElementById('aggDesc').innerText=r.aggressive.desc;
    document.getElementById('aggressiveCard').style.display='block';
  }
@@ -52,16 +171,16 @@ async function scanUploaded(){
    document.getElementById('consTP').innerText=`${r.conservative.tp1}, ${r.conservative.tp2}`;
    document.getElementById('consSL').innerText=r.conservative.sl;
    document.getElementById('consSide').innerText=r.conservative.side;
-   document.getElementById('consSide').className=`badge ${r.conservative.side=='BUY'?'buy':'sell'}`;
    document.getElementById('consDesc').innerText=r.conservative.desc;
    document.getElementById('conservativeCard').style.display='block';
  }
- document.getElementById('log').innerText=`Scanned ${r.filename} — ${r.direction} confidence ${r.confidence}%`;
+ document.getElementById('log').innerText=`SR-72 DARK STAR AI CHART scanned ${r.filename} • ${r.direction} • Confidence ${r.confidence}%`;
  loadReal();
 }
-async function placeAggressive(){if(!lastAgg)return; await fetch('/api/sniper/enter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:lastAgg})}); document.getElementById('log').innerText=`Placed Aggressive ${lastAgg.side} @ ${lastAgg.entry_mid}`; loadReal();}
-async function placeConservative(){if(!lastCons)return; await fetch('/api/sniper/enter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:lastCons})}); document.getElementById('log').innerText=`Placed Conservative ${lastCons.side} @ ${lastCons.entry_mid}`; loadReal();}
-async function loadReal(){try{let pos=await fetch('/api/positions').then(r=>r.json()); document.getElementById('tradeList').innerHTML=pos.map(x=>`<div style="padding:6px;border-bottom:1px solid #e2e8f0">${x.symbol} ${x.type} ${x.volume} $${(x.profit||0).toFixed(2)}</div>`).join('')||''; let ord=await fetch('/api/orders').then(r=>r.json()); document.getElementById('ordersList').innerHTML=ord.map(o=>`<div style="padding:6px;border-bottom:1px solid #e2e8f0">${o.type} @ ${o.openPrice} SL ${o.stopLoss} TP ${o.takeProfit}</div>`).join('')||'';}catch(e){}}
+async function placeAggressive(){if(!lastAgg)return; await fetch('/api/sniper/enter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:lastAgg})}); document.getElementById('log').innerText=`SR-72 Placed Aggressive ${lastAgg.side} @ ${lastAgg.entry_mid}`; loadReal();}
+async function placeConservative(){if(!lastCons)return; await fetch('/api/sniper/enter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:lastCons})}); document.getElementById('log').innerText=`SR-72 Placed Conservative ${lastCons.side} @ ${lastCons.entry_mid}`; loadReal();}
+async function loadReal(){try{let pos=await fetch('/api/positions').then(r=>r.json()); document.getElementById('tradeList').innerHTML=pos.length?pos.map(x=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1e2433"><span>${x.symbol} ${x.type} ${x.volume}</span><span style="color:${x.profit>0?'#34d399':'#f87171'}">$${(x.profit||0).toFixed(2)}</span></div>`).join(''):'<div style="color:#4b5563">No open positions • SR-72 standing by</div>'; let ord=await fetch('/api/orders').then(r=>r.json()); document.getElementById('ordersList').innerHTML=ord.length?ord.map(o=>`<div style="padding:6px 0;border-bottom:1px solid #1e2433;color:#8b949e">${o.type} @ ${o.openPrice} • SL ${o.stopLoss} • TP ${o.takeProfit} • SR-72</div>`).join(''):'<div style="color:#4b5563">No pending orders</div>';}catch(e){}}
 function closeAll(){fetch('/api/close_all',{method:'POST'}).then(()=>loadReal());}
 setInterval(loadReal,5000); loadReal();
-</script></body></html>
+</script>
+</body></html>
