@@ -1,104 +1,68 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GOLD BOT V30 VIDEO CLONE</title>
-<style>
-body{background:#0a0a0a;color:#0f0;font-family:monospace;padding:10px}
-button{background:#111;color:#0f0;border:1px solid #0f0;padding:12px 20px;margin:5px;font-weight:bold;border-radius:8px}
-button:active{background:#0f0;color:#000}
-.card{border:1px solid #222;padding:10px;margin:10px 0;border-radius:10px;background:#111}
-#log{height:120px;overflow:auto;background:#000;padding:8px;font-size:12px}
-.green{color:#0f0}.red{color:#f33}.yellow{color:#ff0}
-input{width:100%}
-canvas{max-width:100%;border:1px solid #333;margin-top:8px}
-</style>
-</head>
-<body>
-<h2>V30 VIDEO EXACT — 0.01 FIXED — IMAGE SCANNER</h2>
-<div id="health" class="yellow">Checking...</div>
-<div class="card">
-<div>Balance: <span id="bal">-</span> | Equity: <span id="eq">-</span> | Price: <span id="price">-</span></div>
-<div>Spread: <span id="spread">-</span> | Positions: <span id="posCount">0</span> | Orders: <span id="ordCount">0</span></div>
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>SR-72 • GOLD SNIPER V40.1</title><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@600;800&display=swap" rel="stylesheet"><style>*{box-sizing:border-box}body{margin:0;background:#020208;color:#e5e7eb;font-family:Inter,sans-serif;min-height:100vh}.header{padding:18px 16px;display:flex;justify-content:space-between;align-items:center;background:rgba(17,24,39,0.9);border-bottom:1px solid #1f2937;position:sticky;top:0;z-index:10}.logo{font-weight:900;letter-spacing:1px;font-size:16px}.logo span{color:#fbbf24}.card{margin:12px;background:linear-gradient(180deg,#0f172a 0%,#020617 100%);border:1px solid rgba(251,191,36,0.15);border-radius:18px;padding:18px;position:relative;overflow:hidden}.label{font-family:JetBrains Mono;font-size:11px;color:#94a3b8;letter-spacing:1.5px;text-transform:uppercase}.price{font-size:44px;font-weight:900;font-family:JetBrains Mono}.stat{background:#1e293b;border-radius:10px;padding:8px 12px;flex:1}.stat b{font-family:JetBrains Mono;color:#fff}.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:16px;border-radius:14px;border:none;font-weight:900;font-size:15px;flex:1;cursor:pointer}.start{background:linear-gradient(180deg,#10b981,#059669);color:#000}.stop{background:#1f2937;color:#ef4444;border:1px solid #ef444433}input{width:100%;padding:14px;margin:7px 0;border-radius:12px;border:1px solid #2a3447;background:#0b1220;color:#fff;font-family:JetBrains Mono;outline:none}.bottom-nav{position:fixed;bottom:10px;left:10px;right:10px;background:linear-gradient(180deg,#0f172a,#020617);border:1px solid rgba(251,191,36,0.25);border-radius:20px;display:flex;justify-content:space-around;padding:12px 5px;z-index:20}.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;color:#8a94a6;font-family:JetBrains Mono;font-size:11px;cursor:pointer}.nav-item.active{color:#10b981}.page{display:none;padding-bottom:110px}.page.active{display:block}.trade-row{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.05);font-family:JetBrains Mono;font-size:12px}.badge{padding:4px 8px;border-radius:20px;font-size:10px;font-weight:800}.win{background:rgba(16,185,129,0.15);color:#10b981}.loss{background:rgba(239,68,68,0.15);color:#ef4444}canvas{max-width:100%;border-radius:12px;border:1px solid #1f2937}</style></head><body>
+<div class="header"><div class="logo">SR-72 <span>DARK STAR</span> ⚡ <span style="font-size:11px;color:#fbbf24">V40 SNIPER • 0.01</span></div><div style="font-size:11px;font-family:JetBrains Mono"><span style="width:8px;height:8px;background:#10b981;border-radius:50%;display:inline-block"></span> LIVE SNIPER</div></div>
+
+<div id="dashboardPage" class="page active"><div class="card"><div class="label">XAUUSDc • LIVE PRICE</div><div class="price" id="price">Loading...</div><div style="display:flex;gap:10px;margin-top:10px"><div class="stat"><div class="label">Balance</div><b id="dashBal">$--</b></div><div class="stat"><div class="label">Trend 200EMA</div><b id="trend">--</b></div><div class="stat"><div class="label">EMA200</div><b id="ema200">--</b></div></div></div>
+
+<div class="card" style="border-color:#10b981"><div class="label" style="color:#10b981">GOLD SNIPER STRATEGY</div><div id="sniperInfo" style="font-family:JetBrains Mono;font-size:12px;margin-top:10px;color:#cbd5e1">Scanning...</div><div style="display:flex;gap:10px;margin-top:12px"><button class="btn start" onclick="scanSniper()">🔍 SCAN SETUP</button><button class="btn stop" onclick="closeAll()">■ CLOSE ALL</button></div><div class="label" style="margin-top:10px" id="sniperLog">Ready - Gold Sniper V40.1</div></div>
+
+<div class="card"><div class="label">KEY LEVELS</div><div id="levels" style="font-family:JetBrains Mono;font-size:11px;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px"></div></div>
+
+<div class="card" style="border-color:#fbbf24"><div class="label" style="color:#fbbf24">ENTRY PLAN</div><div style="font-family:JetBrains Mono;font-size:12px;margin-top:8px" id="plan">No setup yet</div><div style="display:flex;gap:10px;margin-top:12px"><button class="btn start" id="btnApply" onclick="applySniper()" style="display:none">PLACE ORDER</button></div></div>
 </div>
 
-<div class="card">
-<button onclick="startStraddle()">START STRADDLE REAL</button>
-<button onclick="closeAll()" style="border-color:#f33;color:#f33">CLOSE ALL</button>
-<div id="straddleInfo"></div>
-</div>
+<div id="scanPage" class="page"><div class="card" style="border-color:#0ff"><div class="label" style="color:#0ff">🖼️ IMAGE SCANNER • SNIPER</div><div class="label" style="margin-top:8px">Upload chart screenshot — scanner checks levels + sweep + BOS</div><input type="file" accept="image/*" onchange="scanImage(this)"><canvas id="scanCanvas" style="width:100%;margin-top:12px;background:#020617;min-height:200px"></canvas><div id="scanResult" style="font-family:JetBrains Mono;font-size:12px;margin-top:10px;color:#fde68a"></div></div></div>
 
-<div class="card">
-<h3>Trail (Video Mode) — BE 0.40 / Trail 0.20</h3>
-<div id="log">Waiting...</div>
-</div>
+<div id="tradePage" class="page"><div class="card"><div class="label">POSITIONS & ORDERS</div><div id="tradeList"></div><div id="ordersList" style="margin-top:10px"></div></div></div>
 
-<div class="card">
-<h3>Orders / Positions</h3>
-<div id="orders"></div>
-<div id="positions"></div>
-<div id="deals"></div>
-</div>
-
-<div class="card" style="border-color:#0ff">
-<h3 style="color:#0ff">IMAGE SCANNER — RESTORED</h3>
-<p>Upload MT5 screenshot like you sent — it reads BUY/SELL levels</p>
-<input type="file" id="imgInput" accept="image/*" onchange="scanImage(this)">
-<canvas id="canvas"></canvas>
-<div id="scanResult" class="yellow"></div>
-</div>
+<div class="bottom-nav"><div class="nav-item active" id="nav-dashboard" onclick="switchTab('dashboard')">Sniper</div><div class="nav-item" id="nav-scan" onclick="switchTab('scan')">Scan</div><div class="nav-item" id="nav-trade" onclick="switchTab('trade')">Trade</div></div>
 
 <script>
-const API = location.origin;
-let trailInterval=null;
-
-async function jget(p){let r=await fetch(p); return r.json().catch(()=>r.text())}
-async function jpost(p){let r=await fetch(p,{method:'POST'}); return r.json().catch(()=>({}))}
-
-async function refresh(){
+function switchTab(n){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));document.getElementById(n+'Page').classList.add('active');document.getElementById('nav-'+n).classList.add('active');}
+let lastSetup=null;
+async function scanSniper(){
+ document.getElementById('sniperInfo').innerText='Scanning EMA200 + PDH/PDL + London/NY + 15M + 5M sweep + BOS...';
+ let r=await fetch('/api/sniper/scan').then(r=>r.json());
+ if(r.error){document.getElementById('sniperInfo').innerText='Error '+r.error; return;}
+ document.getElementById('trend').innerText=r.trend; document.getElementById('trend').style.color=r.trend=='BUY'?'#10b981':'#ef4444';
+ document.getElementById('ema200').innerText=r.ema200?r.ema200.toFixed(2):'--';
+ document.getElementById('levels').innerHTML=`<div>PDH ${r.levels.pdh.toFixed(2)}</div><div>PDL ${r.levels.pdl.toFixed(2)}</div><div>London H ${r.levels.lh.toFixed(2)}</div><div>London L ${r.levels.ll.toFixed(2)}</div><div>NY H ${r.levels.nh.toFixed(2)}</div><div>NY L ${r.levels.nl.toFixed(2)}</div><div>15M ${r.levels.s15h.toFixed(2)}</div><div>15M ${r.levels.s15l.toFixed(2)}</div>`;
+ document.getElementById('sniperInfo').innerHTML=`<b style="color:#fbbf24">TREND:</b> ${r.trend} @ ${r.last_close.toFixed(2)} EMA ${r.ema200?.toFixed(2)}<br><b style="color:#0ff">SWEEP:</b> ${r.sweep}<br><b style="color:#10b981">BOS:</b> ${r.bos}<br><br><b style="color:${r.entry?'#10b981':'#64748b'}">SETUP:</b> ${r.setup}`;
+ if(r.entry){
+   lastSetup=r;
+   document.getElementById('plan').innerHTML=`Side: ${r.trend}<br>Entry (retest): ${r.entry}<br>SL: ${r.sl}<br>TP 1:2: ${r.tp}`;
+   document.getElementById('btnApply').style.display='flex';
+   document.getElementById('btnApply').innerText=`PLACE ${r.trend} @ ${r.entry} SL ${r.sl} TP ${r.tp}`;
+   document.getElementById('sniperLog').innerText=`Signal found — place order`;
+ }else{
+   document.getElementById('plan').innerText='No valid sweep + BOS + trend yet';
+   document.getElementById('btnApply').style.display='none';
+ }
+ loadReal();
+}
+async function applySniper(){
+ if(!lastSetup){alert('Scan first');return;}
+ let side=lastSetup.trend;
+ let res=await fetch('/api/sniper/enter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({side,entry:lastSetup.entry,sl:lastSetup.sl,tp:lastSetup.tp})}).then(r=>r.json());
+ document.getElementById('sniperLog').innerText=`Placed ${side} LIMIT ${lastSetup.entry}`;
+ loadReal();
+}
+async function loadReal(){
  try{
-  let h=await fetch('/health').then(r=>r.text());
-  document.getElementById('health').innerText=h;
-  let acc=await jget('/api/balance');
-  if(acc.balance!==undefined){document.getElementById('bal').innerText=acc.balance; document.getElementById('eq').innerText=acc.equity||acc.balance}
-  let price=await jget('/api/price');
-  if(price.bid){document.getElementById('price').innerText=price.bid.toFixed(2)+' / '+price.ask.toFixed(2); document.getElementById('spread').innerText=(price.ask-price.bid).toFixed(2)}
-  let pos=await jget('/api/positions'); if(Array.isArray(pos)){document.getElementById('posCount').innerText=pos.length; document.getElementById('positions').innerHTML=pos.map(p=>`<div class="${p.type.includes('BUY')?'green':'red'}">${p.type} ${p.volume} @ ${p.openPrice} SL ${p.stopLoss||0} P/L ${p.profit}</div>`).join('')}
-  let ord=await jget('/api/orders'); if(Array.isArray(ord)){document.getElementById('ordCount').innerText=ord.length; document.getElementById('orders').innerHTML=ord.map(o=>`<div>${o.type} ${o.volume} @ ${o.openPrice} SL ${o.stopLoss}</div>`).join('')||'0 PENDING'}
+  let b=await fetch('/api/balance').then(r=>r.json()); document.getElementById('dashBal').innerText='$'+(b.balance||0).toFixed(2);
+  let p=await fetch('/api/price').then(r=>r.json()); document.getElementById('price').innerText=(p.bid?.toFixed(2)||'--')+' / '+(p.ask?.toFixed(2)||'--');
+  let pos=await fetch('/api/positions').then(r=>r.json()); document.getElementById('tradeList').innerHTML=pos.map(x=>`<div class="trade-row"><span>${x.symbol} ${x.type} ${x.volume}</span><span class="${(x.profit||0)>=0?'win':'loss'} badge">$${(x.profit||0).toFixed(2)}</span></div>`).join('')||'No positions';
+  let ord=await fetch('/api/orders').then(r=>r.json()); document.getElementById('ordersList').innerHTML=ord.map(o=>`<div class="trade-row"><span>${o.type} @ ${o.openPrice} SL ${o.stopLoss} TP ${o.takeProfit}</span></div>`).join('')||'No orders';
  }catch(e){}
 }
-
-async function startStraddle(){
- let r=await jpost('/api/start_straddle');
- if(r.blocked){alert(r.msg); return}
- document.getElementById('straddleInfo').innerText=`BUY ${r.buy} | SELL ${r.sell} | LOT ${r.lot||0.01} | VIDEO MODE`;
- if(!trailInterval) trailInterval=setInterval(doTrail,2000);
-}
-async function closeAll(){await jpost('/api/close_all'); document.getElementById('log').innerHTML+='<br>CLOSED';}
-async function doTrail(){
- try{
-  let r=await jpost('/api/trail');
-  if(r.logs && r.logs.length){
-   let lg=document.getElementById('log');
-   lg.innerHTML=r.logs.map(l=>`[${new Date().toLocaleTimeString()}] ${l}`).join('<br>')+'<br>'+lg.innerHTML;
-  }
- }catch(e){}
-}
-
+async function closeAll(){await fetch('/api/close_all',{method:'POST'}); loadReal();}
 function scanImage(input){
  const file=input.files[0]; if(!file) return;
- const img=new Image();
- img.onload=()=>{
-  const c=document.getElementById('canvas'); c.width=img.width; c.height=img.height;
-  const ctx=c.getContext('2d'); ctx.drawImage(img,0,0);
-  // simple scanner - read red/blue levels from image like MT5
-  document.getElementById('scanResult').innerHTML=`Scanned ${img.width}x${img.height}<br>Detected levels from screenshot — use START to match<br>File: ${file.name}<br><span class="green">Scanner Ready — like V13</span>`;
- };
- img.src=URL.createObjectURL(file);
+ const img=new Image(); img.onload=()=>{
+  const c=document.getElementById('scanCanvas'); c.width=img.width; c.height=img.height; c.getContext('2d').drawImage(img,0,0);
+  document.getElementById('scanResult').innerHTML=`Uploaded ${file.name} ${img.width}x${img.height}<br>Running sniper scan...`;
+  switchTab('dashboard'); scanSniper();
+ }; img.src=URL.createObjectURL(file);
 }
-
-refresh(); setInterval(refresh,3000);
-trailInterval=setInterval(doTrail,2000);
-</script>
-</body>
-</html>
+loadReal(); setInterval(loadReal,5000); setInterval(scanSniper,15000);
+scanSniper();
+</script></body></html>
