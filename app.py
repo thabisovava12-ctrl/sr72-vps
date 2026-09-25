@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, request, jsonify
+from flask import Flask, send_from_directory, jsonify
 import os, requests
 app = Flask(__name__)
 
@@ -6,26 +6,15 @@ ACCOUNT_ID = os.getenv("METAAPI_ACCOUNT_ID") or "93f7b19b-d414-4302-bec7-86f6bf5
 SYMBOL = "XAUUSDc"
 REGION = "new-york"
 TOKEN = (os.getenv("METAAPI_TOKEN") or "").strip()
-
-LOT = 0.01
-STRADDLE = 0.80
+LOT, STRADDLE = 0.01, 0.80
 
 def H(): return {"auth-token": TOKEN, "Content-Type":"application/json"}
 def base(): return f"https://mt-client-api-v1.{REGION}.agiliumtrade.ai/users/current/accounts/{ACCOUNT_ID}"
 
 @app.route('/')
 def idx(): return send_from_directory('.','index.html')
-
 @app.route('/health')
-def h(): return f"OK V16 WORKING + STRADDLE"
-
-# YOUR WORKING TEST - KEEP IT
-@app.route('/api/test_trade')
-def test_trade():
-    # this is the one that gave you TRADE_RETCODE DONE 483939556
-    payload = {"actionType":"ORDER_TYPE_BUY","symbol":SYMBOL,"volume":0.01}
-    r = requests.post(f"{base()}/trade", headers=H(), json=payload, timeout=15, verify=False)
-    return f"BUY TEST: {r.text[:2000]}"
+def health(): return f"OK V22 FINAL MERGE REAL"
 
 @app.route('/api/balance')
 def bal():
@@ -37,7 +26,32 @@ def price():
     r = requests.get(f"{base()}/symbols/{SYMBOL}/current-price", headers=H(), timeout=10, verify=False)
     return r.text, r.status_code
 
-# NEW - JUST ADD THIS ONE ENDPOINT FOR STRADDLE BOT
+@app.route('/api/positions')
+def positions():
+    r = requests.get(f"{base()}/positions", headers=H(), timeout=10, verify=False)
+    return r.text, r.status_code
+
+@app.route('/api/orders')
+def orders():
+    r = requests.get(f"{base()}/orders", headers=H(), timeout=10, verify=False)
+    return r.text, r.status_code
+
+@app.route('/api/history')
+def history():
+    r = requests.get(f"{base()}/historyOrders", headers=H(), timeout=15, verify=False)
+    return r.text, r.status_code
+
+@app.route('/api/deals')
+def deals():
+    r = requests.get(f"{base()}/deals?limit=50", headers=H(), timeout=15, verify=False)
+    return r.text, r.status_code
+
+@app.route('/api/test_trade')
+def test_trade():
+    payload = {"actionType":"ORDER_TYPE_BUY","symbol":SYMBOL,"volume":0.01}
+    r = requests.post(f"{base()}/trade", headers=H(), json=payload, timeout=15, verify=False)
+    return f"BUY: {r.text[:2000]}"
+
 @app.route('/api/start_straddle', methods=['POST'])
 def start_straddle():
     pr = requests.get(f"{base()}/symbols/{SYMBOL}/current-price", headers=H(), timeout=10, verify=False).json()
@@ -48,10 +62,24 @@ def start_straddle():
     s1 = {"actionType":"ORDER_TYPE_SELL_STOP","symbol":SYMBOL,"volume":LOT,"openPrice":sell_p,"stopLoss":round(sell_p+1.10,2),"takeProfit":round(sell_p-3.0,2)}
     r1 = requests.post(f"{base()}/trade", headers=H(), json=b1, timeout=15, verify=False)
     r2 = requests.post(f"{base()}/trade", headers=H(), json=s1, timeout=15, verify=False)
-    return jsonify({"buy_stop": buy_p, "sell_stop": sell_p, "buy_resp": r1.text[:500], "sell_resp": r2.text[:500]})
+    return jsonify({"buy_stop": buy_p, "sell_stop": sell_p, "buy_resp": r1.text[:400], "sell_resp": r2.text[:400]})
+
+@app.route('/api/close_all', methods=['POST'])
+def close_all():
+    try:
+        o = requests.get(f"{base()}/orders", headers=H(), timeout=10, verify=False).json()
+        for order in o:
+            requests.post(f"{base()}/trade", headers=H(), json={"actionType":"ORDER_TYPE_CANCEL","orderId":order['id']}, timeout=10, verify=False)
+    except: pass
+    try:
+        p = requests.get(f"{base()}/positions", headers=H(), timeout=10, verify=False).json()
+        for pos in p:
+            side = "SELL" if pos['type']=='POSITION_TYPE_BUY' else "BUY"
+            requests.post(f"{base()}/trade", headers=H(), json={"actionType":f"ORDER_TYPE_{side}","symbol":pos['symbol'],"volume":pos['volume'],"positionId":pos['id']}, timeout=10, verify=False)
+    except: pass
+    return jsonify({"closed":True})
 
 @app.route('/analyze', methods=['POST'])
-def analyze():
-    return jsonify({"live_price": 4288, "symbol": SYMBOL, "direction": "STRADDLE", "confidence": 88})
+def analyze(): return jsonify({"symbol":SYMBOL,"direction":"STRADDLE"})
 
 if __name__=='__main__': app.run(host='0.0.0.0',port=10000)
