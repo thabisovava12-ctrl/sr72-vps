@@ -1,64 +1,159 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SR-72 DARK STAR</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SR-72 DARK STAR AI CHART</title>
 <style>
-body{background:#0a0a0a;color:#fff;font-family:Arial;padding:10px}
-.card{background:#151515;border-radius:12px;padding:12px;margin:10px 0;border:1px solid #222}
-.badge{padding:4px 10px;border-radius:20px;font-weight:bold}
-.sell{background:#ff2a2a22;color:#ff4a4a;border:1px solid #ff4a4a}
-.buy{background:#00ff8822;color:#00ff88;border:1px solid #00ff88}
-.conf{float:right;background:#00ff8844;padding:5px 12px;border-radius:20px}
-.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-.box{background:#1e1e1e;padding:8px;border-radius:8px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0b0e14;color:#e0e0e0;font-family:'Segoe UI',Arial,sans-serif;padding:0 0 80px 0}
+.header{background:#11151f;padding:12px 15px;border-bottom:1px solid #1f2937;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.header-left{font-weight:900;font-size:13px;letter-spacing:0.5px}
+.header-left span{color:#00ff88}
+.header-right{display:flex;gap:8px;align-items:center}
+.pill{background:#1a2332;border:1px solid #2a3a52;padding:5px 10px;border-radius:20px;font-size:11px;font-weight:bold}
+.pill-green{color:#00ff88;border-color:#00ff88;background:#00ff8822}
+.pill-orange{color:#ffaa00;border-color:#ffaa00;background:#ffaa0022}
+.tabs{background:#11151f;display:flex;gap:15px;padding:10px 15px;border-bottom:1px solid #1f2937;overflow-x:auto}
+.tab{padding:5px 10px;border-radius:6px;font-size:13px;white-space:nowrap;cursor:pointer;color:#8892a6}
+.tab.active{background:#1e293b;color:#fff;font-weight:bold}
+.upload-area{background:#11151f;margin:10px;border:2px dashed #2a3a52;border-radius:12px;padding:20px;text-align:center}
+.status-line{padding:10px 15px;font-size:12px;line-height:18px}
+.status-ok{color:#00ff88}
+.card{background:#151a27;border:1px solid #1f2937;border-radius:12px;margin:12px;padding:14px}
+.card-title{font-size:11px;color:#8892a6;letter-spacing:1px;margin-bottom:8px;display:flex;justify-content:space-between}
+.conf-badge{background:#00ff8822;border:1px solid #00ff88;color:#00ff88;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:900}
+.trend-row{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.badge{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:bold;border:1px solid}
+.badge-sell{background:#ff2a2a22;color:#ff5a5a;border-color:#ff2a2a}
+.badge-buy{background:#00ff8822;color:#00ff88;border-color:#00ff88}
+.trend-text{color:#8892a6;font-size:12px;line-height:16px;margin:8px 0;word-break:break-all}
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
+.box{background:#0f141f;border:1px solid #1f2937;border-radius:8px;padding:10px}
+.box-label{font-size:10px;color:#8892a6;margin-bottom:4px}
+.box-val{font-size:13px;font-weight:bold;color:#fff}
+.box-val.orange{color:#ffaa00}
+.box-val.red{color:#ff5a5a}
+.box-val.green{color:#00ff88}
+.aggressive-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.btn-sell{background:#ff2a2a;color:#fff;border:none;padding:6px 14px;border-radius:20px;font-weight:900;font-size:12px;cursor:pointer}
+.btn-buy{background:#00ff88;color:#000;border:none;padding:6px 14px;border-radius:20px;font-weight:900;font-size:12px;cursor:pointer}
+.detail-row{margin:12px 0}
+.detail-label{font-size:10px;color:#8892a6;letter-spacing:1px}
+.detail-val{font-size:14px;font-weight:bold;margin-top:3px}
+.btn-exec{width:100%;padding:14px;background:#00ff88;color:#000;border:none;border-radius:10px;font-weight:900;font-size:14px;margin-top:15px;cursor:pointer}
+input[type=file]{display:none}
+.upload-btn{background:#1e293b;border:1px solid #2a3a52;color:#fff;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:bold}
 </style>
 </head>
 <body>
-<h3>SR-72 DARK STAR <span style="color:#00ff88">AI CHART • AUTO-DETECT</span> <span id="liveTop" style="float:right;color:#ffaa00"></span></h3>
-<input type="file" id="img" accept="image/*" style="margin:10px 0">
-<div id="status"></div>
-<div id="out"></div>
+
+<div class="header">
+  <div class="header-left">SR-72 <span>DARK STAR</span> AI CHART • AUTO-DETECT</div>
+  <div class="header-right">
+    <div class="pill pill-green" id="autoSym">AUTO: XAUUSDc</div>
+    <div class="pill pill-green" id="confTop">86%</div>
+    <div class="pill pill-orange" id="liveTop">LIVE 0.00</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab">Quotes</div>
+  <div class="tab active">Charts</div>
+  <div class="tab" id="liveTab">0.00</div>
+  <div class="tab">History</div>
+  <div class="tab">Messages</div>
+</div>
+
+<div class="upload-area" onclick="document.getElementById('imgFile').click()">
+  <input type="file" id="imgFile" accept="image/*">
+  <div style="font-size:13px;color:#8892a6">Tap to upload MT5 screenshot</div>
+  <div style="font-size:11px;color:#5a6a82;margin-top:5px">Auto-detects XAU / US30 / NAS100 / BTC</div>
+  <button class="upload-btn" style="margin-top:10px">📸 SELECT CHART</button>
+</div>
+
+<div class="status-line" id="status">
+  <span style="color:#5a6a82">Waiting for chart...</span>
+</div>
+
+<div id="output"></div>
 
 <script>
-document.getElementById('img').onchange = async (e)=>{
-  const f=e.target.files[0]; if(!f) return;
-  document.getElementById('status').innerHTML = `✓ LOCKED: ${f.name} • ${(f.size/1024).toFixed(0)}KB<br>✅ AUTO-DETECTED: Scanning...`;
-  let fd=new FormData(); fd.append('image',f); fd.append('symbol','XAUUSDc');
-  let r=await fetch('/api/scan_image',{method:'POST',body:fd});
+let currentPlan=null;
+document.getElementById('imgFile').onchange = async (e)=>{
+  const file=e.target.files[0]; if(!file) return;
+  const statusEl=document.getElementById('status');
+  statusEl.innerHTML = `<span class="status-ok">✓ LOCKED: ${file.name}<br>• ${ (file.size/1024).toFixed(0)}KB</span><br><span class="status-ok">⌛ AUTO-DETECTING...</span>`;
+
+  let fd=new FormData();
+  fd.append('image', file);
+  fd.append('symbol', 'XAUUSDc');
+
+  try{
+    let res=await fetch('/api/scan_image',{method:'POST',body:fd});
+    let j=await res.json();
+    if(j.error){ statusEl.innerHTML = `<span style="color:#ff5a5a">❌ ${j.error}</span>`; return; }
+
+    statusEl.innerHTML = `<span class="status-ok">✓ LOCKED: ${file.name}<br>• ${ (file.size/1024).toFixed(0)}KB</span><br><span class="status-ok">✅ AUTO-DETECTED: ${j.symbol} • Fixed to lowercase c • Ready</span>`;
+    document.getElementById('autoSym').innerHTML = `AUTO: ${j.symbol}`;
+    document.getElementById('confTop').innerHTML = `${j.confidence}%`;
+    document.getElementById('liveTop').innerHTML = `LIVE ${j.live}`;
+    document.getElementById('liveTab').innerHTML = `${j.live}`;
+
+    let dirColor = j.direction==='SELL'? 'sell' : 'buy';
+    let agg = j.aggressive;
+    if(!agg){ document.getElementById('output').innerHTML = `<div class="card">No trade — RANGE</div>`; return; }
+
+    // FIXED: period_high / period_low now exist, plus ema9/21/50
+    let ph = j.period_high?? j.high?? 0;
+    let pl = j.period_low?? j.low?? 0;
+
+    document.getElementById('output').innerHTML = `
+      <div class="card">
+        <div class="card-title">SR-72 DARK STAR • ${j.symbol} • AUTO-DETECTED <span class="conf-badge">CONFIDENCE ${j.confidence}%</span></div>
+        <div style="font-weight:900;font-size:16px;margin:8px 0">Structured Analysis</div>
+        <div class="trend-row">
+          <span class="badge badge-${dirColor}">Trend • SR-72</span>
+          <span class="badge badge-${j.mtf.m1==='SELL'?'sell':'buy'}">M1 ${j.mtf.m1}</span>
+          <span class="badge badge-${j.mtf.m5==='SELL'?'sell':'buy'}">M5 ${j.mtf.m5}</span>
+          <span class="badge badge-${j.mtf.m15==='SELL'?'sell':'buy'}">M15 ${j.mtf.m15}</span>
+        </div>
+        <div class="trend-text">${j.trend}<br>[broker resolved: ${j.symbol}]</div>
+        <div class="grid">
+          <div class="box"><div class="box-label">Live Market</div><div class="box-val orange">${j.live}</div></div>
+          <div class="box"><div class="box-label">EMA 9 M1</div><div class="box-val">${j.ema9?.toFixed(2)?? j.sma20?.toFixed(2)}</div></div>
+          <div class="box"><div class="box-label">EMA 21 M1</div><div class="box-val">${j.ema21?.toFixed(2)?? j.sma50?.toFixed(2)}</div></div>
+          <div class="box"><div class="box-label">EMA 50 M1</div><div class="box-val">${j.ema50?.toFixed(2)}</div></div>
+          <div class="box"><div class="box-label">High / Low</div><div class="box-val">H ${ph.toFixed(2)} / L ${pl.toFixed(2)}</div></div>
+          <div class="box"><div class="box-label">Vision</div><div class="box-val green">${j.mtf.img} ${j.mtf.img!=='RANGE'? j.confidence+'%' : ''}</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="aggressive-header">
+          <span style="font-size:11px;color:#00ff88;font-weight:900;letter-spacing:1px">AGGRESSIVE • Market</span>
+          <button class="btn-${dirColor.toLowerCase()}">${agg.side} ${agg.symbol}</button>
+        </div>
+        <hr style="border:none;border-top:1px solid #1f2937;margin:10px 0">
+        <div class="detail-row"><div class="detail-label">ENTRY @ MARKET</div><div class="detail-val" style="color:#ffaa00">${agg.entry_low} - ${agg.entry_high} @ ${agg.entry_mid}</div></div>
+        <div class="detail-row"><div class="detail-label">STOP LOSS</div><div class="detail-val red">${agg.sl}</div></div>
+        <div class="detail-row"><div class="detail-label">TAKE PROFIT</div><div class="detail-val green">${agg.tp1}, ${agg.tp2}</div></div>
+        <button class="btn-exec" onclick="execute()">EXECUTE ${agg.side} NOW</button>
+        <div style="font-size:10px;color:#5a6a82;margin-top:8px;text-align:center">${agg.desc}</div>
+      </div>
+    `;
+    currentPlan = agg;
+  }catch(err){
+    statusEl.innerHTML = `<span style="color:#ff5a5a">Error: ${err.message}</span>`;
+  }
+};
+
+async function execute(){
+  if(!currentPlan) return;
+  if(!confirm(`Execute ${currentPlan.side} ${currentPlan.symbol} @ ${currentPlan.entry_mid}?`)) return;
+  let r=await fetch('/api/sniper/enter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:currentPlan})});
   let j=await r.json();
-  if(j.error){ document.getElementById('status').innerHTML=j.error; return; }
-  document.getElementById('status').innerHTML = `✓ LOCKED: ${f.name}<br>✅ AUTO-DETECTED: ${j.symbol} • Fixed to lowercase c • Ready`;
-  document.getElementById('liveTop').innerHTML = `LIVE ${j.live}`;
-  let agg=j.aggressive;
-  document.getElementById('out').innerHTML = `
-  <div class="card">
-    <div><b>SR-72 DARK STAR • ${j.symbol} • AUTO-DETECTED</b> <span class="conf">CONFIDENCE ${j.confidence}%</span></div>
-    <h3>Structured Analysis</h3>
-    <div class="badge sell">Trend • SR-72 <span style="margin-left:10px" class="badge sell">M1 ${j.mtf.m1}</span> <span class="badge sell">M5 ${j.mtf.m5}</span> <span class="badge sell">M15 ${j.mtf.m15}</span></div>
-    <p style="color:#aaa;font-size:13px">${j.trend}</p>
-    <div class="grid">
-      <div class="box">Live Market<br><b style="color:#ffaa00">${j.live}</b></div>
-      <div class="box">EMA 9 M1<br><b>${j.ema9?.toFixed(2)}</b></div>
-      <div class="box">EMA 21 M1<br><b>${j.ema21?.toFixed(2)}</b></div>
-      <div class="box">EMA 50 M1<br><b>${j.ema50?.toFixed(2)}</b></div>
-      <div class="box">High / Low<br><b>H ${j.period_high?.toFixed(2)} / L ${j.period_low?.toFixed(2)}</b></div>
-      <div class="box">Vision<br><b style="color:#00ff88">${j.mtf.img} ${j.confidence>=80?'LOCKED':''}</b></div>
-    </div>
-  </div>
-  <div class="card">
-    <div>AGGRESSIVE • Market <span style="float:right" class="badge sell">${agg.side} ${agg.symbol}</span></div>
-    <hr>
-    ENTRY @ MARKET<br><b style="color:#ffaa00">${agg.entry_low} - ${agg.entry_high} @ ${agg.entry_mid}</b><br><br>
-    STOP LOSS<br><b style="color:#ff4a4a">${agg.sl}</b><br><br>
-    TAKE PROFIT<br><b style="color:#00ff88">${agg.tp1}, ${agg.tp2}</b><br><br>
-    <button onclick="enter()" style="width:100%;padding:12px;background:#00ff88;border:none;border-radius:8px;font-weight:bold">EXECUTE ${agg.side}</button>
-  </div>`;
-  window._plan=j.aggressive;
-}
-async function enter(){
-  let r=await fetch('/api/sniper/enter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:window._plan})});
-  alert('ORDER PLACED: '+JSON.stringify(await r.json()));
+  alert('PLACED: '+JSON.stringify(j));
 }
 </script>
 </body>
