@@ -1,259 +1,65 @@
 <!DOCTYPE html>
-<html><head><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>SR-72 DARK STAR AI CHART • AUTO</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SR-72 DARK STAR</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#0b0e14;color:#e4e7ec;font-family:Inter,sans-serif}
-.header{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:#11151f;border-bottom:1px solid #1e2433;position:sticky;top:0;z-index:10}
-.logo{font-weight:800;font-size:12px}.logo span{color:#fbbf24}
-.hdr-right{display:flex;gap:6px;align-items:center}
-.pill{padding:6px 10px;border-radius:20px;font-family:JetBrains Mono;font-size:10px;border:1px solid #1e2433;background:#151a28;color:#8b949e}
-.pill.live{background:#1a160f;color:#fbbf24;border-color:#3d331f}
-.pill.auto{background:#0f2218;color:#34d399;border-color:#1f4d32}
-.container{max-width:800px;margin:0 auto;padding:14px 14px 100px}
-.card{background:#11151f;border:1px solid #1e2433;border-radius:12px;padding:18px;margin-bottom:12px}
-.label{font-family:JetBrains Mono;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#6b7280}
-.upload-area{border:1px dashed #2a344b;border-radius:10px;padding:20px;text-align:center;background:#0e1220;cursor:pointer}
-.upload-area:hover{border-color:#fbbf24}
-canvas{width:100%;border-radius:10px;border:1px solid #1e2433;background:#080a10;margin-top:12px;min-height:180px;display:none}
-canvas.has-img{display:block}
-.row{display:flex;gap:8px;flex-wrap:wrap}
-.metric{background:#0e1220;border:1px solid #1e2433;border-radius:8px;padding:9px 11px;flex:1;min-width:90px}
-.metric.k{font-family:JetBrains Mono;font-size:9px;color:#6b7280;text-transform:uppercase}
-.metric.v{font-family:JetBrains Mono;font-size:12px;font-weight:600;margin-top:3px}
-.analysis-box{background:#0e1220;border-radius:10px;padding:14px;border:1px solid #1e2433;margin-top:12px}
-.trend-txt{font-size:13px;line-height:1.6;color:#a0aec0}
-.mtf{display:flex;gap:5px}
-.mtf-badge{padding:3px 7px;border-radius:6px;font-family:JetBrains Mono;font-size:9px;font-weight:700;border:1px solid}
-.mtf-badge.buy{background:#0f2218;color:#34d399;border-color:#1f4d32}
-.mtf-badge.sell{background:#221511;color:#f87171;border-color:#4d1f1f}
-.mtf-badge.range{background:#151a28;color:#6b7280;border-color:#1e2433}
-.plan{border-radius:12px;overflow:hidden;border:1px solid}
-.plan.agg{border-color:#1f3d2f;background:linear-gradient(180deg,#111f16,#11151f)}
-.plan.cons{border-color:#3d331f;background:linear-gradient(180deg,#1f1a11,#11151f)}
-.plan-hdr{padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1e2433;font-weight:600;font-size:11px}
-.plan-body{padding:14px 16px}
-.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-@media(max-width:500px){.grid-3{grid-template-columns:1fr}}
-.f{font-family:JetBrains Mono;font-size:9px;color:#6b7280;text-transform:uppercase;margin-bottom:3px}
-.fv{font-family:JetBrains Mono;font-size:12px;font-weight:600}
-.fv.sl{color:#f87171}.fv.tp{color:#34d399}.fv.live{color:#fbbf24}
-.desc{font-size:11px;color:#8b949e;margin-top:10px;padding-top:10px;border-top:1px solid #1e2433;line-height:1.5}
-.btn{padding:11px 14px;border-radius:8px;border:none;font-weight:600;font-size:12px;cursor:pointer;width:100%}
-.btn-primary{background:#fbbf24;color:#000}.btn-danger{background:#1f1414;color:#f87171;border:1px solid #3d1f1f}
-.actions{display:flex;gap:8px;margin-top:12px}
-.conf-badge{padding:5px 10px;border-radius:20px;font-family:JetBrains Mono;font-size:10px;font-weight:600}
-.conf-high{background:#0f2218;color:#34d399;border:1px solid #1f4d32}
-.conf-med{background:#221f0f;color:#fbbf24;border:1px solid #4d3d1f}
-.conf-low{background:#221511;color:#f87171;border:1px solid #4d1f1f}
-.conf-none{background:#151a28;color:#6b7280;border:1px solid #1e2433}
-.select{width:100%;background:#0e1220;color:#e4e7ec;border:1px solid #2a344b;border-radius:8px;padding:10px;font-family:JetBrains Mono;font-size:12px;margin-top:10px}
+body{background:#0a0a0a;color:#fff;font-family:Arial;padding:10px}
+.card{background:#151515;border-radius:12px;padding:12px;margin:10px 0;border:1px solid #222}
+.badge{padding:4px 10px;border-radius:20px;font-weight:bold}
+.sell{background:#ff2a2a22;color:#ff4a4a;border:1px solid #ff4a4a}
+.buy{background:#00ff8822;color:#00ff88;border:1px solid #00ff88}
+.conf{float:right;background:#00ff8844;padding:5px 12px;border-radius:20px}
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.box{background:#1e1e1e;padding:8px;border-radius:8px}
 </style>
-</head><body>
-<div class="header">
-  <div class="logo">SR-72 <em>DARK STAR</em> <span>AI CHART</span> • AUTO-DETECT</div>
-  <div class="hdr-right"><div class="pill auto" id="autoPill" style="display:none">AUTO</div><div class="pill" id="confTop">CONF --%</div><div class="pill live" id="liveTop">LIVE --</div></div>
-</div>
-<div class="container">
-  <div class="card">
-    <div class="label">Auto-Detect • SR-72</div>
-    <select id="symbolSelect" class="select">
-      <optgroup label="Metals"><option selected>XAUUSDc</option><option>XAUUSD</option><option>XAGUSDc</option></optgroup>
-      <optgroup label="Forex"><option>EURUSDc</option><option>EURUSD</option><option>GBPUSDc</option><option>USDJPYc</option></optgroup>
-      <optgroup label="Indices"><option>US30c</option><option>NAS100c</option><option>GER40c</option><option>US500c</option></optgroup>
-      <optgroup label="Energies"><option>USOILc</option><option>UKOILc</option></optgroup>
-      <optgroup label="Crypto"><option>BTCUSDc</option><option>BTCUSD</option><option>ETHUSDc</option><option>ETHUSD</option></optgroup>
-    </select>
-    <div class="upload-area" id="dropZone" style="margin-top:12px" onclick="document.getElementById('fileInput').click()">
-      <div style="font-size:13px;font-weight:600">Upload <span id="symLabel">XAUUSDc</span> Chart — Auto OCR</div>
-      <div style="font-size:11px;color:#6b7280;margin-top:4px;font-family:JetBrains Mono">Fixed lowercase c • Universal</div>
-      <input type="file" id="fileInput" accept="image/*" hidden>
-    </div>
-    <canvas id="scanCanvas"></canvas>
-    <div id="uploadStatus" style="font-family:JetBrains Mono;font-size:11px;margin-top:8px;color:#fbbf24"></div>
-    <div id="ocrStatus" style="font-family:JetBrains Mono;font-size:10px;margin-top:6px;color:#34d399"></div>
-  </div>
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <div><div class="label" id="marketLabel">SR-72 DARK STAR • --</div><div style="font-size:17px;font-weight:700;margin-top:4px">Structured Analysis</div></div>
-      <div class="conf-badge conf-none" id="conf">CONFIDENCE --%</div>
-    </div>
-    <div class="analysis-box">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-weight:600;font-size:12px">Trend • SR-72</span><span class="mtf" id="mtf"></span></div>
-      <div class="trend-txt" id="analysis">Upload any chart. SR-72 auto-detects symbol with lowercase c fix.</div>
-    </div>
-    <div class="row" style="margin-top:12px">
-      <div class="metric"><div class="k">Live Market</div><div class="v" id="live" style="color:#fbbf24">--</div></div>
-      <div class="metric"><div class="k">20 SMA M1</div><div class="v" id="sma20">--</div></div>
-      <div class="metric"><div class="k">50 SMA M1</div><div class="v" id="sma50">--</div></div>
-      <div class="metric"><div class="k">High / Low</div><div class="v" id="ph">--</div></div>
-    </div>
-  </div>
-  <div class="card plan agg" id="aggressiveCard" style="display:none">
-    <div class="plan-hdr"><div style="color:#34d399">AGGRESSIVE • Market</div><div class="conf-badge conf-high" id="aggSide">BUY</div></div>
-    <div class="plan-body">
-      <div class="grid-3">
-        <div><div class="f">Entry @ Market</div><div class="fv live" id="aggEntry">--</div></div>
-        <div><div class="f">Stop Loss</div><div class="fv sl" id="aggSL">--</div></div>
-        <div><div class="f">Take Profit</div><div class="fv tp" id="aggTP">--</div></div>
-      </div>
-      <div class="desc" id="aggDesc"></div>
-      <button class="btn btn-primary" style="margin-top:12px" onclick="placeAggressive()">Place Aggressive @ Market</button>
-    </div>
-  </div>
-  <div class="card plan cons" id="conservativeCard" style="display:none">
-    <div class="plan-hdr"><div style="color:#fbbf24">CONSERVATIVE • Breakout</div><div class="conf-badge" id="consSide" style="background:#1f1a11;color:#fbbf24;border-color:#3d331f">BUY</div></div>
-    <div class="plan-body">
-      <div class="grid-3">
-        <div><div class="f">Entry Zone</div><div class="fv" id="consEntry">--</div></div>
-        <div><div class="f">Stop Loss</div><div class="fv sl" id="consSL">--</div></div>
-        <div><div class="f">Take Profit</div><div class="fv tp" id="consTP">--</div></div>
-      </div>
-      <div class="desc" id="consDesc"></div>
-      <button class="btn" style="margin-top:12px;background:#fbbf24;color:#000;border:none;font-weight:700" onclick="placeConservative()">Place Conservative</button>
-    </div>
-  </div>
-  <div class="card">
-    <div class="label">Execution • SR-72 AUTO</div>
-    <div class="actions">
-      <button class="btn btn-primary" id="scanBtn" onclick="scanUploaded()" disabled style="flex:1">Scan Auto-Detected</button>
-      <button class="btn btn-danger" onclick="closeAll()" style="width:110px">Close All</button>
-    </div>
-    <div style="font-family:JetBrains Mono;font-size:10px;color:#6b7280;margin-top:10px" id="log">Ready • Fixed c suffix</div>
-    <div style="height:1px;background:#1e2433;margin:12px 0"></div>
-    <div id="tradeList"></div><div id="ordersList" style="margin-top:6px"></div>
-  </div>
-</div>
+</head>
+<body>
+<h3>SR-72 DARK STAR <span style="color:#00ff88">AI CHART • AUTO-DETECT</span> <span id="liveTop" style="float:right;color:#ffaa00"></span></h3>
+<input type="file" id="img" accept="image/*" style="margin:10px 0">
+<div id="status"></div>
+<div id="out"></div>
+
 <script>
-let lastAgg=null,lastCons=null,uploadedFile=null, currentSymbol="XAUUSDc";
-const sel=document.getElementById('symbolSelect'), symLabel=document.getElementById('symLabel'), marketLabel=document.getElementById('marketLabel');
-function normalizeSymbol(sym){
-  if(!sym) return "XAUUSDc";
-  sym=sym.trim();
-  // remove spaces and M1 timeframe etc
-  sym=sym.replace(/\s+/g,'').replace(/M\d+/i,'');
-  let upper=sym.toUpperCase();
-  // force base uppercase + lowercase c
-  if(upper.endsWith('C') && upper.length>3){
-    let base=upper.slice(0,-1);
-    // if base already contains C suffix handling
-    if(base.endsWith('C')) base=base.slice(0,-1);
-    // check if should have c
-    // keep c lowercase for broker
-    return base + 'c';
-  }
-  return upper;
+document.getElementById('img').onchange = async (e)=>{
+  const f=e.target.files[0]; if(!f) return;
+  document.getElementById('status').innerHTML = `✓ LOCKED: ${f.name} • ${(f.size/1024).toFixed(0)}KB<br>✅ AUTO-DETECTED: Scanning...`;
+  let fd=new FormData(); fd.append('image',f); fd.append('symbol','XAUUSDc');
+  let r=await fetch('/api/scan_image',{method:'POST',body:fd});
+  let j=await r.json();
+  if(j.error){ document.getElementById('status').innerHTML=j.error; return; }
+  document.getElementById('status').innerHTML = `✓ LOCKED: ${f.name}<br>✅ AUTO-DETECTED: ${j.symbol} • Fixed to lowercase c • Ready`;
+  document.getElementById('liveTop').innerHTML = `LIVE ${j.live}`;
+  let agg=j.aggressive;
+  document.getElementById('out').innerHTML = `
+  <div class="card">
+    <div><b>SR-72 DARK STAR • ${j.symbol} • AUTO-DETECTED</b> <span class="conf">CONFIDENCE ${j.confidence}%</span></div>
+    <h3>Structured Analysis</h3>
+    <div class="badge sell">Trend • SR-72 <span style="margin-left:10px" class="badge sell">M1 ${j.mtf.m1}</span> <span class="badge sell">M5 ${j.mtf.m5}</span> <span class="badge sell">M15 ${j.mtf.m15}</span></div>
+    <p style="color:#aaa;font-size:13px">${j.trend}</p>
+    <div class="grid">
+      <div class="box">Live Market<br><b style="color:#ffaa00">${j.live}</b></div>
+      <div class="box">EMA 9 M1<br><b>${j.ema9?.toFixed(2)}</b></div>
+      <div class="box">EMA 21 M1<br><b>${j.ema21?.toFixed(2)}</b></div>
+      <div class="box">EMA 50 M1<br><b>${j.ema50?.toFixed(2)}</b></div>
+      <div class="box">High / Low<br><b>H ${j.period_high?.toFixed(2)} / L ${j.period_low?.toFixed(2)}</b></div>
+      <div class="box">Vision<br><b style="color:#00ff88">${j.mtf.img} ${j.confidence>=80?'LOCKED':''}</b></div>
+    </div>
+  </div>
+  <div class="card">
+    <div>AGGRESSIVE • Market <span style="float:right" class="badge sell">${agg.side} ${agg.symbol}</span></div>
+    <hr>
+    ENTRY @ MARKET<br><b style="color:#ffaa00">${agg.entry_low} - ${agg.entry_high} @ ${agg.entry_mid}</b><br><br>
+    STOP LOSS<br><b style="color:#ff4a4a">${agg.sl}</b><br><br>
+    TAKE PROFIT<br><b style="color:#00ff88">${agg.tp1}, ${agg.tp2}</b><br><br>
+    <button onclick="enter()" style="width:100%;padding:12px;background:#00ff88;border:none;border-radius:8px;font-weight:bold">EXECUTE ${agg.side}</button>
+  </div>`;
+  window._plan=j.aggressive;
 }
-sel.addEventListener('change',()=>{
-  let v=sel.value;
-  // preserve lowercase c
-  currentSymbol=v;
-  symLabel.innerText=v;
-  marketLabel.innerText=`SR-72 DARK STAR • ${v} • AUTO`;
-});
-
-const fileInput=document.getElementById('fileInput'), dropZone=document.getElementById('dropZone'), canvas=document.getElementById('scanCanvas'), ctx=canvas.getContext('2d');
-
-function detectSymbolFromText(text){
-  text=text.toUpperCase();
-  const patterns=[/XAUUSD[ C]*/, /XAGUSD[ C]*/, /EURUSD[ C]*/, /GBPUSD[ C]*/, /USDJPY[ C]*/, /AUDUSD[ C]*/, /NZDUSD[ C]*/, /US30[ C]*/, /NAS100[ C]*/, /GER40[ C]*/, /US500[ C]*/, /UK100[ C]*/, /USOIL[ C]*/, /UKOIL[ C]*/, /BTCUSD[ C]*/, /ETHUSD[ C]*/, /SOLUSD[ C]*/];
-  for(let p of patterns){
-    let m=text.match(p);
-    if(m){
-      let raw=m[0].trim();
-      let base=raw.replace(/C/g,'').replace(/c/g,'').replace(/\s/g,'').toUpperCase();
-      // return with lowercase c - broker format
-      return base + 'c';
-    }
-  }
-  return null;
+async function enter(){
+  let r=await fetch('/api/sniper/enter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:window._plan})});
+  alert('ORDER PLACED: '+JSON.stringify(await r.json()));
 }
-
-async function handleFile(file){
-  uploadedFile=file;
-  const img=new Image();
-  img.onload=async()=>{
-    canvas.width=img.width; canvas.height=img.height; canvas.classList.add('has-img');
-    ctx.drawImage(img,0,0);
-    document.getElementById('uploadStatus').innerText=`✓ LOCKED: ${file.name} • ${(file.size/1024).toFixed(0)}KB`;
-    document.getElementById('ocrStatus').innerText=`🔍 OCR reading symbol...`;
-    document.getElementById('scanBtn').disabled=false;
-    try{
-      const {data:{text}} = await Tesseract.recognize(canvas, 'eng');
-      let detected = detectSymbolFromText(text);
-      if(detected){
-        // ensure lowercase c
-        detected = normalizeSymbol(detected);
-        currentSymbol=detected;
-        symLabel.innerText=detected;
-        marketLabel.innerText=`SR-72 DARK STAR • ${detected} • AUTO-DETECTED`;
-        // add to select if not exists
-        let exists=[...sel.options].some(o=>o.value.toUpperCase()===detected.toUpperCase());
-        if(!exists){
-          let opt=document.createElement('option'); opt.value=detected; opt.text=detected+' (Auto)'; sel.appendChild(opt);
-        }
-        sel.value=detected;
-        document.getElementById('ocrStatus').innerText=`✅ AUTO-DETECTED: ${detected} • Fixed to lowercase c • Ready`;
-        document.getElementById('autoPill').style.display='inline-block';
-        document.getElementById('autoPill').innerText=`AUTO: ${detected}`;
-      } else {
-        document.getElementById('ocrStatus').innerText=`⚠️ No symbol found, using ${currentSymbol}`;
-      }
-    } catch(e){
-      document.getElementById('ocrStatus').innerText=`OCR skipped, using ${currentSymbol}`;
-    }
-  };
-  img.src=URL.createObjectURL(file);
-}
-fileInput.addEventListener('change',e=>{ if(e.target.files[0]) handleFile(e.target.files[0]); });
-dropZone.addEventListener('dragover',e=>{e.preventDefault(); dropZone.style.borderColor='#fbbf24'});
-dropZone.addEventListener('dragleave',()=>dropZone.style.borderColor='#2a344b');
-dropZone.addEventListener('drop',e=>{e.preventDefault(); if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);});
-function badgeCls(t){return t=='BUY'?'buy':t=='SELL'?'sell':'range'}
-async function scanUploaded(){
- if(!uploadedFile){alert('Upload chart first'); return;}
- document.getElementById('analysis').innerText=`Scanning ${currentSymbol} M1/M5/M15 • live market...`;
- let fd=new FormData(); fd.append('image', uploadedFile); fd.append('symbol', currentSymbol);
- let r=await fetch('/api/scan_image',{method:'POST',body:fd}).then(r=>r.json());
- if(r.error){document.getElementById('analysis').innerText=r.error; return;}
- const dec=r.dec||2;
- document.getElementById('live').innerText=r.live.toFixed(dec);
- document.getElementById('liveTop').innerText=`LIVE ${r.live.toFixed(dec)}`;
- document.getElementById('sma20').innerText=r.sma20?.toFixed(dec);
- document.getElementById('sma50').innerText=r.sma50?.toFixed(dec);
- document.getElementById('ph').innerText=`H ${r.period_high?.toFixed(dec)} / L ${r.period_low?.toFixed(dec)}`;
- const confEl=document.getElementById('conf'); confEl.innerText=`CONFIDENCE ${r.confidence}%`; confEl.className='conf-badge '+(r.confidence>=74?'conf-high':r.confidence>=60?'conf-med':'conf-low');
- document.getElementById('confTop').innerText=`${r.confidence}%`;
- document.getElementById('analysis').innerText=r.trend + ` [broker resolved: ${r.symbol}]`;
- if(r.mtf){
-   document.getElementById('mtf').innerHTML=`<span class="mtf-badge ${badgeCls(r.mtf.m1)}">M1 ${r.mtf.m1}</span><span class="mtf-badge ${badgeCls(r.mtf.m5)}">M5 ${r.mtf.m5}</span><span class="mtf-badge ${badgeCls(r.mtf.m15)}">M15 ${r.mtf.m15}</span>`;
- }
- if(r.aggressive){
-   lastAgg=r.aggressive;
-   document.getElementById('aggEntry').innerText=`${r.aggressive.entry_low} - ${r.aggressive.entry_high} @ ${r.aggressive.entry_mid}`;
-   document.getElementById('aggTP').innerText=`${r.aggressive.tp1}, ${r.aggressive.tp2}`;
-   document.getElementById('aggSL').innerText=r.aggressive.sl;
-   document.getElementById('aggSide').innerText=`${r.aggressive.side} ${r.symbol}`;
-   document.getElementById('aggDesc').innerText=r.aggressive.desc;
-   document.getElementById('aggressiveCard').style.display='block';
- }
- if(r.conservative){
-   lastCons=r.conservative;
-   document.getElementById('consEntry').innerText=`${r.conservative.entry_low} - ${r.conservative.entry_high}`;
-   document.getElementById('consTP').innerText=`${r.conservative.tp1}, ${r.conservative.tp2}`;
-   document.getElementById('consSL').innerText=r.conservative.sl;
-   document.getElementById('consSide').innerText=`${r.conservative.side} ${r.symbol}`;
-   document.getElementById('consDesc').innerText=r.conservative.desc;
-   document.getElementById('conservativeCard').style.display='block';
- }
- document.getElementById('log').innerText=`${r.symbol} locked @ ${r.live.toFixed(dec)} • ${r.direction} • ${r.confidence}%`;
- loadReal();
-}
-async function placeAggressive(){if(!lastAgg)return; await fetch('/api/sniper/enter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:lastAgg})}); loadReal();}
-async function placeConservative(){if(!lastCons)return; await fetch('/api/sniper/enter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:lastCons})}); loadReal();}
-async function loadReal(){try{let pos=await fetch('/api/positions').then(r=>r.json()); document.getElementById('tradeList').innerHTML=pos.length?pos.map(x=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #1e2433;font-family:JetBrains Mono;font-size:11px"><span>${x.symbol} ${x.type} ${x.volume}</span><span style="color:${x.profit>0?'#34d399':'#f87171'}">$${(x.profit||0).toFixed(2)}</span></div>`).join(''):'<div style="color:#4b5563;font-size:11px">No open positions</div>'; let ord=await fetch('/api/orders').then(r=>r.json()); document.getElementById('ordersList').innerHTML=ord.length?ord.map(o=>`<div style="padding:5px 0;border-bottom:1px solid #1e2433;color:#8b949e;font-family:JetBrains Mono;font-size:10px">${o.symbol} ${o.type} @ ${o.openPrice}</div>`).join(''):'<div style="color:#4b5563;font-size:11px">No pending orders</div>';}catch(e){}}
-function closeAll(){fetch('/api/close_all',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({symbol:currentSymbol})}).then(()=>loadReal());}
-setInterval(loadReal,4000); loadReal();
 </script>
-</body></html>
+</body>
+</html>
