@@ -8,7 +8,8 @@
 .logo{font-weight:800;letter-spacing:-0.02em;font-size:13px}.logo span{color:#fbbf24}.logo em{font-style:normal;color:#e4e7ec}.logo small{font-weight:400;color:#6b7280;font-size:10px;margin-left:8px;font-family:JetBrains Mono}
 .hdr-right{display:flex;gap:8px;align-items:center}
 .pill{padding:6px 12px;border-radius:20px;font-family:JetBrains Mono;font-size:11px;font-weight:500;border:1px solid #1e2433;background:#151a28;color:#8b949e}
-.container{max-width:720px;margin:0 auto;padding:16px 16px 100px}
+.pill.live{background:#1a160f;color:#fbbf24;border-color:#3d331f}
+.container{max-width:760px;margin:0 auto;padding:16px 16px 100px}
 .card{background:#11151f;border:1px solid #1e2433;border-radius:12px;padding:20px;margin-bottom:12px}
 .label{font-family:JetBrains Mono;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#6b7280;font-weight:500}
 .divider{height:1px;background:#1e2433;margin:16px 0}
@@ -17,12 +18,17 @@
 canvas{width:100%;border-radius:10px;border:1px solid #1e2433;background:#080a10;margin-top:16px;min-height:200px;display:none}
 canvas.has-img{display:block}
 .row{display:flex;gap:10px;flex-wrap:wrap}
-.metric{background:#0e1220;border:1px solid #1e2433;border-radius:8px;padding:10px 12px;flex:1;min-width:90px}
-.metric.k{font-family:JetBrains Mono;font-size:10px;color:#6b7280;text-transform:uppercase}
-.metric.v{font-family:JetBrains Mono;font-size:13px;font-weight:600;margin-top:4px;color:#e4e7ec}
+.metric{background:#0e1220;border:1px solid #1e2433;border-radius:8px;padding:10px 12px;flex:1;min-width:95px}
+.metric.k{font-family:JetBrains Mono;font-size:9px;color:#6b7280;text-transform:uppercase}
+.metric.v{font-family:JetBrains Mono;font-size:12px;font-weight:600;margin-top:4px;color:#e4e7ec}
 .analysis-box{background:#0e1220;border-radius:10px;padding:16px;border:1px solid #1e2433;margin-top:12px}
-.trend-lbl{font-weight:600;font-size:12px;margin-bottom:8px;color:#e4e7ec}
+.trend-lbl{font-weight:600;font-size:12px;margin-bottom:8px;color:#e4e7ec;display:flex;justify-content:space-between}
 .trend-txt{font-size:13px;line-height:1.6;color:#a0aec0}
+.mtf{display:flex;gap:6px}
+.mtf-badge{padding:4px 8px;border-radius:6px;font-family:JetBrains Mono;font-size:10px;font-weight:700;border:1px solid}
+.mtf-badge.buy{background:#0f2218;color:#34d399;border-color:#1f4d32}
+.mtf-badge.sell{background:#221511;color:#f87171;border-color:#4d1f1f}
+.mtf-badge.range{background:#151a28;color:#6b7280;border-color:#1e2433}
 .plan{border-radius:12px;overflow:hidden;border:1px solid}
 .plan.agg{border-color:#1f3d2f;background:linear-gradient(180deg,#111f16,#11151f)}
 .plan.cons{border-color:#3d331f;background:linear-gradient(180deg,#1f1a11,#11151f)}
@@ -34,6 +40,7 @@ canvas.has-img{display:block}
 .f{font-family:JetBrains Mono;font-size:10px;color:#6b7280;text-transform:uppercase;margin-bottom:4px}
 .fv{font-family:JetBrains Mono;font-size:13px;font-weight:600;color:#e4e7ec}
 .fv.sl{color:#f87171}.fv.tp{color:#34d399}
+.fv.live{color:#fbbf24}
 .desc{font-size:12px;line-height:1.5;color:#8b949e;margin-top:12px;padding-top:12px;border-top:1px solid #1e2433}
 .btn{padding:12px 16px;border-radius:8px;border:none;font-family:Inter;font-weight:600;font-size:13px;cursor:pointer;transition:0.15s;display:flex;align-items:center;justify-content:center;gap:6px;width:100%}
 .btn:disabled{opacity:0.35;pointer-events:none}
@@ -48,19 +55,19 @@ canvas.has-img{display:block}
 </style>
 </head><body>
 <div class="header">
-  <div class="logo">SR-72 <em>DARK STAR</em> <span>AI CHART</span> <small>SCANNER ONLY • PROFESSIONAL</small></div>
-  <div class="hdr-right"><div class="pill" id="confTop">CONF --%</div><div class="pill" style="background:#1a160f;color:#fbbf24;border-color:#3d331f">UPLOAD FIRST</div></div>
+  <div class="logo">SR-72 <em>DARK STAR</em> <span>AI CHART</span> <small>SCANNER • M1/M5/M15</small></div>
+  <div class="hdr-right"><div class="pill" id="confTop">CONF --%</div><div class="pill live" id="liveTop">LIVE --</div></div>
 </div>
 
 <div class="container">
   <div class="card">
     <div class="label">Step 1 — Chart Input • SR-72 DARK STAR</div>
-    <div style="font-size:13px;font-weight:600;margin-top:6px">Upload XAUUSD 1M Screenshot</div>
-    <div style="font-size:12px;color:#6b7280;margin-top:4px;line-height:1.4">SR-72 DARK STAR AI CHART will calculate live levels: 20 SMA / 50 SMA / swing low / period high using SR-72 hypersonic logic. Image is for reference and validation.</div>
+    <div style="font-size:13px;font-weight:600;margin-top:6px">Upload XAUUSD Screenshot</div>
+    <div style="font-size:12px;color:#6b7280;margin-top:4px;line-height:1.4">SR-72 locks entry to exact current market from screenshot. Multi-timeframe M1/M5/M15 confirmation for precision.</div>
     <div class="upload-area" id="dropZone" style="margin-top:16px" onclick="document.getElementById('fileInput').click()">
       <div style="width:40px;height:40px;border-radius:10px;background:#1f1a11;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:18px;border:1px solid #3d331f">✈️</div>
       <div style="font-size:13px;font-weight:600">Click to upload or drag & drop</div>
-      <div style="font-size:11px;color:#6b7280;margin-top:4px;font-family:JetBrains Mono">PNG, JPG, WEBP • Max 10MB • SR-72 TARGET LOCK</div>
+      <div style="font-size:11px;color:#6b7280;margin-top:4px;font-family:JetBrains Mono">PNG, JPG, WEBP • SR-72 TARGET LOCK</div>
       <input type="file" id="fileInput" accept="image/*" hidden>
     </div>
     <canvas id="scanCanvas"></canvas>
@@ -69,36 +76,36 @@ canvas.has-img{display:block}
 
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center">
-      <div><div class="label">SR-72 DARK STAR • XAUUSD • 1M • English</div><div style="font-size:18px;font-weight:700;margin-top:4px;letter-spacing:-0.02em">Structured Analysis</div></div>
+      <div><div class="label">SR-72 DARK STAR • XAUUSD • English</div><div style="font-size:18px;font-weight:700;margin-top:4px;letter-spacing:-0.02em">Structured Analysis</div></div>
       <div class="conf-badge conf-none" id="conf">CONFIDENCE --%</div>
     </div>
     <div class="analysis-box">
-      <div class="trend-lbl">Trend • SR-72 DARK STAR AI</div>
-      <div class="trend-txt" id="analysis">Upload chart image first to enable SR-72 DARK STAR AI CHART scanner. Professional analysis will appear here.</div>
+      <div class="trend-lbl"><span>Trend • SR-72</span><span class="mtf" id="mtf"></span></div>
+      <div class="trend-txt" id="analysis">Upload chart first. SR-72 will scan M1/M5/M15 and lock entry to live market price.</div>
     </div>
     <div class="row" style="margin-top:14px">
-      <div class="metric"><div class="k">Live</div><div class="v" id="live">--</div></div>
-      <div class="metric"><div class="k">20 SMA</div><div class="v" id="sma20">--</div></div>
-      <div class="metric"><div class="k">50 SMA</div><div class="v" id="sma50">--</div></div>
-      <div class="metric"><div class="k">Period High</div><div class="v" id="ph">--</div></div>
+      <div class="metric"><div class="k">Live Market</div><div class="v" id="live" style="color:#fbbf24">--</div></div>
+      <div class="metric"><div class="k">20 SMA M1</div><div class="v" id="sma20">--</div></div>
+      <div class="metric"><div class="k">50 SMA M1</div><div class="v" id="sma50">--</div></div>
+      <div class="metric"><div class="k">Period High/Low</div><div class="v" id="ph">--</div></div>
     </div>
   </div>
 
   <div class="card plan agg" id="aggressiveCard" style="display:none">
-    <div class="plan-hdr"><div class="t" style="color:#34d399">SR-72 AGGRESSIVE PLAN • Direct Entry</div><div class="conf-badge conf-high" id="aggSide" style="font-size:10px">BUY</div></div>
+    <div class="plan-hdr"><div class="t" style="color:#34d399">SR-72 AGGRESSIVE • Immediate Market Entry</div><div class="conf-badge conf-high" id="aggSide" style="font-size:10px">BUY</div></div>
     <div class="plan-body">
       <div class="grid-3">
-        <div><div class="f">Entry Zone</div><div class="fv" id="aggEntry">--</div></div>
+        <div><div class="f">Entry @ Market</div><div class="fv live" id="aggEntry">--</div></div>
         <div><div class="f">Stop Loss</div><div class="fv sl" id="aggSL">--</div></div>
         <div><div class="f">Take Profit</div><div class="fv tp" id="aggTP">--</div></div>
       </div>
       <div class="desc" id="aggDesc"></div>
-      <button class="btn btn-primary" style="margin-top:14px" onclick="placeAggressive()">Place SR-72 Aggressive Order (2 TPs • 0.01 lot)</button>
+      <button class="btn btn-primary" style="margin-top:14px" onclick="placeAggressive()">Place SR-72 Aggressive @ Market (2 TPs • 0.01)</button>
     </div>
   </div>
 
   <div class="card plan cons" id="conservativeCard" style="display:none">
-    <div class="plan-hdr"><div class="t" style="color:#fbbf24">SR-72 CONSERVATIVE PLAN • Breakout</div><div class="conf-badge" id="consSide" style="font-size:10px;background:#1f1a11;color:#fbbf24;border-color:#3d331f">BUY</div></div>
+    <div class="plan-hdr"><div class="t" style="color:#fbbf24">SR-72 CONSERVATIVE • Breakout</div><div class="conf-badge" id="consSide" style="font-size:10px;background:#1f1a11;color:#fbbf24;border-color:#3d331f">BUY</div></div>
     <div class="plan-body">
       <div class="grid-3">
         <div><div class="f">Entry Zone</div><div class="fv" id="consEntry">--</div></div>
@@ -106,17 +113,17 @@ canvas.has-img{display:block}
         <div><div class="f">Take Profit</div><div class="fv tp" id="consTP">--</div></div>
       </div>
       <div class="desc" id="consDesc"></div>
-      <button class="btn" style="margin-top:14px;background:#fbbf24;color:#000;border:none;font-weight:700" onclick="placeConservative()">Place SR-72 Conservative Order (2 TPs)</button>
+      <button class="btn" style="margin-top:14px;background:#fbbf24;color:#000;border:none;font-weight:700" onclick="placeConservative()">Place SR-72 Conservative Breakout (2 TPs)</button>
     </div>
   </div>
 
   <div class="card">
-    <div class="label">Execution • SR-72 DARK STAR AI CHART • Scanner Only</div>
+    <div class="label">Execution • SR-72 DARK STAR AI CHART</div>
     <div class="actions">
-      <button class="btn btn-primary" id="scanBtn" onclick="scanUploaded()" disabled style="flex:1">Scan with SR-72 DARK STAR AI</button>
+      <button class="btn btn-primary" id="scanBtn" onclick="scanUploaded()" disabled style="flex:1">Scan with SR-72 DARK STAR AI • MTF</button>
       <button class="btn btn-danger" onclick="closeAll()" style="width:120px">Close All</button>
     </div>
-    <div style="font-family:JetBrains Mono;font-size:11px;color:#6b7280;margin-top:12px" id="log">SR-72 DARK STAR AI CHART • Professional scanner • Upload first, then scan • No bot auto-trading</div>
+    <div style="font-family:JetBrains Mono;font-size:11px;color:#6b7280;margin-top:12px" id="log">Professional MTF scanner • Upload first • Entry locked to live market • No lag</div>
     <div class="divider"></div>
     <div id="tradeList"></div>
     <div id="ordersList" style="margin-top:8px"></div>
@@ -133,9 +140,9 @@ function handleFile(file){
   img.onload=()=>{
     canvas.width=img.width; canvas.height=img.height; canvas.classList.add('has-img');
     ctx.drawImage(img,0,0);
-    document.getElementById('uploadStatus').innerText=`✓ SR-72 TARGET LOCKED: ${file.name} • ${(file.size/1024).toFixed(0)}KB • Ready to scan`;
+    document.getElementById('uploadStatus').innerText=`✓ SR-72 LOCKED: ${file.name} • ${(file.size/1024).toFixed(0)}KB • MTF READY`;
     document.getElementById('scanBtn').disabled=false;
-    document.getElementById('log').innerText=`SR-72 DARK STAR chart uploaded • Press Scan with SR-72 DARK STAR AI`;
+    document.getElementById('log').innerText=`Chart uploaded • Press Scan — SR-72 will lock to current market`;
   };
   img.src=URL.createObjectURL(file);
 }
@@ -143,22 +150,29 @@ fileInput.addEventListener('change',e=>{ if(e.target.files[0]) handleFile(e.targ
 dropZone.addEventListener('dragover',e=>{e.preventDefault(); dropZone.style.borderColor='#fbbf24'});
 dropZone.addEventListener('dragleave',()=>dropZone.style.borderColor='#2a344b');
 dropZone.addEventListener('drop',e=>{e.preventDefault(); if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);});
+
+function badgeCls(t){return t=='BUY'?'buy':t=='SELL'?'sell':'range'}
+
 async function scanUploaded(){
  if(!uploadedFile){alert('Upload chart first'); return;}
- document.getElementById('analysis').innerText='SR-72 DARK STAR AI CHART analyzing: 20 SMA / 50 SMA / Support / Period High • Mach 6 logic...';
+ document.getElementById('analysis').innerText='SR-72 scanning M1/M5/M15 • locking to live market • high speed sync...';
  let fd=new FormData(); fd.append('image', uploadedFile);
  let r=await fetch('/api/scan_image',{method:'POST',body:fd}).then(r=>r.json());
  if(r.error){document.getElementById('analysis').innerText=r.error; return;}
  document.getElementById('live').innerText=r.live.toFixed(2);
+ document.getElementById('liveTop').innerText=`LIVE ${r.live.toFixed(2)}`;
  document.getElementById('sma20').innerText=r.sma20?.toFixed(2);
  document.getElementById('sma50').innerText=r.sma50?.toFixed(2);
- document.getElementById('ph').innerText=r.period_high?.toFixed(2);
- const confEl=document.getElementById('conf'); confEl.innerText=`CONFIDENCE ${r.confidence}%`; confEl.className='conf-badge '+(r.confidence>=70?'conf-high':r.confidence>=55?'conf-med':'conf-low');
+ document.getElementById('ph').innerText=`H ${r.period_high?.toFixed(2)} / L ${r.period_low?.toFixed(2)}`;
+ const confEl=document.getElementById('conf'); confEl.innerText=`CONFIDENCE ${r.confidence}%`; confEl.className='conf-badge '+(r.confidence>=74?'conf-high':r.confidence>=60?'conf-med':'conf-low');
  document.getElementById('confTop').innerText=`${r.confidence}%`;
  document.getElementById('analysis').innerText=r.trend;
+ if(r.mtf){
+   document.getElementById('mtf').innerHTML=`<span class="mtf-badge ${badgeCls(r.mtf.m1)}">M1 ${r.mtf.m1}</span><span class="mtf-badge ${badgeCls(r.mtf.m5)}">M5 ${r.mtf.m5}</span><span class="mtf-badge ${badgeCls(r.mtf.m15)}">M15 ${r.mtf.m15}</span>`;
+ }
  if(r.aggressive){
    lastAgg=r.aggressive;
-   document.getElementById('aggEntry').innerText=`${r.aggressive.entry_low} - ${r.aggressive.entry_high}`;
+   document.getElementById('aggEntry').innerText=`${r.aggressive.entry_low} - ${r.aggressive.entry_high} @ ${r.aggressive.entry_mid} LIVE`;
    document.getElementById('aggTP').innerText=`${r.aggressive.tp1}, ${r.aggressive.tp2}`;
    document.getElementById('aggSL').innerText=r.aggressive.sl;
    document.getElementById('aggSide').innerText=r.aggressive.side;
@@ -174,13 +188,13 @@ async function scanUploaded(){
    document.getElementById('consDesc').innerText=r.conservative.desc;
    document.getElementById('conservativeCard').style.display='block';
  }
- document.getElementById('log').innerText=`SR-72 DARK STAR AI CHART scanned ${r.filename} • ${r.direction} • Confidence ${r.confidence}%`;
+ document.getElementById('log').innerText=`SR-72 locked @ ${r.live.toFixed(2)} • ${r.direction} • ${r.confidence}% • M1 ${r.mtf?.m1} / M5 ${r.mtf?.m5} / M15 ${r.mtf?.m15}`;
  loadReal();
 }
-async function placeAggressive(){if(!lastAgg)return; await fetch('/api/sniper/enter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:lastAgg})}); document.getElementById('log').innerText=`SR-72 Placed Aggressive ${lastAgg.side} @ ${lastAgg.entry_mid}`; loadReal();}
-async function placeConservative(){if(!lastCons)return; await fetch('/api/sniper/enter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:lastCons})}); document.getElementById('log').innerText=`SR-72 Placed Conservative ${lastCons.side} @ ${lastCons.entry_mid}`; loadReal();}
-async function loadReal(){try{let pos=await fetch('/api/positions').then(r=>r.json()); document.getElementById('tradeList').innerHTML=pos.length?pos.map(x=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1e2433"><span>${x.symbol} ${x.type} ${x.volume}</span><span style="color:${x.profit>0?'#34d399':'#f87171'}">$${(x.profit||0).toFixed(2)}</span></div>`).join(''):'<div style="color:#4b5563">No open positions • SR-72 standing by</div>'; let ord=await fetch('/api/orders').then(r=>r.json()); document.getElementById('ordersList').innerHTML=ord.length?ord.map(o=>`<div style="padding:6px 0;border-bottom:1px solid #1e2433;color:#8b949e">${o.type} @ ${o.openPrice} • SL ${o.stopLoss} • TP ${o.takeProfit} • SR-72</div>`).join(''):'<div style="color:#4b5563">No pending orders</div>';}catch(e){}}
+async function placeAggressive(){if(!lastAgg)return; await fetch('/api/sniper/enter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:lastAgg})}); document.getElementById('log').innerText=`SR-72 Placed Aggressive @ ${lastAgg.entry_mid} LIVE`; loadReal();}
+async function placeConservative(){if(!lastCons)return; await fetch('/api/sniper/enter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:lastCons})}); document.getElementById('log').innerText=`SR-72 Placed Conservative @ ${lastCons.entry_mid}`; loadReal();}
+async function loadReal(){try{let pos=await fetch('/api/positions').then(r=>r.json()); document.getElementById('tradeList').innerHTML=pos.length?pos.map(x=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1e2433"><span>${x.symbol} ${x.type} ${x.volume}</span><span style="color:${x.profit>0?'#34d399':'#f87171'}">$${(x.profit||0).toFixed(2)}</span></div>`).join(''):'<div style="color:#4b5563">No open positions • SR-72 standing by</div>'; let ord=await fetch('/api/orders').then(r=>r.json()); document.getElementById('ordersList').innerHTML=ord.length?ord.map(o=>`<div style="padding:6px 0;border-bottom:1px solid #1e2433;color:#8b949e">${o.type} @ ${o.openPrice} • SL ${o.stopLoss} • TP ${o.takeProfit}</div>`).join(''):'<div style="color:#4b5563">No pending orders</div>';}catch(e){}}
 function closeAll(){fetch('/api/close_all',{method:'POST'}).then(()=>loadReal());}
-setInterval(loadReal,5000); loadReal();
+setInterval(loadReal,4000); loadReal();
 </script>
 </body></html>
