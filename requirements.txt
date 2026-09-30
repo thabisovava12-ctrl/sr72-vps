@@ -1,3 +1,5 @@
 flask
-metaapi-cloud-sdk
-gunicorn
+requests
+opencv-python-headless
+numpy
+pillow
