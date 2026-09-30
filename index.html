@@ -6,7 +6,7 @@
 <style>
 *{box-sizing:border-box}body{margin:0;background:#0b0e14;color:#e4e7ec;font-family:Inter,sans-serif}
 .header{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:#11151f;border-bottom:1px solid #1e2433;position:sticky;top:0;z-index:10}
-.logo{font-weight:800;font-size:12px}.logo span{color:#fbbf24}.logo em{font-style:normal}
+.logo{font-weight:800;font-size:12px}.logo span{color:#fbbf24}
 .hdr-right{display:flex;gap:6px;align-items:center}
 .pill{padding:6px 10px;border-radius:20px;font-family:JetBrains Mono;font-size:10px;border:1px solid #1e2433;background:#151a28;color:#8b949e}
 .pill.live{background:#1a160f;color:#fbbf24;border-color:#3d331f}
@@ -53,37 +53,35 @@ canvas.has-img{display:block}
 </head><body>
 <div class="header">
   <div class="logo">SR-72 <em>DARK STAR</em> <span>AI CHART</span> • AUTO-DETECT</div>
-  <div class="hdr-right"><div class="pill auto" id="autoPill" style="display:none">AUTO DETECTED</div><div class="pill" id="confTop">CONF --%</div><div class="pill live" id="liveTop">LIVE --</div></div>
+  <div class="hdr-right"><div class="pill auto" id="autoPill" style="display:none">AUTO</div><div class="pill" id="confTop">CONF --%</div><div class="pill live" id="liveTop">LIVE --</div></div>
 </div>
-
 <div class="container">
   <div class="card">
-    <div class="label">Step 1 — Auto-Detect Asset • SR-72 DARK STAR</div>
+    <div class="label">Auto-Detect • SR-72</div>
     <select id="symbolSelect" class="select">
       <optgroup label="Metals"><option selected>XAUUSDc</option><option>XAUUSD</option><option>XAGUSDc</option></optgroup>
-      <optgroup label="Forex"><option>EURUSD</option><option>GBPUSD</option><option>USDJPY</option><option>USDCHF</option><option>AUDUSD</option><option>NZDUSD</option><option>EURJPY</option><option>GBPJPY</option><option>EURGBP</option><option>USDCAD</option></optgroup>
-      <optgroup label="Indices"><option>US30</option><option>US30c</option><option>NAS100</option><option>NAS100c</option><option>GER40</option><option>US500</option><option>UK100</option></optgroup>
-      <optgroup label="Energies"><option>USOIL</option><option>UKOIL</option></optgroup>
-      <optgroup label="Crypto"><option>BTCUSD</option><option>ETHUSD</option><option>SOLUSD</option></optgroup>
+      <optgroup label="Forex"><option>EURUSDc</option><option>EURUSD</option><option>GBPUSDc</option><option>USDJPYc</option></optgroup>
+      <optgroup label="Indices"><option>US30c</option><option>NAS100c</option><option>GER40c</option><option>US500c</option></optgroup>
+      <optgroup label="Energies"><option>USOILc</option><option>UKOILc</option></optgroup>
+      <optgroup label="Crypto"><option>BTCUSDc</option><option>BTCUSD</option><option>ETHUSDc</option><option>ETHUSD</option></optgroup>
     </select>
     <div class="upload-area" id="dropZone" style="margin-top:12px" onclick="document.getElementById('fileInput').click()">
-      <div style="font-size:13px;font-weight:600">Upload <span id="symLabel">XAUUSDc</span> Chart — SR-72 will auto-read symbol</div>
-      <div style="font-size:11px;color:#6b7280;margin-top:4px;font-family:JetBrains Mono">Supports Forex, Indices, Energies, Metals, Crypto • OCR Auto-Detect</div>
+      <div style="font-size:13px;font-weight:600">Upload <span id="symLabel">XAUUSDc</span> Chart — Auto OCR</div>
+      <div style="font-size:11px;color:#6b7280;margin-top:4px;font-family:JetBrains Mono">Fixed lowercase c • Universal</div>
       <input type="file" id="fileInput" accept="image/*" hidden>
     </div>
     <canvas id="scanCanvas"></canvas>
     <div id="uploadStatus" style="font-family:JetBrains Mono;font-size:11px;margin-top:8px;color:#fbbf24"></div>
     <div id="ocrStatus" style="font-family:JetBrains Mono;font-size:10px;margin-top:6px;color:#34d399"></div>
   </div>
-
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center">
-      <div><div class="label" id="marketLabel">SR-72 DARK STAR • -- • AUTO</div><div style="font-size:17px;font-weight:700;margin-top:4px">Structured Analysis</div></div>
+      <div><div class="label" id="marketLabel">SR-72 DARK STAR • --</div><div style="font-size:17px;font-weight:700;margin-top:4px">Structured Analysis</div></div>
       <div class="conf-badge conf-none" id="conf">CONFIDENCE --%</div>
     </div>
     <div class="analysis-box">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-weight:600;font-size:12px">Trend • SR-72</span><span class="mtf" id="mtf"></span></div>
-      <div class="trend-txt" id="analysis">Upload any chart. SR-72 auto-detects EURUSD, XAUUSD, NAS100, BTCUSD, USOIL etc. from image text.</div>
+      <div class="trend-txt" id="analysis">Upload any chart. SR-72 auto-detects symbol with lowercase c fix.</div>
     </div>
     <div class="row" style="margin-top:12px">
       <div class="metric"><div class="k">Live Market</div><div class="v" id="live" style="color:#fbbf24">--</div></div>
@@ -92,9 +90,8 @@ canvas.has-img{display:block}
       <div class="metric"><div class="k">High / Low</div><div class="v" id="ph">--</div></div>
     </div>
   </div>
-
   <div class="card plan agg" id="aggressiveCard" style="display:none">
-    <div class="plan-hdr"><div style="color:#34d399">SR-72 AGGRESSIVE • Immediate Market</div><div class="conf-badge conf-high" id="aggSide">BUY</div></div>
+    <div class="plan-hdr"><div style="color:#34d399">AGGRESSIVE • Market</div><div class="conf-badge conf-high" id="aggSide">BUY</div></div>
     <div class="plan-body">
       <div class="grid-3">
         <div><div class="f">Entry @ Market</div><div class="fv live" id="aggEntry">--</div></div>
@@ -102,12 +99,11 @@ canvas.has-img{display:block}
         <div><div class="f">Take Profit</div><div class="fv tp" id="aggTP">--</div></div>
       </div>
       <div class="desc" id="aggDesc"></div>
-      <button class="btn btn-primary" style="margin-top:12px" onclick="placeAggressive()">Place Aggressive @ Market (2 TPs)</button>
+      <button class="btn btn-primary" style="margin-top:12px" onclick="placeAggressive()">Place Aggressive @ Market</button>
     </div>
   </div>
-
   <div class="card plan cons" id="conservativeCard" style="display:none">
-    <div class="plan-hdr"><div style="color:#fbbf24">SR-72 CONSERVATIVE • Breakout</div><div class="conf-badge" id="consSide" style="background:#1f1a11;color:#fbbf24;border-color:#3d331f">BUY</div></div>
+    <div class="plan-hdr"><div style="color:#fbbf24">CONSERVATIVE • Breakout</div><div class="conf-badge" id="consSide" style="background:#1f1a11;color:#fbbf24;border-color:#3d331f">BUY</div></div>
     <div class="plan-body">
       <div class="grid-3">
         <div><div class="f">Entry Zone</div><div class="fv" id="consEntry">--</div></div>
@@ -115,70 +111,60 @@ canvas.has-img{display:block}
         <div><div class="f">Take Profit</div><div class="fv tp" id="consTP">--</div></div>
       </div>
       <div class="desc" id="consDesc"></div>
-      <button class="btn" style="margin-top:12px;background:#fbbf24;color:#000;border:none;font-weight:700" onclick="placeConservative()">Place Conservative Breakout (2 TPs)</button>
+      <button class="btn" style="margin-top:12px;background:#fbbf24;color:#000;border:none;font-weight:700" onclick="placeConservative()">Place Conservative</button>
     </div>
   </div>
-
   <div class="card">
-    <div class="label">Execution • SR-72 DARK STAR AI CHART • Auto-Detect</div>
+    <div class="label">Execution • SR-72 AUTO</div>
     <div class="actions">
-      <button class="btn btn-primary" id="scanBtn" onclick="scanUploaded()" disabled style="flex:1">Scan Auto-Detected Asset</button>
+      <button class="btn btn-primary" id="scanBtn" onclick="scanUploaded()" disabled style="flex:1">Scan Auto-Detected</button>
       <button class="btn btn-danger" onclick="closeAll()" style="width:110px">Close All</button>
     </div>
-    <div style="font-family:JetBrains Mono;font-size:10px;color:#6b7280;margin-top:10px" id="log">Auto-detect ready • Upload chart • SR-72 reads symbol from image • Universal</div>
+    <div style="font-family:JetBrains Mono;font-size:10px;color:#6b7280;margin-top:10px" id="log">Ready • Fixed c suffix</div>
     <div style="height:1px;background:#1e2433;margin:12px 0"></div>
-    <div id="tradeList"></div>
-    <div id="ordersList" style="margin-top:6px"></div>
+    <div id="tradeList"></div><div id="ordersList" style="margin-top:6px"></div>
   </div>
 </div>
-
 <script>
 let lastAgg=null,lastCons=null,uploadedFile=null, currentSymbol="XAUUSDc";
 const sel=document.getElementById('symbolSelect'), symLabel=document.getElementById('symLabel'), marketLabel=document.getElementById('marketLabel');
-sel.addEventListener('change',()=>{ currentSymbol=sel.value; symLabel.innerText=currentSymbol; marketLabel.innerText=`SR-72 DARK STAR • ${currentSymbol} • AUTO`; });
+function normalizeSymbol(sym){
+  if(!sym) return "XAUUSDc";
+  sym=sym.trim();
+  // remove spaces and M1 timeframe etc
+  sym=sym.replace(/\s+/g,'').replace(/M\d+/i,'');
+  let upper=sym.toUpperCase();
+  // force base uppercase + lowercase c
+  if(upper.endsWith('C') && upper.length>3){
+    let base=upper.slice(0,-1);
+    // if base already contains C suffix handling
+    if(base.endsWith('C')) base=base.slice(0,-1);
+    // check if should have c
+    // keep c lowercase for broker
+    return base + 'c';
+  }
+  return upper;
+}
+sel.addEventListener('change',()=>{
+  let v=sel.value;
+  // preserve lowercase c
+  currentSymbol=v;
+  symLabel.innerText=v;
+  marketLabel.innerText=`SR-72 DARK STAR • ${v} • AUTO`;
+});
 
 const fileInput=document.getElementById('fileInput'), dropZone=document.getElementById('dropZone'), canvas=document.getElementById('scanCanvas'), ctx=canvas.getContext('2d');
 
 function detectSymbolFromText(text){
   text=text.toUpperCase();
-  const patterns=[
-    /XAUUSD[ C]*M?\d*/,
-    /XAGUSD[ C]*/,
-    /EURUSD[ C]*/,
-    /GBPUSD[ C]*/,
-    /USDJPY[ C]*/,
-    /AUDUSD[ C]*/,
-    /NZDUSD[ C]*/,
-    /USDCHF[ C]*/,
-    /USDCAD[ C]*/,
-    /EURJPY[ C]*/,
-    /GBPJPY[ C]*/,
-    /EURGBP[ C]*/,
-    /US30[ C]*/,
-    /NAS100[ C]*/,
-    /GER40[ C]*/,
-    /US500[ C]*/,
-    /UK100[ C]*/,
-    /USOIL[ C]*/,
-    /UKOIL[ C]*/,
-    /BTCUSD[ C]*/,
-    /ETHUSD[ C]*/,
-    /SOLUSD[ C]*/
-  ];
+  const patterns=[/XAUUSD[ C]*/, /XAGUSD[ C]*/, /EURUSD[ C]*/, /GBPUSD[ C]*/, /USDJPY[ C]*/, /AUDUSD[ C]*/, /NZDUSD[ C]*/, /US30[ C]*/, /NAS100[ C]*/, /GER40[ C]*/, /US500[ C]*/, /UK100[ C]*/, /USOIL[ C]*/, /UKOIL[ C]*/, /BTCUSD[ C]*/, /ETHUSD[ C]*/, /SOLUSD[ C]*/];
   for(let p of patterns){
     let m=text.match(p);
     if(m){
-      let sym=m[0].replace(/\s+/g,'').replace(/M\d+/,'').trim();
-      if(sym.includes('XAU')) return sym.includes('C')?'XAUUSDc':'XAUUSD';
-      if(sym.includes('XAG')) return 'XAGUSDc';
-      if(sym.includes('US30')) return sym.includes('C')?'US30c':'US30';
-      if(sym.includes('NAS100')) return sym.includes('C')?'NAS100c':'NAS100';
-      if(sym.includes('GER40')) return 'GER40';
-      if(sym.includes('US500')) return 'US500';
-      if(sym.includes('BTC')) return sym.includes('C')?'BTCUSDc':'BTCUSD';
-      if(sym.includes('ETH')) return sym.includes('C')?'ETHUSDc':'ETHUSD';
-      if(sym.includes('OIL')) return sym;
-      return sym.replace('C','') + (text.includes(sym+'C')||text.includes(sym+' C')?'c':'');
+      let raw=m[0].trim();
+      let base=raw.replace(/C/g,'').replace(/c/g,'').replace(/\s/g,'').toUpperCase();
+      // return with lowercase c - broker format
+      return base + 'c';
     }
   }
   return null;
@@ -190,27 +176,29 @@ async function handleFile(file){
   img.onload=async()=>{
     canvas.width=img.width; canvas.height=img.height; canvas.classList.add('has-img');
     ctx.drawImage(img,0,0);
-    document.getElementById('uploadStatus').innerText=`✓ SR-72 LOCKED: ${file.name} • ${(file.size/1024).toFixed(0)}KB`;
-    document.getElementById('ocrStatus').innerText=`🔍 SR-72 OCR reading symbol from chart...`;
+    document.getElementById('uploadStatus').innerText=`✓ LOCKED: ${file.name} • ${(file.size/1024).toFixed(0)}KB`;
+    document.getElementById('ocrStatus').innerText=`🔍 OCR reading symbol...`;
     document.getElementById('scanBtn').disabled=false;
-    
     try{
-      const {data:{text}} = await Tesseract.recognize(canvas, 'eng', { logger: m => {} });
+      const {data:{text}} = await Tesseract.recognize(canvas, 'eng');
       let detected = detectSymbolFromText(text);
       if(detected){
+        // ensure lowercase c
+        detected = normalizeSymbol(detected);
         currentSymbol=detected;
         symLabel.innerText=detected;
         marketLabel.innerText=`SR-72 DARK STAR • ${detected} • AUTO-DETECTED`;
-        sel.value=detected;
-        if(![...sel.options].some(o=>o.value===detected)){
-          let opt=document.createElement('option'); opt.value=detected; opt.text=detected+' (Auto)'; sel.appendChild(opt); sel.value=detected;
+        // add to select if not exists
+        let exists=[...sel.options].some(o=>o.value.toUpperCase()===detected.toUpperCase());
+        if(!exists){
+          let opt=document.createElement('option'); opt.value=detected; opt.text=detected+' (Auto)'; sel.appendChild(opt);
         }
-        document.getElementById('ocrStatus').innerText=`✅ AUTO-DETECTED: ${detected} from screenshot text • Ready to scan`;
+        sel.value=detected;
+        document.getElementById('ocrStatus').innerText=`✅ AUTO-DETECTED: ${detected} • Fixed to lowercase c • Ready`;
         document.getElementById('autoPill').style.display='inline-block';
         document.getElementById('autoPill').innerText=`AUTO: ${detected}`;
-        document.getElementById('log').innerText=`Auto-detected ${detected} • Press Scan`;
       } else {
-        document.getElementById('ocrStatus').innerText=`⚠️ No symbol text found, using selected ${currentSymbol} • You can change manually`;
+        document.getElementById('ocrStatus').innerText=`⚠️ No symbol found, using ${currentSymbol}`;
       }
     } catch(e){
       document.getElementById('ocrStatus').innerText=`OCR skipped, using ${currentSymbol}`;
@@ -218,16 +206,14 @@ async function handleFile(file){
   };
   img.src=URL.createObjectURL(file);
 }
-
 fileInput.addEventListener('change',e=>{ if(e.target.files[0]) handleFile(e.target.files[0]); });
 dropZone.addEventListener('dragover',e=>{e.preventDefault(); dropZone.style.borderColor='#fbbf24'});
 dropZone.addEventListener('dragleave',()=>dropZone.style.borderColor='#2a344b');
 dropZone.addEventListener('drop',e=>{e.preventDefault(); if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);});
 function badgeCls(t){return t=='BUY'?'buy':t=='SELL'?'sell':'range'}
-
 async function scanUploaded(){
  if(!uploadedFile){alert('Upload chart first'); return;}
- document.getElementById('analysis').innerText=`SR-72 scanning ${currentSymbol} M1/M5/M15 • locking to live market...`;
+ document.getElementById('analysis').innerText=`Scanning ${currentSymbol} M1/M5/M15 • live market...`;
  let fd=new FormData(); fd.append('image', uploadedFile); fd.append('symbol', currentSymbol);
  let r=await fetch('/api/scan_image',{method:'POST',body:fd}).then(r=>r.json());
  if(r.error){document.getElementById('analysis').innerText=r.error; return;}
@@ -239,7 +225,7 @@ async function scanUploaded(){
  document.getElementById('ph').innerText=`H ${r.period_high?.toFixed(dec)} / L ${r.period_low?.toFixed(dec)}`;
  const confEl=document.getElementById('conf'); confEl.innerText=`CONFIDENCE ${r.confidence}%`; confEl.className='conf-badge '+(r.confidence>=74?'conf-high':r.confidence>=60?'conf-med':'conf-low');
  document.getElementById('confTop').innerText=`${r.confidence}%`;
- document.getElementById('analysis').innerText=r.trend;
+ document.getElementById('analysis').innerText=r.trend + ` [broker resolved: ${r.symbol}]`;
  if(r.mtf){
    document.getElementById('mtf').innerHTML=`<span class="mtf-badge ${badgeCls(r.mtf.m1)}">M1 ${r.mtf.m1}</span><span class="mtf-badge ${badgeCls(r.mtf.m5)}">M5 ${r.mtf.m5}</span><span class="mtf-badge ${badgeCls(r.mtf.m15)}">M15 ${r.mtf.m15}</span>`;
  }
@@ -261,11 +247,11 @@ async function scanUploaded(){
    document.getElementById('consDesc').innerText=r.conservative.desc;
    document.getElementById('conservativeCard').style.display='block';
  }
- document.getElementById('log').innerText=`SR-72 ${r.symbol} locked @ ${r.live.toFixed(dec)} • ${r.direction} • ${r.confidence}%`;
+ document.getElementById('log').innerText=`${r.symbol} locked @ ${r.live.toFixed(dec)} • ${r.direction} • ${r.confidence}%`;
  loadReal();
 }
-async function placeAggressive(){if(!lastAgg)return; await fetch('/api/sniper/enter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:lastAgg})}); document.getElementById('log').innerText=`Placed ${lastAgg.symbol} Aggressive @ ${lastAgg.entry_mid}`; loadReal();}
-async function placeConservative(){if(!lastCons)return; await fetch('/api/sniper/enter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:lastCons})}); document.getElementById('log').innerText=`Placed ${lastCons.symbol} Conservative @ ${lastCons.entry_mid}`; loadReal();}
+async function placeAggressive(){if(!lastAgg)return; await fetch('/api/sniper/enter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:lastAgg})}); loadReal();}
+async function placeConservative(){if(!lastCons)return; await fetch('/api/sniper/enter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:lastCons})}); loadReal();}
 async function loadReal(){try{let pos=await fetch('/api/positions').then(r=>r.json()); document.getElementById('tradeList').innerHTML=pos.length?pos.map(x=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #1e2433;font-family:JetBrains Mono;font-size:11px"><span>${x.symbol} ${x.type} ${x.volume}</span><span style="color:${x.profit>0?'#34d399':'#f87171'}">$${(x.profit||0).toFixed(2)}</span></div>`).join(''):'<div style="color:#4b5563;font-size:11px">No open positions</div>'; let ord=await fetch('/api/orders').then(r=>r.json()); document.getElementById('ordersList').innerHTML=ord.length?ord.map(o=>`<div style="padding:5px 0;border-bottom:1px solid #1e2433;color:#8b949e;font-family:JetBrains Mono;font-size:10px">${o.symbol} ${o.type} @ ${o.openPrice}</div>`).join(''):'<div style="color:#4b5563;font-size:11px">No pending orders</div>';}catch(e){}}
 function closeAll(){fetch('/api/close_all',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({symbol:currentSymbol})}).then(()=>loadReal());}
 setInterval(loadReal,4000); loadReal();
