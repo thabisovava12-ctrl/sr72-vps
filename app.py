@@ -17,14 +17,10 @@ def get_candles_try(symbol, tf, limit=120):
     try:
         url=f"{baseMD()}/symbols/{symbol}/timeframes/{tf}/candles?limit={limit}"
         r=requests.get(url, headers=H(), timeout=15, verify=False)
-        if r.status_code!=200:
-            return []
+        if r.status_code!=200: return []
         d=r.json()
-        arr=d['candles'] if isinstance(d, dict) and 'candles' in d else d if isinstance(d,list) else []
-        return arr
-    except Exception as e:
-        print(f"candle fail {symbol} {e}")
-        return []
+        return d['candles'] if isinstance(d, dict) and 'candles' in d else d if isinstance(d,list) else []
+    except: return []
 
 def ema(vals, p):
     if not vals or len(vals)==0: return None
@@ -57,22 +53,30 @@ def analyze_chart_image(image_path):
         img = cv2.imread(image_path)
         if img is None: return "RANGE", 0
         h,w,_ = img.shape
-        crop = img[int(h*0.15):int(h*0.92), int(w*0.08):int(w*0.92)]
+        # V5.4 FIX: focus right 35% where latest EMAs cross
+        crop = img[int(h*0.18):int(h*0.92), int(w*0.60):int(w*0.96)]
         hsv = cv2.cvtColor(crop, cv2.COLOR_BGR2HSV)
-        lower_red1 = np.array([0,70,50]); upper_red1 = np.array([10,255,255])
-        lower_red2 = np.array([160,70,50]); upper_red2 = np.array([180,255,255])
+        # RED = EMA 9
+        lower_red1 = np.array([0,80,80]); upper_red1 = np.array([10,255,255])
+        lower_red2 = np.array([160,80,80]); upper_red2 = np.array([180,255,255])
         red_mask = cv2.bitwise_or(cv2.inRange(hsv, lower_red1, upper_red1), cv2.inRange(hsv, lower_red2, upper_red2))
-        blue_mask = cv2.inRange(hsv, np.array([90,50,50]), np.array([135,255,255]))
-        ch,cw = red_mask.shape
-        right_w = int(cw*0.20)
-        ry = np.where(red_mask[:, -right_w:]>0)[0]
-        by = np.where(blue_mask[:, -right_w:]>0)[0]
-        if len(ry)==0 or len(by)==0: return "RANGE", 0
-        red_y = float(np.mean(ry)); blue_y = float(np.mean(by))
+        # BLUE/CYAN = EMA 21
+        blue_mask = cv2.inRange(hsv, np.array([85,60,60]), np.array([135,255,255]))
+        ry = np.where(red_mask>0)[0]
+        by = np.where(blue_mask>0)[0]
+        if len(ry)<20 or len(by)<20:
+            return "RANGE", 0
+        red_y = float(np.median(ry))
+        blue_y = float(np.median(by))
         score = abs(red_y-blue_y)
-        if red_y < blue_y: return "SELL", score
-        if blue_y < red_y: return "BUY", score
-        return "RANGE", 0
+        # FIXED: larger Y = lower on screen = lower price
+        # red below blue = EMA9 < EMA21 = SELL
+        if red_y > blue_y + 2:
+            return "SELL", score
+        elif blue_y > red_y + 2:
+            return "BUY", score
+        else:
+            return "RANGE", score
     except Exception as e:
         print("vision error", e)
         return "RANGE", 0
@@ -93,14 +97,12 @@ def do_sr72(requested_symbol, image_path=None):
     for c in candidates:
         if c and c not in seen: uniq.append(c); seen.add(c)
 
-    # --- V5.3 RESOLVER WITH FALLBACK ---
     real_symbol=None; c1m=[]
     for sym in uniq:
         tmp=get_candles_try(sym, "1m", 120)
-        if len(tmp)>=10: # lowered from 20 to 10 to survive broker lag
+        if len(tmp)>=10:
             real_symbol=sym; c1m=tmp; break
 
-    # If candles empty, use live price to unblock — this fixes your screenshot error
     live_fallback=0
     if not real_symbol:
         for sym in uniq:
@@ -115,7 +117,7 @@ def do_sr72(requested_symbol, image_path=None):
             except: continue
 
     if not real_symbol:
-        return {"error":f"❌ {req} NOT FOUND Tried {', '.join(uniq)} — check /api/symbols", "live":0, "symbol":req, "requested":req, "confidence":0, "period_high":0, "period_low":0, "ema9":0, "ema21":0, "ema50":0, "direction":"RANGE", "mtf":{"m1":"RANGE","m5":"RANGE","m15":"RANGE","img":"RANGE"}}
+        return {"error":f"❌ {req} NOT FOUND Tried {', '.join(uniq)}", "live":0, "symbol":req, "requested":req, "confidence":0, "period_high":0, "period_low":0, "ema9":0, "ema21":0, "ema50":0, "direction":"RANGE", "mtf":{"m1":"RANGE","m5":"RANGE","m15":"RANGE","img":"RANGE"}}
 
     c5m=get_candles_try(real_symbol, "5m", 80)
     c15m=get_candles_try(real_symbol, "15m", 80)
@@ -178,10 +180,13 @@ def do_sr72(requested_symbol, image_path=None):
     img_trend="RANGE"; img_score=0
     if image_path:
         img_trend, img_score = analyze_chart_image(image_path)
+        # Only boost if vision matches trend, penalize if opposite
         if trend1!="RANGE" and img_trend==trend1:
             confidence = min(86, confidence + 12)
-            if img_score>10 and confidence>=74:
+            if img_score>8 and confidence>=74:
                 confidence=86
+        elif trend1!="RANGE" and img_trend!=trend1:
+            confidence = max(48, confidence - 12)
 
     if ph1==0 or ph1<100 or pl1==0 or pl1<100:
         ph1 = live + 10.76
@@ -205,7 +210,7 @@ def do_sr72(requested_symbol, image_path=None):
     else:
         aggressive={"side":"SELL","symbol":real_symbol,"entry_low":rnd(live-step*0.4),"entry_high":rnd(live+step*1.2),"entry_mid":rnd(live),"sl":rnd(live+step*2),"tp1":rnd(live-step*3),"tp2":rnd(pl1),"desc":f"RANGE SELL {real_symbol} VISION {img_trend}"}
 
-    trend_txt=f"{real_symbol} EMA 9 {s9_1:.{dec}f} 21 {s21_1:.{dec}f} 50 {s50_1:.{dec}f} MTF M1 {trend1}({trend1_strong}) M5 {trend5}({trend5_strong}) M15 {trend15}({trend15_strong}) [VISION {img_trend} {img_score:.1f}] Price {live:.{dec}f} [broker {real_symbol}] [vision: {img_trend}]"
+    trend_txt=f"{real_symbol} EMA 9 {s9_1:.{dec}f} 21 {s21_1:.{dec}f} 50 {s50_1:.{dec}f} MTF M1 {trend1}({trend1_strong}) M5 {trend5}({trend5_strong}) M15 {trend15}({trend15_strong}) [VISION {img_trend} {img_score:.1f}] Price {live:.{dec}f} [broker {real_symbol}]"
 
     return {
      "confidence":confidence,
@@ -235,7 +240,7 @@ def do_sr72(requested_symbol, image_path=None):
 @app.route('/')
 def idx(): return send_from_directory('.','index.html')
 @app.route('/health')
-def health(): return "OK SR-72 V5.3 EMA 9/21/50 VISION FALLBACK"
+def health(): return "OK SR-72 V5.4 EMA 9/21/50 VISION FIXED"
 @app.route('/api/positions')
 def positions(): return requests.get(f"{base()}/positions", headers=H(), timeout=10, verify=False).text, 200
 @app.route('/api/orders')
@@ -273,7 +278,7 @@ def scan_image():
 def enter():
     j=request.get_json() or {}; plan=j.get('plan'); symbol=plan.get('symbol', DEFAULT_SYMBOL); side=plan['side']; act="ORDER_TYPE_BUY_LIMIT" if side=="BUY" else "ORDER_TYPE_SELL_LIMIT"
     for tp in [plan['tp1'], plan['tp2']]:
-        order={"actionType":act,"symbol":symbol,"volume":LOT,"openPrice":plan['entry_mid'],"stopLoss":plan['sl'],"takeProfit":tp,"comment":"SR-72 V5.3 EMA9521 VISION"}
+        order={"actionType":act,"symbol":symbol,"volume":LOT,"openPrice":plan['entry_mid'],"stopLoss":plan['sl'],"takeProfit":tp,"comment":"SR-72 V5.4 VISION FIX"}
         requests.post(f"{base()}/trade", headers={"auth-token": TOKEN, "Content-Type":"application/json"}, json=order, timeout=15, verify=False)
     return jsonify({"placed":plan})
 @app.route('/api/close_all', methods=['POST'])
