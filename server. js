@@ -6,96 +6,66 @@ app.use(express.static('public'));
 const upload = multer({storage: multer.memoryStorage()});
 
 let state = {
-  symbol: 'XAUUSDc',
-  price: 4151.90,
-  high: 4155.90,
-  low: 4136.20,
-  period_high: 4155.90,
-  period_low: 4136.20,
-  ema: {9:4144.40,21:4146.01,50:4148.25},
-  ema5: {9:4144.40,21:4146.01,50:4148.25},
-  ema15: {9:4144.40,21:4146.01,50:4148.25},
-  vision: 'BUY',
-  mtf: {M1:'SELL',M5:'BUY',M15:'BUY',img:'BUY'},
-  positions: [], orders: [],
-  lastTick: Date.now()
+  symbol: 'XAUUSDc', price: 4190.84, high: 4193.31, low: 4184.30,
+  period_high: 4193.31, period_low: 4184.30,
+  ema: {9:4189.07,21:4188.54,50:4188.90},
+  mtf: {M1:'SELL',M5:'SELL',M15:'SELL',img:'SELL'},
+  positions: [], orders: [], lastTick: Date.now()
 };
-
-function emaUpdate(price, prev, period){ const k=2/(period+1); return price*k+prev*(1-k); }
+function emaUpd(pr, prev, per){ const k=2/(per+1); return pr*k+prev*(1-k); }
 
 app.post('/api/tick',(req,res)=>{
   const {price,symbol,high,low}=req.body;
   if(!price) return res.json({ok:false});
   state.price=parseFloat(price);
   if(symbol) state.symbol=symbol;
-  state.high=high?parseFloat(high):Math.max(state.high,state.price);
-  state.low=low?parseFloat(low):Math.min(state.low,state.price);
-  state.period_high=state.high; state.period_low=state.low;
-  state.ema[9]=emaUpdate(state.price,state.ema[9],9);
-  state.ema[21]=emaUpdate(state.price,state.ema[21],21);
-  state.ema[50]=emaUpdate(state.price,state.ema[50],50);
+  if(high) state.high=parseFloat(high);
+  if(low) state.low=parseFloat(low);
+  state.ema[9]=emaUpd(state.price,state.ema[9],9);
+  state.ema[21]=emaUpd(state.price,state.ema[21],21);
+  state.ema[50]=emaUpd(state.price,state.ema[50],50);
   state.lastTick=Date.now();
   res.json({ok:true});
 });
 
-let cache=null, lastAnalyze=0;
 app.get('/api/analyze',(req,res)=>{
-  if(Date.now()-lastAnalyze<200 && cache) return res.json(cache);
-  lastAnalyze=Date.now();
   const p=state.price, e9=state.ema[9], e21=state.ema[21], e50=state.ema[50];
-  let m1=e9>e21 && e21>e50?'BUY':e9<e21 && e21<e50?'SELL':'RANGE';
-  let m5=state.mtf.M5||'BUY', m15=state.mtf.M15||'BUY', vision=state.mtf.img||'BUY';
-  state.mtf={M1:m1,M5:m5,M15:m15,img:vision};
-  let signal, conf, lock;
-  if(m1!==vision){ signal='LOCKED_WAIT'; conf=74; lock=`${vision} LOCKED`; }
-  else if(m1==='BUY' && m5==='BUY' && m15==='BUY'){ signal='BUY'; conf=86; lock='BUY ACTIVE'; }
-  else if(m1==='SELL' && m5==='SELL' && m15==='SELL'){ signal='SELL'; conf=86; lock='SELL ACTIVE'; }
-  else { signal='LOCKED_WAIT'; conf=45; lock=`${vision} LOCKED`; }
-  cache={symbol:state.symbol, price:p.toFixed(2), live:p.toFixed(2), high:state.high.toFixed(2), low:state.low.toFixed(2), period_high:state.period_high.toFixed(2), period_low:state.period_low.toFixed(2), ema9:e9.toFixed(2), ema21:e21.toFixed(2), ema50:e50.toFixed(2), mtf:state.mtf, vision:vision, visionLock:lock, signal:signal, confidence:conf+'%', speed:'120ms'};
-  res.json(cache);
+  let m1=e9>e21&&e21>e50?'BUY':e9<e21&&e21<e50?'SELL':'RANGE';
+  state.mtf.M1=m1;
+  let {M5,M15,img}=state.mtf;
+  let signal,conf,lock;
+  if(m1==='SELL'&&M5==='SELL'&&M15==='SELL'&&img==='SELL'){signal='SELL';conf=86;lock='SELL ACTIVE';}
+  else if(m1==='BUY'&&M5==='BUY'&&M15==='BUY'&&img==='BUY'){signal='BUY';conf=86;lock='BUY ACTIVE';}
+  else if(m1!==img){signal='LOCKED_WAIT';conf=74;lock=`${img} LOCKED`;}
+  else{signal='LOCKED_WAIT';conf=45;lock=`${img} LOCKED`;}
+  res.json({symbol:state.symbol, price:p.toFixed(2), live:p.toFixed(2), high:state.high.toFixed(2), low:state.low.toFixed(2), period_high:state.high.toFixed(2), period_low:state.low.toFixed(2), ema9:e9.toFixed(2), ema21:e21.toFixed(2), ema50:e50.toFixed(2), mtf:state.mtf, vision:img, visionLock:lock, signal:signal, confidence:conf+'%', speed:'120ms'});
 });
 
-// MERGED FINAL - RR 1:2 + VISION = DIRECTION
 app.post('/api/scan_image', upload.single('image'), (req,res)=>{
-  const symbol = req.body.symbol || state.symbol;
-  const p = state.price;
-  const e9 = state.ema[9], e21 = state.ema[21], e50 = state.ema[50];
-
-  // FIX 1: Direction = VISION, not EMA
-  const dir = state.mtf.img || 'BUY';
-  const conf = state.mtf.M1!== state.mtf.img? 74 : 86;
-  const isBuy = dir === 'BUY';
-
-  // FIX 2: RR 1:2 STRICT
-  const A_SL = 3.5, A_TP = 7.0; // 1:2
-  const C_SL = 5.0, C_TP = 10.0; // 1:2
-
+  const symbol=req.body.symbol||state.symbol;
+  const p=state.price, e9=state.ema[9], e21=state.ema[21], e50=state.ema[50];
+  const dir=state.mtf.img;
+  const isBuy=dir==='BUY';
+  const A_SL=3.5,A_TP=7.0,C_SL=5.0,C_TP=10.0;
   res.json({
-    symbol, live: p, dec: 2, high: state.high, low: state.low,
-    period_high: state.period_high, period_low: state.period_low,
-    ema9: e9, ema21: e21, ema50: e50, direction: dir, confidence: conf, mtf: state.mtf,
-    trend: `${symbol} EMA 9 ${e9.toFixed(2)} 21 ${e21.toFixed(2)} 50 ${e50.toFixed(2)} MTF M1 ${state.mtf.M1} M5 ${state.mtf.M5} M15 ${state.mtf.M15} [VISION ${state.mtf.img} ${conf}.0] PRICE ${p.toFixed(2)} RR 1:2`,
-    aggressive: {
-      side: dir,
-      entry_low: (p-0.2).toFixed(1), entry_high: (p+0.2).toFixed(1), entry_mid: p.toFixed(1),
-      sl: (isBuy? p - A_SL : p + A_SL).toFixed(2),
-      tp1: (isBuy? p + A_TP : p - A_TP).toFixed(1),
-      tp2: (isBuy? p + A_TP : p - A_TP).toFixed(1),
-      desc: `SR-72 VISION ${dir} ${p.toFixed(1)} M1 ${state.mtf.M1} M5 ${state.mtf.M5} M15 ${state.mtf.M15} IMG ${state.mtf.img} ${conf}.0 ${conf>=80?'ACTIVE':'LOCKED'} RR 1:2 SL ${A_SL} TP ${A_TP}`
+    symbol, live:p, dec:2, high:state.high, low:state.low, period_high:state.period_high, period_low:state.period_low,
+    ema9:e9, ema21:e21, ema50:e50, direction:dir, confidence:86, mtf:state.mtf,
+    trend:`${symbol} EMA 9 ${e9.toFixed(2)} 21 ${e21.toFixed(2)} 50 ${e50.toFixed(2)} MTF M1 ${state.mtf.M1} M5 ${state.mtf.M5} M15 ${state.mtf.M15} [VISION ${state.mtf.img} 180.0] PRICE ${p.toFixed(2)} RR 1:2`,
+    aggressive:{
+      side:dir, entry_low:(p-0.2).toFixed(1), entry_high:(p+0.2).toFixed(1), entry_mid:p.toFixed(1),
+      sl:(isBuy?p-A_SL:p+A_SL).toFixed(2), tp1:(isBuy?p+A_TP:p-A_TP).toFixed(1), tp2:(isBuy?p+A_TP:p-A_TP).toFixed(1),
+      desc:`SR-72 VISION ${dir} ${p.toFixed(1)} RR 1:2 SL ${A_SL} TP ${A_TP} ${state.mtf.M1}/${state.mtf.M5}/${state.mtf.M15} ACTIVE`
     },
-    conservative: {
-      side: dir,
-      entry_low: '4134.2', entry_high: '4135.9',
-      sl: (isBuy? 4135.05 - C_SL : 4135.05 + C_SL).toFixed(1),
-      tp1: (isBuy? 4135.05 + C_TP : 4135.05 - C_TP).toFixed(1),
-      tp2: (isBuy? 4135.05 + C_TP : 4135.05 - C_TP).toFixed(1),
-      desc: `BREAKDOWN ${dir} RR 1:2 SL ${C_SL} TP ${C_TP}`
+    conservative:{
+      side:dir, entry_low:(p-16.8).toFixed(1), entry_high:(p-15.2).toFixed(1),
+      sl:(isBuy?(p-16)-C_SL:(p-16)+C_SL).toFixed(1), tp1:(isBuy?(p-16)+C_TP:(p-16)-C_TP).toFixed(1), tp2:(isBuy?(p-16)+C_TP:(p-16)-C_TP).toFixed(1),
+      desc:`BREAKDOWN ${dir} RR 1:2 SL ${C_SL} TP ${C_TP}`
     }
   });
 });
 
 app.get('/api/positions',(req,res)=>res.json(state.positions));
 app.get('/api/orders',(req,res)=>res.json(state.orders));
-app.post('/api/sniper/enter',(req,res)=>{ state.positions.push({symbol:req.body.plan.side,type:req.body.plan.side,volume:'0.10',profit:0,openPrice:req.body.plan.entry_mid}); res.json({ok:true}); });
-app.post('/api/close_all',(req,res)=>{ state.positions=[]; state.orders=[]; res.json({ok:true}); });
-app.listen(process.env.PORT||10000,()=>console.log('SR-72 V6.4 MANUAL RR 1:2 VISION READY'));
+app.post('/api/sniper/enter',(req,res)=>{ state.positions.push(req.body.plan); res.json({ok:true}); });
+app.post('/api/close_all',(req,res)=>{ state.positions=[]; res.json({ok:true}); });
+app.listen(process.env.PORT||10000);
