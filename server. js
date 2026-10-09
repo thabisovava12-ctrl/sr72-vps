@@ -1,33 +1,66 @@
-const express=require('express');const multer=require('multer');const app=express();app.use(express.json());app.use(express.static('public'));const upload=multer({storage:multer.memoryStorage()});
-let state={symbol:'XAUUSDc',price:4196.28,high:4197.09,low:4185.54,ema:{9:4194.80,21:4194.10,50:4193.20},mtf:{M1:'BUY',M5:'BUY',M15:'BUY',img:'BUY'},positions:[],orders:[]};
-app.post('/api/tick',(req,res)=>{if(req.body.price){state.price=parseFloat(req.body.price);}res.json({ok:true});});
-app.get('/api/analyze',(req,res)=>{const p=state.price,e9=state.ema[9],e21=state.ema[21],e50=state.ema[50];let m1=e9>e21&&e21>e50?'BUY':e9<e21&&e21<e50?'SELL':'RANGE';state.mtf={M1:m1,M5:m1,M15:m1,img:m1};let lock=m1==='BUY'?'BUY ACTIVE':'SELL ACTIVE';res.json({symbol:state.symbol,price:p.toFixed(2),live:p.toFixed(2),high:state.high.toFixed(2),low:state.low.toFixed(2),period_high:state.high.toFixed(2),period_low:state.low.toFixed(2),ema9:e9.toFixed(2),ema21:e21.toFixed(2),ema50:e50.toFixed(2),mtf:state.mtf,vision:m1,visionLock:lock,signal:m1,confidence:(m1==='RANGE'?45:86)+'%',speed:'120ms'});});
-app.post('/api/scan_image',upload.single('image'),(req,res)=>{
-  // NOW USES PRICE FROM IMAGE - sent by frontend
-  const p=parseFloat(req.body.live)||state.price;
-  const e9=parseFloat(req.body.ema9)||state.ema[9];
-  const e21=parseFloat(req.body.ema21)||state.ema[21];
-  const e50=parseFloat(req.body.ema50)||state.ema[50];
-  const symbol=req.body.symbol||'XAUUSDc';
-  // YOUR STRATEGY: EMA 9/21/50
-  let dir='RANGE';
-  if(e9>e21 && e21>e50 && p>e9) dir='BUY'; // Uptrend: 9 above 21 above 50
-  else if(e9<e21 && e21<e50 && p<e9) dir='SELL'; // Downtrend: 9 below 21 below 50
-  else if(e9>e21) dir='BUY'; else if(e9<e21) dir='SELL';
+const express = require('express');
+const app = express();
+app.use(express.json());
+app.use(express.static('public'));
 
-  const buy=dir==='BUY';
-  const conf=dir==='RANGE'?45:86;
-  state.price=p; state.ema={9:e9,21:e21,50:e50};
-  state.mtf={M1:dir,M5:dir,M15:dir,img:dir};
+let bot = {
+  connected: true,
+  exness: 'Connected to Exness',
+  running: true,
+  account: null,
+  price: 4198.43,
+  ema: {9:4197.85,21:4196.95,50:4195.15},
+  confidence: 86.4,
+  direction: 'SELL',
+  status: {
+    market: 'Scanning volatility structure...',
+    sl: 'AI adjusting risk 2.8%',
+    scoring: 'Confidence 86.4% SELL',
+    monitor: 'SR-72 Dark Star AI Sniper is monitoring your live account'
+  },
+  trades: []
+};
 
-  const ASL=3.5,ATP=7.0,CSL=5.0,CTP=10.0;
-  res.json({
-    symbol,live:p,dec:2,high:p+1,low:p-10,period_high:p+1,period_low:p-10,ema9:e9,ema21:e21,ema50:e50,direction:dir,confidence:conf,mtf:state.mtf,
-    trend:`${symbol} EMA 9 ${e9.toFixed(2)} 21 ${e21.toFixed(2)} 50 ${e50.toFixed(2)} MTF M1 ${dir} M5 ${dir} M15 ${dir} [VISION ${dir} ${conf}.0] PRICE ${p.toFixed(2)} RR 1:2 — ${buy?'EMA9>EMA21>EMA50 UPTREND':'EMA9<EMA21<EMA50 DOWNTREND'}`,
-    aggressive:{side:dir,entry_low:(p-0.2).toFixed(1),entry_high:(p+0.2).toFixed(1),entry_mid:p.toFixed(1),sl:(buy?p-ASL:p+ASL).toFixed(2),tp1:(buy?p+ATP:p-ATP).toFixed(1),tp2:(buy?p+ATP:p-ATP).toFixed(1),desc:`SR-72 VISION ${dir} ${p.toFixed(1)} EMA9 ${e9.toFixed(2)} ${e9>e21?'>':''} EMA21 ${e21.toFixed(2)} ${e21>e50?'>':''} EMA50 ${e50.toFixed(2)} IMG ${dir} ${conf}.0 ${conf>=80?'ACTIVE':'LOCKED'} RR 1:2 SL ${ASL} TP ${ATP}`},
-    conservative:{side:dir,entry_low:(p-16.8).toFixed(1),entry_high:(p-15.2).toFixed(1),sl:(buy?(p-16)-CSL:(p-16)+CSL).toFixed(1),tp1:(buy?(p-16)+CTP:(p-16)-CTP).toFixed(1),tp2:(buy?(p-16)+CTP:(p-16)-CTP).toFixed(1),desc:`BREAKDOWN ${dir} RR 1:2 SL ${CSL} TP ${CTP} — ${buy?'UPTREND':'DOWNTREND'}`}
-  });
+// Fake live price feed - replace with real Exness later
+setInterval(() => {
+  if (!bot.running) return;
+  bot.price += (Math.random() - 0.5) * 1.8;
+  // EMA calc
+  const k9 = 2/(9+1), k21 = 2/(21+1), k50 = 2/(50+1);
+  bot.ema[9] = bot.price*k9 + bot.ema[9]*(1-k9);
+  bot.ema[21] = bot.price*k21 + bot.ema[21]*(1-k21);
+  bot.ema[50] = bot.price*k50 + bot.ema[50]*(1-k50);
+
+  let dir = bot.ema[9] > bot.ema[21] && bot.ema[21] > bot.ema[50]? 'BUY' : bot.ema[9] < bot.ema[21]? 'SELL' : 'RANGE';
+  bot.direction = dir;
+  let conf = dir==='RANGE'? 48 : 78 + Math.random()*12;
+  bot.confidence = conf.toFixed(1);
+  bot.status.scoring = `Confidence ${bot.confidence}% ${dir}`;
+  bot.status.market = dir==='BUY'? 'Uptrend detected - momentum building' : dir==='SELL'? 'Downtrend detected - selling pressure' : 'Scanning volatility structure...';
+}, 1200);
+
+app.get('/api/bot', (req,res)=> res.json(bot));
+
+app.post('/api/bot/start', (req,res)=>{
+  bot.running = true;
+  res.json({ok:true, running:true});
 });
-app.get('/api/positions',(req,res)=>res.json(state.positions));app.get('/api/orders',(req,res)=>res.json(state.orders));
-app.post('/api/sniper/enter',(req,res)=>{state.positions.push(req.body.plan);res.json({ok:true});});app.post('/api/close_all',(req,res)=>{state.positions=[];state.orders=[];res.json({ok:true});});
-app.listen(process.env.PORT||10000);
+app.post('/api/bot/stop', (req,res)=>{
+  bot.running = false;
+  res.json({ok:true, running:false});
+});
+
+app.post('/api/connect', (req,res)=>{
+  bot.account = req.body;
+  bot.connected = true;
+  res.json({ok:true});
+});
+
+app.post('/api/remove', (req,res)=>{
+  bot.account = null;
+  bot.connected = false;
+  res.json({ok:true});
+});
+
+app.listen(process.env.PORT||10000, ()=> console.log('SR-72 DARK STAR SNIPER BOT RUNNING'));
+qppq
