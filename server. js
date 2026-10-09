@@ -1,88 +1,24 @@
-const express = require('express');
-const multer = require('multer');
-const app = express();
-app.use(express.json());
-app.use(express.static('public'));
-const upload = multer({storage: multer.memoryStorage()});
-
-let state = {
-  symbol: 'XAUUSDc',
-  price: 4192.31,
-  high: 4193.82,
-  low: 4184.70,
-  period_high: 4193.82,
-  period_low: 4184.70,
-  ema: {9:4191.70,21:4190.90,50:4190.40},
-  ema5: {9:4191.20,21:4190.50,50:4190.10},
-  ema15: {9:4190.80,21:4190.20,50:4189.90},
-  vision: 'SELL',
-  mtf: {M1:'SELL',M5:'SELL',M15:'SELL',img:'SELL'},
-  positions: [], orders: [], lastTick: Date.now()
-};
+const express=require('express');const multer=require('multer');const app=express();app.use(express.json());app.use(express.static('public'));const upload=multer({storage:multer.memoryStorage()});
+let state={symbol:'XAUUSDc',price:4193.31,high:4195.23,low:4184.70,period_high:4195.23,period_low:4184.70,ema:{9:4192.10,21:4191.85,50:4191.30},ema5:{9:4192.00,21:4191.70,50:4191.20},ema15:{9:4191.80,21:4191.50,50:4191.10},vision:'BUY',mtf:{M1:'BUY',M5:'BUY',M15:'BUY',img:'BUY'},positions:[],orders:[]};
 function emaUpdate(p,prev,per){const k=2/(per+1);return p*k+prev*(1-k);}
-
-app.post('/api/tick',(req,res)=>{
-  if(!req.body.price) return res.json({ok:false});
-  state.price=parseFloat(req.body.price);
-  state.high=Math.max(state.high,state.price);
-  state.low=Math.min(state.low,state.price);
-  state.ema[9]=emaUpdate(state.price,state.ema[9],9);
-  state.ema[21]=emaUpdate(state.price,state.ema[21],21);
-  state.ema[50]=emaUpdate(state.price,state.ema[50],50);
-  res.json({ok:true});
-});
-
+app.post('/api/tick',(req,res)=>{if(!req.body.price)return res.json({ok:false});state.price=parseFloat(req.body.price);state.high=Math.max(state.high,state.price);state.low=Math.min(state.low,state.price);state.ema[9]=emaUpdate(state.price,state.ema[9],9);state.ema[21]=emaUpdate(state.price,state.ema[21],21);state.ema[50]=emaUpdate(state.price,state.ema[50],50);res.json({ok:true});});
 app.get('/api/analyze',(req,res)=>{
-  const p=state.price, e9=state.ema[9], e21=state.ema[21], e50=state.ema[50];
-  let m1=e9>e21&&e21>e50?'BUY':e9<e21&&e21<e50?'SELL':'RANGE';
-  let m5=state.ema5[9]>state.ema5[21]?'BUY':'SELL';
-  let m15=state.ema15[9]>state.ema15[21]?'BUY':'SELL';
-  let v=state.vision;
-  if(m1==='SELL'&&m5==='SELL') v='SELL'; else if(m1==='BUY'&&m5==='BUY') v='BUY';
-  state.mtf={M1:m1,M5:m5,M15:m15,img:v};
-  let sig,conf,lock;
-  if(m1===m5&&m5===m15&&m15===v){sig=v;conf=86;lock=`${v} ACTIVE`;}
-  else if(m1!==v){sig='LOCKED_WAIT';conf=74;lock=`${v} LOCKED`;}
-  else{sig='LOCKED_WAIT';conf=45;lock=`${v} LOCKED`;}
-  res.json({symbol:state.symbol,price:p.toFixed(2),live:p.toFixed(2),high:state.high.toFixed(2),low:state.low.toFixed(2),period_high:state.high.toFixed(2),period_low:state.low.toFixed(2),ema9:e9.toFixed(2),ema21:e21.toFixed(2),ema50:e50.toFixed(2),mtf:state.mtf,vision:v,visionLock:lock,signal:sig,confidence:conf+'%',speed:'120ms'});
+ const p=state.price,e9=state.ema[9],e21=state.ema[21],e50=state.ema[50];
+ let m1=e9>e21&&e21>e50?'BUY':e9<e21&&e21<e50?'SELL':'RANGE';
+ let m5=state.ema5[9]>state.ema5[21]?'BUY':'SELL';let m15=state.ema15[9]>state.ema15[21]?'BUY':'SELL';let v=state.vision;
+ if(m1==='BUY'&&m5==='BUY')v='BUY';if(m1==='SELL'&&m5==='SELL')v='SELL';
+ state.mtf={M1:m1,M5:m5,M15:m15,img:v};
+ let sig,conf,lock;if(m1===m5&&m5===m15&&m15===v){sig=v;conf=86;lock=`${v} ACTIVE`;}else if(m1!==v){sig='LOCKED_WAIT';conf=74;lock=`${v} LOCKED`;}else{sig='LOCKED_WAIT';conf=45;lock=`${v} LOCKED`;}
+ res.json({symbol:state.symbol,price:p.toFixed(2),live:p.toFixed(2),high:state.high.toFixed(2),low:state.low.toFixed(2),period_high:state.high.toFixed(2),period_low:state.low.toFixed(2),ema9:e9.toFixed(2),ema21:e21.toFixed(2),ema50:e50.toFixed(2),mtf:state.mtf,vision:v,visionLock:lock,signal:sig,confidence:conf+'%',speed:'120ms'});
 });
-
-app.post('/api/scan_image', upload.single('image'), (req,res)=>{
-  const p=state.price;
-  const e9=state.ema[9], e21=state.ema[21], e50=state.ema[50];
-  const dir=state.mtf.img;
-  const buy=dir==='BUY';
-  const conf=state.mtf.M1!==state.mtf.img?74:86;
-  const ASL=3.5, ATP=7.0, CSL=5.0, CTP=10.0;
-  res.json({
-    symbol: state.symbol, live: p, dec: 2, high: state.high, low: state.low,
-    period_high: state.high, period_low: state.low,
-    ema9: e9, ema21: e21, ema50: e50, direction: dir, confidence: conf, mtf: state.mtf,
-    trend: `${state.symbol} EMA 9 ${e9.toFixed(2)} 21 ${e21.toFixed(2)} 50 ${e50.toFixed(2)} MTF M1 ${state.mtf.M1} M5 ${state.mtf.M5} M15 ${state.mtf.M15} [VISION ${dir} 180.0] PRICE ${p.toFixed(2)} RR 1:2`,
-    aggressive: {
-      side: dir,
-      entry_low: (p-0.2).toFixed(1),
-      entry_high: (p+0.2).toFixed(1),
-      entry_mid: p.toFixed(1),
-      sl: (buy?p-ASL:p+ASL).toFixed(2),
-      tp1: (buy?p+ATP:p-ATP).toFixed(1),
-      tp2: (buy?p+ATP:p-ATP).toFixed(1),
-      desc: `SR-72 VISION ${dir} ${p.toFixed(1)} M1 ${state.mtf.M1} M5 ${state.mtf.M5} M15 ${state.mtf.M15} IMG ${dir} ${conf}.0 ${conf>=80?'ACTIVE':'LOCKED'} RR 1:2 SL ${ASL} TP ${ATP}`
-    },
-    conservative: {
-      side: dir,
-      entry_low: (p-16.8).toFixed(1),
-      entry_high: (p-15.2).toFixed(1),
-      sl: (buy?(p-16)-CSL:(p-16)+CSL).toFixed(1),
-      tp1: (buy?(p-16)+CTP:(p-16)-CTP).toFixed(1),
-      tp2: (buy?(p-16)+CTP:(p-16)-CTP).toFixed(1),
-      desc: `BREAKDOWN ${dir} RR 1:2 SL ${CSL} TP ${CTP}`
-    }
-  });
+app.post('/api/scan_image',upload.single('image'),(req,res)=>{
+ const p=state.price;const e9=state.ema[9],e21=state.ema[21],e50=state.ema[50];const dir=state.mtf.img;const buy=dir==='BUY';const conf=state.mtf.M1!==state.mtf.img?74:86;
+ const ASL=3.5,ATP=7.0,CSL=5.0,CTP=10.0;
+ res.json({symbol:state.symbol,live:p,dec:2,high:state.high,low:state.low,period_high:state.high,period_low:state.low,ema9:e9,ema21:e21,ema50:e50,direction:dir,confidence:conf,mtf:state.mtf,
+ trend:`${state.symbol} EMA 9 ${e9.toFixed(2)} 21 ${e21.toFixed(2)} 50 ${e50.toFixed(2)} MTF M1 ${state.mtf.M1} M5 ${state.mtf.M5} M15 ${state.mtf.M15} [VISION ${dir} 180.0] PRICE ${p.toFixed(2)} RR 1:2`,
+ aggressive:{side:dir,entry_low:(p-0.2).toFixed(1),entry_high:(p+0.2).toFixed(1),entry_mid:p.toFixed(1),sl:(buy?p-ASL:p+ASL).toFixed(2),tp1:(buy?p+ATP:p-ATP).toFixed(1),tp2:(buy?p+ATP:p-ATP).toFixed(1),desc:`SR-72 VISION ${dir} ${p.toFixed(1)} M1 ${state.mtf.M1} M5 ${state.mtf.M5} M15 ${state.mtf.M15} IMG ${dir} ${conf}.0 ${conf>=80?'ACTIVE':'LOCKED'} RR 1:2 SL ${ASL} TP ${ATP}`},
+ conservative:{side:dir,entry_low:(p-16.8).toFixed(1),entry_high:(p-15.2).toFixed(1),sl:(buy?(p-16)-CSL:(p-16)+CSL).toFixed(1),tp1:(buy?(p-16)+CTP:(p-16)-CTP).toFixed(1),tp2:(buy?(p-16)+CTP:(p-16)-CTP).toFixed(1),desc:`BREAKDOWN ${dir} RR 1:2 SL ${CSL} TP ${CTP}`}});
 });
-
-app.get('/api/positions',(req,res)=>res.json(state.positions));
-app.get('/api/orders',(req,res)=>res.json(state.orders));
-app.post('/api/sniper/enter',(req,res)=>{state.positions.push(req.body.plan);res.json({ok:true});});
-app.post('/api/close_all',(req,res)=>{state.positions=[];state.orders=[];res.json({ok:true});});
+app.get('/api/positions',(req,res)=>res.json(state.positions));app.get('/api/orders',(req,res)=>res.json(state.orders));
+app.post('/api/sniper/enter',(req,res)=>{state.positions.push(req.body.plan);res.json({ok:true});});app.post('/api/close_all',(req,res)=>{state.positions=[];state.orders=[];res.json({ok:true});});
 app.listen(process.env.PORT||10000);
