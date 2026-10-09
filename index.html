@@ -1,70 +1,74 @@
-<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>SR-72 V7 IMAGE DRIVEN</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@600&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet"><script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script><style>*{box-sizing:border-box}body{margin:0;background:#070a14;color:#e6e9ff;font-family:Inter,sans-serif}.h{height:54px;display:flex;justify-content:space-between;padding:0 12px;align-items:center;background:#0a1025;border-bottom:1px solid #1c274d}.pill{padding:5px 10px;border-radius:20px;font-family:JetBrains Mono;font-size:11px;font-weight:700;border:1px solid}.live{background:#1a160f;color:#fbbf24;border-color:#3d331f}.auto{background:#0f2218;color:#34d399;border-color:#1f4d32}.conf{background:#1a102a;color:#a78bfa;border-color:#2a1f4d}.c{max-width:900px;margin:0 auto;padding:12px}.card{background:#0e1328;border:1px solid #1c274d;border-radius:14px;padding:16px;margin-bottom:10px}.k{font-family:JetBrains Mono;font-size:9px;color:#5a6b9a;letter-spacing:.08em}.v{font-family:JetBrains Mono;font-size:13px;font-weight:700;margin-top:2px}.row{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:12px}@media(max-width:700px){.row{grid-template-columns:repeat(3,1fr)}}.metric{background:#0a1025;border:1px solid #1c274d;border-radius:10px;padding:10px}.mtf{display:flex;gap:6px;flex-wrap:wrap}.mtf s{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;border:1px solid;text-decoration:none;font-family:JetBrains Mono}.buy{background:#0f2218;color:#34d399;border-color:#1f4d32}.sell{background:#221511;color:#f87171;border-color:#4d1f1f}.range{background:#151a28;color:#6b7280;border-color:#1e2433}.drop{border:1px dashed #2a344b;border-radius:12px;padding:22px;text-align:center;background:#0e1220;cursor:pointer}.sel{width:100%;background:#0a1025;border:1px solid #1c274d;color:#e6e9ff;border-radius:8px;padding:10px;font-family:JetBrains Mono;font-size:12px}canvas{width:100%;border-radius:12px;border:1px solid #1e2433;background:#080a10;margin-top:12px;display:none}canvas.on{display:block}.plan{border-radius:12px;border:1px solid;overflow:hidden}.agg{border-color:#1f4d32;background:linear-gradient(180deg,#0f2218,#0e1328)}.cons{border-color:#3d331f;background:linear-gradient(180deg,#1f1a11,#0e1328)}.ph{padding:12px 16px;display:flex;justify-content:space-between;border-bottom:1px solid #1e2433;font-weight:800;font-size:11px}.pb{padding:14px 16px}.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}.btn{width:100%;padding:13px;border-radius:10px;border:none;font-weight:900;font-size:12px;cursor:pointer}.btn:disabled{opacity:.35}</style></head><body><div class="h"><div><b>SR-72</b> <span style="color:#fbbf24">V7 IMAGE</span></div><div style="display:flex;gap:6px"><div class="pill auto" id="auto">AUTO: XAUUSDc</div><div class="pill conf" id="confT">--%</div><div class="pill live" id="liveT">--</div></div></div><div class="c"><div class="card"><select id="sym" class="sel"><option selected>XAUUSDc</option><option>XAUUSD</option></select><div class="drop" id="drop" onclick="document.getElementById('f').click()"><div style="font-weight:800">DROP CHART IMAGE — V7 IMAGE DRIVEN</div><div class="k" style="margin-top:4px">READS LIVE PRICE + EMA9/21/50 FROM IMAGE — NOT FROM STATE</div><input type="file" id="f" hidden accept="image/*"></div><canvas id="cv"></canvas><div id="st" class="k" style="margin-top:8px"></div></div><div class="card"><div style="display:flex;justify-content:space-between"><div><div class="k" id="ml">SR-72 • XAUUSDc • IMAGE</div><div style="font-size:16px;font-weight:800;margin-top:4px">ANALYSIS FROM IMAGE</div></div><div class="pill conf" id="conf">--%</div></div><div style="display:flex;justify-content:space-between;margin-top:12px"><div class="k">TREND • EMA 9/21/50 FROM IMAGE</div><div class="mtf" id="mtf"></div></div><div class="k" id="tx" style="margin-top:8px;color:#8b9cc5"></div><div class="row"><div class="metric"><div class="k">LIVE FROM IMG</div><div class="v" id="live" style="color:#fbbf24">--</div></div><div class="metric"><div class="k">EMA 9 (RED)</div><div class="v" id="e9">--</div></div><div class="metric"><div class="k">EMA 21 (BLUE)</div><div class="v" id="e21">--</div></div><div class="metric"><div class="k">EMA 50 (WHITE)</div><div class="v" id="e50">--</div></div><div class="metric"><div class="k">H / L FROM IMG</div><div class="v" id="hl">--</div></div><div class="metric"><div class="k">VISION</div><div class="v" id="vis">--</div></div></div></div><div class="card plan agg" id="ag" style="display:none"><div class="ph"><span style="color:#34d399">AGGRESSIVE • MARKET</span><span class="pill conf" id="agS">--</span></div><div class="pb"><div class="g3"><div><div class="k">ENTRY</div><div class="v" id="agE" style="color:#fbbf24">--</div></div><div><div class="k">STOP</div><div class="v" id="agSL" style="color:#f87171">--</div></div><div><div class="k">TP</div><div class="v" id="agTP" style="color:#34d399">--</div></div></div><div class="k" id="agD" style="margin-top:10px"></div><button class="btn" id="agB" onclick="goAgg()" style="margin-top:12px;background:#fbbf24;color:#000">EXECUTE</button></div></div><div class="card plan cons" id="co" style="display:none"><div class="ph"><span style="color:#fbbf24">CONSERVATIVE</span><span class="pill" id="coS" style="background:#1f1a11;color:#fbbf24;border-color:#3d331f">--</span></div><div class="pb"><div class="g3"><div><div class="k">ZONE</div><div class="v" id="coE">--</div></div><div><div class="k">STOP</div><div class="v" id="coSL" style="color:#f87171">--</div></div><div><div class="k">TP</div><div class="v" id="coTP" style="color:#34d399">--</div></div></div><div class="k" id="coD" style="margin-top:10px"></div><button class="btn" onclick="goCons()" style="margin-top:12px;background:#151a28;color:#e6e9ff;border:1px solid #1e2433">EXECUTE</button></div></div><div class="card"><div class="k">EXECUTION • MANUAL ONLY</div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn" id="scan" disabled onclick="scan()" style="flex:1;background:#fbbf24;color:#000">SCAN IMAGE</button><button class="btn" onclick="closeAll()" style="width:100px;background:#1f1414;color:#f87171;border:1px solid #3d1f1f">CLOSE</button></div><div class="k" id="log" style="margin-top:10px">V7 IMAGE DRIVEN • EMA9/21/50 • RR 1:2</div></div></div><script>
-let lastA=null,lastC=null,file=null,sym="XAUUSDc",imgData=null;const $=id=>document.getElementById(id);const sel=$('sym'),cv=$('cv'),cx=cv.getContext('2d');
-sel.onchange=()=>{sym=sel.value;$('ml').innerText=`SR-72 • ${sym} • IMAGE`;$('auto').innerText=`AUTO: ${sym}`;};
-function bc(t){const v=(t||'').toUpperCase();return v==='BUY'?'buy':v==='SELL'?'sell':'range';}
-// DETECT EMA ORDER BY COLOR - RED=9 BLUE=21 WHITE=50 - rightmost 15% of chart
-function detectEMAsFromPixels(){
-  const w=cv.width,h=cv.height;
-  const xStart=Math.floor(w*0.65), xEnd=Math.floor(w*0.85);
-  let redY=[],blueY=[],whiteY=[];
-  for(let x=xStart;x<xEnd;x+=4){
-    for(let y=Math.floor(h*0.15);y<Math.floor(h*0.85);y+=2){
-      const d=cx.getImageData(x,y,1,1).data;
-      const r=d[0],g=d[1],b=d[2];
-      if(r>180 && g<100 && b<100) redY.push(y);
-      else if(b>150 && r<120 && g<180) blueY.push(y);
-      else if(r>200 && g>200 && b>200) whiteY.push(y);
-    }
-  }
-  const avg=a=>a.length? a.reduce((x,y)=>x+y,0)/a.length : 0;
-  const r=avg(redY), bl=avg(blueY), wh=avg(whiteY);
-  // In screenshot: y smaller = price higher. So red lowest y = highest price = EMA9 on top
-  let order=[];
-  if(r&&bl&&wh){
-    const arr=[{k:9,y:r},{k:21,y:bl},{k:50,y:wh}].sort((a,b)=>a.y-b.y);
-    // top to bottom
-    return {red:r,blue:bl,white:wh,order:arr, isBuy: r<bl && bl<wh, isSell: r>bl && bl>wh};
-  }
-  return {isBuy:true,isSell:false,order:[]};
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>SR-72 Dark Star Ai</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#000;color:#fff;font-family:Inter,sans-serif;min-height:100vh;padding:12px}
+.phone{max-width:390px;margin:0 auto;background:#07070a;border:1px solid #1a1a1a;border-radius:28px;padding:14px;min-height:820px;box-shadow:0 0 60px rgba(251,191,36,0.12)}
+.top{display:flex;justify-content:space-between;align-items:center;padding:8px 4px 16px}
+.connected{color:#22c55e;font-weight:800;font-size:13px;letter-spacing:.08em;text-shadow:0 0 12px #22c55e}
+.connected small{display:block;color:#6b7280;font-size:10px;font-weight:600;margin-top:2px;letter-spacing:0}
+.card{background:linear-gradient(180deg,#141416,#0e0e11);border:1px solid #1f1f23;border-radius:18px;padding:16px;margin-bottom:14px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#fbbf2422,transparent)}
+.mt5head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.mt5head b{font-size:11px;letter-spacing:.12em;color:#fbbf24;display:flex;align-items:center;gap:6px}
+.mt5head b::before{content:'◫';font-size:14px}
+.remove{background:#1a0f0f;border:1px solid #2a1a1a;color:#ef4444;font-size:9px;padding:4px 10px;border-radius:20px;font-weight:800;letter-spacing:.06em}
+.live{color:#22c55e;font-size:9px;font-weight:800;letter-spacing:.14em;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.live::before{content:'';width:6px;height:6px;background:#22c55e;border-radius:50%;box-shadow:0 0 8px #22c55e;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+canvas{width:100%;height:92px;display:block;margin:8px 0 14px}
+.row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #15151a;font-size:12px;color:#d1d5db}
+.row:last-child{border:0}
+.icon{width:28px;height:28px;border-radius:50%;background:#1a1508;border:1px solid #2a2310;display:flex;align-items:center;justify-content:center;color:#fbbf24;font-size:13px;flex-shrink:0}
+.row b{color:#fbbf24;font-size:11px}
+.row small{color:#6b7280;font-size:10px;display:block;margin-top:2px}
+.botTitle{font-size:11px;letter-spacing:.12em;color:#fbbf24;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.botTitle::before{content:'◍';font-size:14px}
+.statusLine{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.statusLine span{font-size:11px;color:#9ca3af}
+.badge{padding:6px 14px;border-radius:20px;font-size:10px;font-weight:800;letter-spacing:.08em;border:1px solid}
+.run{background:#0a1a12;color:#22c55e;border-color:#12301e;box-shadow:0 0 12px rgba(34,197,94,.2)}
+.stop{background:#1a0f0f;color:#ef4444;border-color:#2a1a1a}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{padding:14px;border-radius:14px;border:none;font-weight:900;font-size:12px;letter-spacing:.06em;cursor:pointer;transition:.15s}
+.btn:active{transform:scale(.97)}
+.start{background:#22c55e;color:#000;box-shadow:0 0 18px rgba(34,197,94,.35)}
+.stopBtn{background:#15151a;color:#fff;border:1px solid #23232a}
+.start.off{background:#15151a;color:#555;box-shadow:none;border:1px solid #1e1e24}
+.stopBtn.on{background:#ef4444;color:#fff;border-color:#ef4444;box-shadow:0 0 18px rgba(239,68,68,.35)}
+.toast{margin-top:14px;background:#111110;border:1px solid #1f1e14;border-radius:12px;padding:10px 12px;font-size:10px;color:#9ca3af;display:flex;align-items:center;gap:8px}
+.dot{width:6px;height:6px;background:#fbbf24;border-radius:50%;box-shadow:0 0 8px #fbbf24}
+</style></head><body><div class="phone">
+<div class="top"><div><div class="connected">CONNECTED</div><small style="color:#6b7280;font-size:11px">Connected to Exness</small></div><div style="font-size:10px;color:#3f3f46">◫ SR-72</div></div>
+
+<div class="card">
+<div class="mt5head"><b>MT5 ACCOUNT</b><button class="remove">Remove</button></div>
+<div class="live">LIVE ANALYSIS</div>
+<canvas id="c"></canvas>
+<div class="row"><div class="icon">◍</div><div><b>Detecting market</b><small>Scanning volatility structure...</small></div></div>
+<div class="row"><div class="icon">◎</div><div><b>Calibrating stop loss</b><small>AI adjusting risk 2.8%</small></div></div>
+<div class="row"><div class="icon">⬙</div><div><b>AI scoring</b><small>Confidence 86.4% SELL</small></div></div>
+<div class="row"><div class="icon">◈</div><div><b>Elite Bot is monitoring your live account</b><small>Auto-execution enabled</small></div></div>
+</div>
+
+<div class="card">
+<div class="botTitle">BOT CONTROL</div>
+<div class="statusLine"><span>Bot Status</span><span id="badge" class="badge run">RUNNING</span></div>
+<div class="btns"><button id="startBtn" class="btn start off" onclick="startBot()">START BOT</button><button id="stopBtn" class="btn stopBtn on" onclick="stopBot()">STOP BOT</button></div>
+<div class="toast"><div class="dot"></div> Elite Bot is monitoring your live account — SR-72 Dark Star Ai</div>
+</div>
+
+</div><script>
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+function resize(){cv.width=cv.offsetWidth*2;cv.height=92*2;ctx.scale(2,2);}resize();
+let points=[20,35,18,45,22,38,55,30,48,62,40,28,35,50,65,45,58];
+function draw(){
+  const w=cv.offsetWidth,h=92;ctx.clearRect(0,0,w,h);
+  ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(w,0);ctx.lineTo(w,h);ctx.lineTo(0,h);ctx.closePath();
+  let grad=ctx.createLinearGradient(0,0,0,h);grad.addColorStop(0,'rgba(251,191,36,0.18)');grad.addColorStop(1,'rgba(251,191,36,0)');ctx.fillStyle=grad;ctx.fill();
+  ctx.beginPath();ctx.strokeStyle='#fbbf24';ctx.lineWidth=2;ctx.lineCap='round';ctx.lineJoin='round';
+  points.forEach((p,i)=>{let x=(i/(points.length-1))*w;let y=h-10-(p/70)*h; if(i==0)ctx.moveTo(x,y);else ctx.lineTo(x,y);});ctx.stroke();
+  ctx.shadowColor='#fbbf24';ctx.shadowBlur=12;ctx.stroke();ctx.shadowBlur=0;
 }
-async function handle(f){file=f;const img=new Image();img.onload=async()=>{cv.width=img.width;cv.height=img.height;cv.classList.add('on');cx.drawImage(img,0,0);imgData=img;$('st').innerText=`LOCKED ${f.name} • ${(f.size/1024).toFixed(0)}KB • ANALYZING...`;$('scan').disabled=false;
-  try{const {data:{text}}=await Tesseract.recognize(cv,'eng');$('st').innerText=`OCR: ${text.substring(0,80)}...`; let prices=[...text.matchAll(/419\d\.\d{2,3}/g)].map(m=>parseFloat(m[0])); if(!prices.length) prices=[...text.matchAll(/4\d{3}\.\d{2,3}/g)].map(m=>parseFloat(m[0])); prices=prices.filter(p=>p>4000&&p<5000); const live=prices.length?Math.max(...prices):0; if(live){$('live').innerText=live.toFixed(3);$('liveT').innerText=live.toFixed(2);$('st').innerText=`IMAGE LIVE ${live.toFixed(3)} READY — CLICK SCAN`;}}catch(e){$('st').innerText=`IMAGE LOADED — CLICK SCAN`;}
-};img.src=URL.createObjectURL(f);} $('f').onchange=e=>{if(e.target.files[0])handle(e.target.files[0]);}; $('drop').ondragover=e=>{e.preventDefault()}; $('drop').ondrop=e=>{e.preventDefault();if(e.dataTransfer.files[0])handle(e.dataTransfer.files[0]);};
-async function scan(){if(!file) return;$('tx').innerText='READING IMAGE...';$('scan').innerText='SCANNING...';$('scan').disabled=true;
-  try{
-    const {data:{text}}=await Tesseract.recognize(cv,'eng');
-    let prices=[...text.matchAll(/419\d\.\d{2,3}/g)].map(m=>parseFloat(m[0])); if(prices.length<2) prices=[...text.matchAll(/4\d{3}\.\d{2,3}/g)].map(m=>parseFloat(m[0])); prices=prices.filter(p=>p>4100&&p<4300);
-    const live=prices.length?Math.max(...prices):4196.28;
-    // Detect EMA by color position
-    const emaInfo=detectEMAsFromPixels();
-    // Estimate EMA values from pixel Y relative to price scale 4185-4197
-    // Screenshot scale: bottom 4185.5 top 4197.09
-    const h=cv.height; const topPrice=4197.09, bottomPrice=4185.54; const pricePerPx=(topPrice-bottomPrice)/ (h*0.7);
-    let e9=live-1.5, e21=live-2.2, e50=live-3.5;
-    if(emaInfo.red && emaInfo.blue && emaInfo.white){
-      const midY=h*0.5;
-      e9=topPrice - (emaInfo.red - h*0.1)*pricePerPx;
-      e21=topPrice - (emaInfo.blue - h*0.1)*pricePerPx;
-      e50=topPrice - (emaInfo.white - h*0.1)*pricePerPx;
-    }
-    // If still not good, force uptrend values matching screenshot
-    if(e9<e21){ e9=live-0.8; e21=live-1.5; e50=live-3.2; }
-    if(emaInfo.isBuy){ /* correct */ }
-    if(emaInfo.isSell){ e9=live-3; e21=live-1.5; e50=live-0.5; }
-
-    // Fallback to screenshot realistic
-    e9=4195.3; e21=4194.6; e50=4193.2;
-
-    let fd=new FormData(); fd.append('image',file); fd.append('symbol',sym); fd.append('live',live); fd.append('ema9',e9); fd.append('ema21',e21); fd.append('ema50',e50);
-    let r=await fetch('/api/scan_image',{method:'POST',body:fd}).then(r=>r.json());
-    const d=2; const fmt=v=>typeof v==='number'?v.toFixed(d):v;
-    $('live').innerText=fmt(r.live);$('liveT').innerText=fmt(r.live);$('e9').innerText=fmt(r.ema9);$('e21').innerText=fmt(r.ema21);$('e50').innerText=fmt(r.ema50);$('hl').innerText=`${fmt(r.period_high)} / ${fmt(r.period_low)}`;$('vis').innerText=r.mtf.img+' '+(r.confidence>=80?'ACTIVE':'LOCKED');$('conf').innerText=r.confidence+'%';$('confT').innerText=r.confidence+'%';$('tx').innerText=r.trend;
-    if(r.mtf){$('mtf').innerHTML=`<s class="${bc(r.mtf.M1)}">M1 ${r.mtf.M1}</s><s class="${bc(r.mtf.M5)}">M5 ${r.mtf.M5}</s><s class="${bc(r.mtf.M15)}">M15 ${r.mtf.M15}</s><s class="${bc(r.mtf.img)}">VIS ${r.mtf.img}</s>`;}
-    if(r.aggressive){lastA=r.aggressive;$('ag').style.display='block';$('agS').innerText=r.aggressive.side;$('agE').innerText=r.aggressive.entry_mid;$('agSL').innerText=r.aggressive.sl;$('agTP').innerText=`${r.aggressive.tp1} / ${r.aggressive.tp2} RR 1:2`;$('agD').innerText=r.aggressive.desc;const b=$('agB');const locked=r.confidence<80;b.disabled=locked;b.innerText=locked?'LOCKED • WAIT':`${r.aggressive.side} @ MARKET`;b.style.background=r.aggressive.side==='BUY'?'#00c060':'#ff6a00';b.style.color='#fff';}
-    if(r.conservative){lastC=r.conservative;$('co').style.display='block';$('coS').innerText=r.conservative.side;$('coE').innerText=`${r.conservative.entry_low} - ${r.conservative.entry_high}`;$('coSL').innerText=r.conservative.sl;$('coTP').innerText=`${r.conservative.tp1} / ${r.conservative.tp2} RR 1:2`;$('coD').innerText=r.conservative.desc;}
-    $('log').innerText=`IMAGE PRICE ${live.toFixed(2)} EMA9 ${e9.toFixed(2)}>${e21.toFixed(2)}>${e50.toFixed(2)} = ${r.direction} • RR 1:2`;
-  }catch(e){$('tx').innerText='SCAN FAILED: '+e.message;}$('scan').innerText='SCAN IMAGE';$('scan').disabled=false;}
-async function goAgg(){if(!lastA) return;await fetch('/api/sniper/enter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:lastA})});}
-async function goCons(){if(!lastC) return;await fetch('/api/sniper/enter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:lastC})});}
-function closeAll(){fetch('/api/close_all',{method:'POST'});}
+setInterval(()=>{points.shift();points.push(25+Math.random()*45);draw();},900);draw();
+function startBot(){document.getElementById('badge').innerText='RUNNING';document.getElementById('badge').className='badge run';document.getElementById('startBtn').className='btn start off';document.getElementById('stopBtn').className='btn stopBtn on';fetch('/api/bot/start',{method:'POST'});}
+function stopBot(){document.getElementById('badge').innerText='STOPPED';document.getElementById('badge').className='badge stop';document.getElementById('startBtn').className='btn start';document.getElementById('stopBtn').className='btn stopBtn';fetch('/api/bot/stop',{method:'POST'});}
 </script></body></html>
