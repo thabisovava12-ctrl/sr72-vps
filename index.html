@@ -3,8 +3,8 @@
 .top{display:flex;justify-content:space-between;padding:10px 6px 18px}.connected{color:#22c55e;font-weight:800;font-size:14px}.connected small{display:block;color:#8a8a90;font-size:12px;font-weight:600;margin-top:3px}.sr{font-size:11px;color:#7a7a80}
 .card{background:linear-gradient(180deg,#15151a 0%,#0e0e12 100%);border:1px solid #222228;border-radius:20px;padding:16px;margin-bottom:14px}.mt5head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.mt5head b{font-size:11px;letter-spacing:.14em;color:#d4a017;display:flex;gap:6px}.remove{background:#1c1212;border:1px solid #2c1e1e;color:#ff4d4d;font-size:10px;padding:5px 12px;border-radius:20px;font-weight:800}
 .live{color:#22c55e;font-size:10px;font-weight:800;letter-spacing:.18em;display:flex;align-items:center;gap:8px}.live::before{content:'';width:7px;height:7px;background:#22c55e;border-radius:50%;box-shadow:0 0 10px #22c55e;animation:pulse 1.2s infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-.chartWrap{width:100%;height:130px;margin:10px 0 18px;overflow:hidden;border-radius:12px;background:radial-gradient(ellipse at center, rgba(212,160,23,0.10) 0%, transparent 70%);position:relative}canvas{width:100%;height:100%;display:block}
-.row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid #1a1a20}.row:last-child{border:0}.icon{width:32px;height:32px;border-radius:50%;background:#18150c;border:1px solid #2a2412;display:flex;align-items:center;justify-content:center;color:#d4a017;font-size:12px;flex-shrink:0}.row b{color:#d4a017;font-size:12px;display:block}.row small{color:#8a8a90;font-size:11px;display:block;margin-top:3px}
+.chartWrap{width:100%;height:130px;margin:10px 0 18px;overflow:hidden;border-radius:12px;background:radial-gradient(ellipse at center, rgba(212,160,23,0.10) 0%, transparent 70%)}canvas{width:100%;height:100%;display:block}
+.row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid #1a1a20}.row:last-child{border:0}.icon{width:32px;height:32px;border-radius:50%;background:#18150c;border:1px solid #2a2412;display:flex;align-items:center;justify-content:center;color:#d4a017;font-size:12px}.row b{color:#d4a017;font-size:12px;display:block}.row small{color:#8a8a90;font-size:11px;display:block;margin-top:3px}
 .botTitle{font-size:11px;letter-spacing:.14em;color:#d4a017;font-weight:800;margin-bottom:16px;display:flex;gap:8px}.botTitle::before{content:'';width:6px;height:6px;background:#d4a017;border-radius:50%;box-shadow:0 0 8px #d4a017}
 .statusLine{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.statusLine span{font-size:12px;color:#9ca3af}.badge{padding:7px 16px;border-radius:20px;font-size:11px;font-weight:800}.run{background:#0f1f16;color:#22c55e;border:1px solid #1a3323}.stop{background:#1f1212;color:#ef4444;border:1px solid #332020}
 .btns{display:grid;grid-template-columns:1fr 1fr;gap:12px}.btn{padding:15px;border-radius:14px;border:none;font-weight:900;font-size:12px;cursor:pointer}.start{background:#2a2a30;color:#5a5a64}.start.active{background:#22c55e;color:#000;box-shadow:0 0 20px rgba(34,197,94,.4)}.stopBtn{background:#dc2626;color:#fff;box-shadow:0 0 20px rgba(220,38,38,.4)}.stopBtn.off{background:#2a2a30;color:#5a5a64;box-shadow:none}
@@ -33,7 +33,7 @@
 <div style="padding:12px 16px;background:#0e0e12;display:flex;justify-content:space-between;font-size:11px"><span>Balance:</span><span id="bal">20.00</span> USD</div>
 <div style="padding:12px 16px;display:flex;justify-content:space-between;font-size:11px;border-top:1px solid #1a1a20"><span>Equity:</span><span id="eq">20.00</span> USD</div>
 <div style="padding:8px 16px;display:flex;gap:8px;font-size:10px"><span style="color:#ff1a1a">● EMA 9</span><span style="color:#00b7ff">● EMA 21</span><span style="color:#fff">● EMA 50</span><span style="color:#ffcc33;margin-left:auto">LOT 0.01 FIXED</span></div>
-<div id="tradeList" style="max-height:320px;overflow-y:auto;background:#000"></div>
+<div id="tradeList" style="max-height:340px;overflow-y:auto;background:#000"></div>
 </div>
 </div>
 <div id="loginBox"><div style="background:#15151a;border:1px solid #222228;border-radius:20px;padding:20px;width:100%;max-width:340px"><b style="color:#d4a017;font-size:11px;letter-spacing:.14em">CONNECT EXNESS MT5</b><input id="login" placeholder="MT5 Login" style="width:100%;margin-top:16px;padding:14px;border-radius:12px;background:#0a0a0e;border:1px solid #222;color:#fff"><input id="server" placeholder="Server - Exness-MT5Real" style="width:100%;margin-top:10px;padding:14px;border-radius:12px;background:#0a0a0e;border:1px solid #222;color:#fff"><button onclick="connectMT5()" style="width:100%;margin-top:14px;padding:14px;border-radius:12px;background:#d4a017;color:#000;font-weight:900;border:none">CONNECT & START SNIPER</button></div></div>
@@ -42,7 +42,7 @@ const cv=document.getElementById('c'),ctx=cv.getContext('2d');
 let W,H,dpr=2;function resize(){W=cv.parentElement.clientWidth;H=cv.parentElement.clientHeight;cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);}window.addEventListener('resize',resize);resize();
 let t=0;
 function draw(){
- t+=0.025;
+ t+=0.03;
  ctx.clearRect(0,0,W,H);
  ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=1;
  for(let i=1;i<4;i++){ctx.beginPath();ctx.moveTo(0,H*i/4);ctx.lineTo(W,H*i/4);ctx.stroke();}
@@ -70,14 +70,16 @@ function draw(){
  drawL(ema21,'#00b7ff',1.6);
  drawL(ema9,'#ff1a1a',1.8);
  drawL(price,'#ffcc33',2.4,true);
- let scanY=(Math.sin(t*1.2)*0.5+0.5)*H*0.7 + H*0.15;
- ctx.beginPath();ctx.strokeStyle='rgba(212,160,23,0.55)';ctx.lineWidth=1;ctx.setLineDash([6,6]);
+ // HORIZONTAL SCANNER - like screenshot, moves top to bottom
+ let scanY = (t*22)%H;
+ ctx.beginPath();ctx.strokeStyle='rgba(212,160,23,0.6)';ctx.lineWidth=1;ctx.setLineDash([7,7]);
  ctx.moveTo(0,scanY);ctx.lineTo(W,scanY);ctx.stroke();ctx.setLineDash([]);
  ctx.beginPath();ctx.fillStyle='#ffcc33';ctx.shadowColor='#ffcc33';ctx.shadowBlur=12;
- let scanX=(t*80)%W;
- ctx.arc(scanX,scanY,3.5,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
- let vScanX=(t*90)%W;
- ctx.beginPath();ctx.strokeStyle='rgba(255,255,255,0.08)';ctx.lineWidth=1;
+ let scanX=(t*85)%W;
+ ctx.arc(scanX,scanY,4,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
+ // VERTICAL BEAM
+ let vScanX=(t*95)%W;
+ ctx.beginPath();ctx.strokeStyle='rgba(255,255,255,0.07)';ctx.lineWidth=1;
  ctx.moveTo(vScanX,0);ctx.lineTo(vScanX,H);ctx.stroke();
  requestAnimationFrame(draw);
 }draw();
@@ -100,7 +102,7 @@ async function fetchBot(){
   document.getElementById('tradeList').innerHTML=html||'<div style="padding:20px;text-align:center;color:#444;font-size:11px">Scanning EMA 9/21/50...</div>';
  }catch(e){}
 }
-setInterval(fetchBot,50);fetchBot();
+setInterval(fetchBot,40);fetchBot();
 function startBot(){fetch('/api/bot/start',{method:'POST'}).then(fetchBot);}
 function stopBot(){fetch('/api/bot/stop',{method:'POST'}).then(fetchBot);}
 async function connectMT5(){let l=document.getElementById('login').value;let s=document.getElementById('server').value;if(!l||!s)return alert('Enter login & server');await fetch('/api/connect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({login:l,server:s})});document.getElementById('loginBox').style.display='none';fetchBot();}
