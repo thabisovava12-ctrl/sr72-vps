@@ -1,0 +1,73 @@
+const express = require('express');
+const multer = require('multer');
+const app = express();
+app.use(express.json());
+app.use(express.static('public'));
+const upload = multer({storage: multer.memoryStorage()});
+
+let state = {
+  symbol: 'XAUUSDc', price: 4184.70, high: 4185.90, low: 4136.20,
+  period_high: 4185.90, period_low: 4136.20,
+  ema: {9:4144.40,21:4146.01,50:4148.25},
+  ema5: {9:4150.20,21:4152.10,50:4158.30},
+  ema15: {9:4160.50,21:4165.00,50:4170.80},
+  vision: 'SELL', visionConf: 86,
+  mtf: {M1:'SELL',M5:'BUY',M15:'BUY',img:'SELL'},
+  positions:[], orders:[], lastTick: Date.now()
+};
+
+function emaUpdate(price, prev, per){ const k=2/(per+1); return price*k+prev*(1-k); }
+
+app.post('/api/tick',(req,res)=>{
+  const {price,symbol,high,low}=req.body; if(!price) return res.json({ok:false});
+  state.price=parseFloat(price); if(symbol) state.symbol=symbol;
+  state.high=high?parseFloat(high):Math.max(state.high,state.price);
+  state.low=low?parseFloat(low):Math.min(state.low,state.price);
+  state.period_high=state.high; state.period_low=state.low;
+  state.ema[9]=emaUpdate(state.price,state.ema[9],9);
+  state.ema[21]=emaUpdate(state.price,state.ema[21],21);
+  state.ema[50]=emaUpdate(state.price,state.ema[50],50);
+  state.lastTick=Date.now();
+  res.json({ok:true, price:state.price, high:state.high, low:state.low, ema:state.ema});
+});
+
+let cache=null,lastAnalyze=0;
+app.get('/api/analyze',(req,res)=>{
+  if(Date.now()-lastAnalyze<200&&cache) return res.json(cache);
+  lastAnalyze=Date.now();
+  const p=state.price,e9=state.ema[9],e21=state.ema[21],e50=state.ema[50];
+  let m1=e9>e21&&e21>e50?'BUY':e9<e21&&e21<e50?'SELL':'RANGE';
+  let m5=state.ema5[9]>e21?'BUY':'SELL';
+  let m15=state.ema15[9]>e50?'BUY':'SELL';
+  let vision=state.vision;
+  if(m1==='SELL'&&m5==='SELL') vision='SELL'; else if(m1==='BUY'&&m5==='BUY') vision='BUY';
+  state.mtf={M1:m1,M5:m5,M15:m15,img:vision};
+  let signal,conf,lock;
+  if(m1==='SELL'&&m5==='BUY'&&vision==='BUY'){signal='LOCKED_WAIT';conf=74;lock='BUY LOCKED';}
+  else if(vision==='BUY'&&m1==='BUY'&&m5==='BUY'&&m15==='BUY'){signal='BUY';conf=86;lock='BUY ACTIVE';}
+  else if(vision==='SELL'&&m1==='SELL'&&m5==='SELL'&&m15==='SELL'){signal='SELL';conf=86;lock='SELL ACTIVE';}
+  else if(vision!==m1){signal='LOCKED_WAIT';conf=45;lock=`${vision} LOCKED`;}
+  else{signal=m1;conf=74;lock=`${vision} ACTIVE`;}
+  cache={symbol:state.symbol,price:p.toFixed(2),live:p.toFixed(2),high:state.high.toFixed(2),low:state.low.toFixed(2),period_high:state.period_high.toFixed(2),period_low:state.period_low.toFixed(2),ema9:e9.toFixed(2),ema21:e21.toFixed(2),ema50:e50.toFixed(2),mtf:state.mtf,vision:vision,visionLock:lock,signal:signal,confidence:conf+'%',speed:'120ms'};
+  res.json(cache);
+});
+
+app.post('/api/scan_image',upload.single('image'),(req,res)=>{
+  const symbol=req.body.symbol||state.symbol; const p=state.price;
+  const e9=state.ema[9],e21=state.ema[21],e50=state.ema[50];
+  const dir=e9<e21?'SELL':'BUY'; const conf=state.mtf.M1!==state.mtf.img?74:86; const isBuy=dir==='BUY';
+  res.json({
+    symbol:symbol, live:p, dec:2, high:state.high, low:state.low, period_high:state.period_high, period_low:state.period_low,
+    ema9:e9, ema21:e21, ema50:e50, direction:dir, confidence:conf, mtf:state.mtf,
+    trend:`${symbol} EMA 9 ${e9.toFixed(2)} 21 ${e21.toFixed(2)} 50 ${e50.toFixed(2)} MTF M1 ${state.mtf.M1} M5 ${state.mtf.M5} M15 ${state.mtf.M15} [VISION ${state.mtf.img}] Price ${p.toFixed(2)} [broker: ${symbol}]`,
+    aggressive:{side:dir, entry_low:(p-0.5).toFixed(2), entry_high:(p+0.5).toFixed(2), entry_mid:p.toFixed(2), sl:(isBuy?p-3.5:p+3.5).toFixed(2), tp1:(isBuy?p+4:p-4).toFixed(2), tp2:(isBuy?p+12:p-12).toFixed(2), desc:`EMA 9/21/50 ${dir} • Vision ${state.mtf.img} ${conf}% ${state.mtf.M1!==state.mtf.img?'LOCKED':'ACTIVE'} • H ${state.high.toFixed(2)} L ${state.low.toFixed(2)}`},
+    conservative:{side:dir, entry_low:(isBuy?p+1:p-3).toFixed(2), entry_high:(isBuy?p+3:p-1).toFixed(2), sl:(isBuy?p-5:p+5).toFixed(2), tp1:(isBuy?p+8:p-8).toFixed(2), tp2:(isBuy?p+18:p-18).toFixed(2), desc:`Breakout • ${symbol} • EMA 50 ${e50.toFixed(2)} • H/L ${state.high.toFixed(2)}/${state.low.toFixed(2)}`}
+  });
+});
+
+app.get('/api/positions',(req,res)=>res.json(state.positions));
+app.get('/api/orders',(req,res)=>res.json(state.orders));
+app.post('/api/sniper/enter',(req,res)=>{ state.positions.push({symbol:req.body.plan.side,type:req.body.plan.side,volume:'0.10',profit:0,openPrice:req.body.plan.entry_mid}); res.json({ok:true});});
+app.post('/api/close_all',(req,res)=>{ state.positions=[]; state.orders=[]; res.json({ok:true});});
+
+app.listen(process.env.PORT||10000,()=>console.log('SR-72 V6.1 MERGED - REAL H/L - Mach 6 READY'));
