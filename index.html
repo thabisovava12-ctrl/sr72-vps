@@ -1,67 +1,63 @@
 <!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>SR-72 Dark Star Ai</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800&display=swap" rel="stylesheet"><style>
 *{box-sizing:border-box;margin:0;padding:0}body{background:#000;color:#fff;font-family:Inter,sans-serif;padding:10px}.phone{max-width:395px;margin:0 auto;background:#09090d;border:1px solid #1c1c20;border-radius:26px;padding:12px;min-height:840px}
-.top{display:flex;justify-content:space-between;padding:10px 6px 18px}.connected{color:#22c55e;font-weight:800;font-size:14px;letter-spacing:.06em}.connected small{display:block;color:#8a8a90;font-size:12px;font-weight:600;margin-top:3px}.sr{font-size:11px;color:#7a7a80;letter-spacing:.1em}
-.card{background:linear-gradient(180deg,#15151a 0%,#0e0e12 100%);border:1px solid #222228;border-radius:20px;padding:16px;margin-bottom:14px}.mt5head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.mt5head b{font-size:11px;letter-spacing:.14em;color:#d4a017;display:flex;align-items:center;gap:6px}.remove{background:#1c1212;border:1px solid #2c1e1e;color:#ff4d4d;font-size:10px;padding:5px 12px;border-radius:20px;font-weight:800}
+.top{display:flex;justify-content:space-between;padding:10px 6px 18px}.connected{color:#22c55e;font-weight:800;font-size:14px}.connected small{display:block;color:#8a8a90;font-size:12px;font-weight:600;margin-top:3px}.sr{font-size:11px;color:#7a7a80}
+.card{background:linear-gradient(180deg,#15151a 0%,#0e0e12 100%);border:1px solid #222228;border-radius:20px;padding:16px;margin-bottom:14px}.mt5head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.mt5head b{font-size:11px;letter-spacing:.14em;color:#d4a017;display:flex;gap:6px}.remove{background:#1c1212;border:1px solid #2c1e1e;color:#ff4d4d;font-size:10px;padding:5px 12px;border-radius:20px;font-weight:800}
 .live{color:#22c55e;font-size:10px;font-weight:800;letter-spacing:.18em;display:flex;align-items:center;gap:8px}.live::before{content:'';width:7px;height:7px;background:#22c55e;border-radius:50%;box-shadow:0 0 10px #22c55e;animation:pulse 1.2s infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-.chartWrap{width:100%;height:110px;margin:10px 0 18px;position:relative;overflow:hidden;border-radius:10px;background:radial-gradient(ellipse at center, rgba(212,160,23,0.10) 0%, transparent 70%)}canvas{width:100%;height:100%;display:block}
+.chartWrap{width:100%;height:110px;margin:10px 0 18px;overflow:hidden;border-radius:10px;background:radial-gradient(ellipse at center, rgba(212,160,23,0.10) 0%, transparent 70%)}canvas{width:100%;height:100%;display:block}
 .row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid #1a1a20}.row:last-child{border:0}.icon{width:32px;height:32px;border-radius:50%;background:#18150c;border:1px solid #2a2412;display:flex;align-items:center;justify-content:center;color:#d4a017;font-size:12px;flex-shrink:0}.row b{color:#d4a017;font-size:12px;display:block}.row small{color:#8a8a90;font-size:11px;display:block;margin-top:3px}
-.botTitle{font-size:11px;letter-spacing:.14em;color:#d4a017;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px}.botTitle::before{content:'';width:6px;height:6px;background:#d4a017;border-radius:50%;box-shadow:0 0 8px #d4a017}
+.botTitle{font-size:11px;letter-spacing:.14em;color:#d4a017;font-weight:800;margin-bottom:16px;display:flex;gap:8px}.botTitle::before{content:'';width:6px;height:6px;background:#d4a017;border-radius:50%;box-shadow:0 0 8px #d4a017}
 .statusLine{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.statusLine span{font-size:12px;color:#9ca3af}.badge{padding:7px 16px;border-radius:20px;font-size:11px;font-weight:800}.run{background:#0f1f16;color:#22c55e;border:1px solid #1a3323}.stop{background:#1f1212;color:#ef4444;border:1px solid #332020}
 .btns{display:grid;grid-template-columns:1fr 1fr;gap:12px}.btn{padding:15px;border-radius:14px;border:none;font-weight:900;font-size:12px;cursor:pointer}.start{background:#2a2a30;color:#5a5a64}.start.active{background:#22c55e;color:#000;box-shadow:0 0 20px rgba(34,197,94,.4)}.stopBtn{background:#dc2626;color:#fff;box-shadow:0 0 20px rgba(220,38,38,.4)}.stopBtn.off{background:#2a2a30;color:#5a5a64;box-shadow:none}
-.toast{margin-top:14px;background:#12120f;border:1px solid #211f16;border-radius:12px;padding:12px;font-size:10.5px;color:#a1a1aa;display:flex;align-items:center;gap:8px}.dot{width:6px;height:6px;background:#d4a017;border-radius:50%;box-shadow:0 0 8px #d4a017}
-</style></head><body><div class="phone">
+.toast{margin-top:14px;background:#12120f;border:1px solid #211f16;border-radius:12px;padding:12px;font-size:10.5px;color:#a1a1aa;display:flex;gap:8px}.dot{width:6px;height:6px;background:#d4a017;border-radius:50%;box-shadow:0 0 8px #d4a017}
+#loginBox{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(12px);display:none;justify-content:center;align-items:center;z-index:99;padding:20px}
+</style></head><body>
+<div class="phone">
 <div class="top"><div><div class="connected">CONNECTED</div><small>Connected to Exness</small></div><div class="sr">◫ SR-72</div></div>
 <div class="card">
-<div class="mt5head"><b>◫ MT5 ACCOUNT</b><button class="remove" onclick="fetch('/api/remove',{method:'POST'})">Remove</button></div>
+<div class="mt5head"><b>◫ MT5 ACCOUNT</b><button class="remove" onclick="removeAcc()">Remove</button></div>
 <div class="live">LIVE ANALYSIS</div>
 <div class="chartWrap"><canvas id="c"></canvas></div>
 <div id="rows">
-<div class="row"><div class="icon">◍</div><div><b>Detecting market</b><small id="market">Scanning volatility structure...</small></div></div>
+<div class="row"><div class="icon">◍</div><div><b>Detecting market</b><small id="market">Connect MT5 to start</small></div></div>
 <div class="row"><div class="icon">◎</div><div><b>Calibrating stop loss</b><small>AI adjusting risk 2.8%</small></div></div>
-<div class="row"><div class="icon">⬙</div><div><b>AI scoring</b><small id="score">Confidence 86.4% SELL</small></div></div>
+<div class="row"><div class="icon">⬙</div><div><b>AI scoring</b><small id="score">Waiting for connection</small></div></div>
 <div class="row"><div class="icon">◈</div><div><b>SR-72 Dark Star AI Sniper is monitoring your live account</b><small>Auto-execution enabled</small></div></div>
 </div>
 </div>
 <div class="card">
 <div class="botTitle">BOT CONTROL</div>
-<div class="statusLine"><span>Bot Status</span><span id="badge" class="badge run">RUNNING</span></div>
-<div class="btns"><button id="startBtn" class="btn start active" onclick="startBot()">START BOT</button><button id="stopBtn" class="btn stopBtn" onclick="stopBot()">STOP BOT</button></div>
+<div class="statusLine"><span>Bot Status</span><span id="badge" class="badge stop">STOPPED</span></div>
+<div class="btns"><button id="startBtn" class="btn start" onclick="startBot()">START BOT</button><button id="stopBtn" class="btn stopBtn off" onclick="stopBot()">STOP BOT</button></div>
 <div class="toast"><div class="dot"></div> SR-72 Dark Star AI Sniper is monitoring your live account — SR-72 Dark Star Ai</div>
 </div>
-</div><script>
+</div>
+
+<div id="loginBox"><div style="background:#15151a;border:1px solid #222228;border-radius:20px;padding:20px;width:100%;max-width:340px">
+<b style="color:#d4a017;font-size:11px;letter-spacing:.14em">CONNECT EXNESS MT5</b>
+<input id="login" placeholder="MT5 Login" style="width:100%;margin-top:16px;padding:14px;border-radius:12px;background:#0a0a0e;border:1px solid #222;color:#fff">
+<input id="server" placeholder="Server - Exness-MT5Real" style="width:100%;margin-top:10px;padding:14px;border-radius:12px;background:#0a0a0e;border:1px solid #222;color:#fff">
+<button onclick="connectMT5()" style="width:100%;margin-top:14px;padding:14px;border-radius:12px;background:#d4a017;color:#000;font-weight:900;border:none">CONNECT & START SNIPER</button>
+</div></div>
+
+<script>
 const cv=document.getElementById('c'),ctx=cv.getContext('2d');
-let W,H,dpr=2;
-function resize(){W=cv.parentElement.clientWidth;H=cv.parentElement.clientHeight;cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);}
-window.addEventListener('resize',resize);resize();
+let W,H,dpr=2;function resize(){W=cv.parentElement.clientWidth;H=cv.parentElement.clientHeight;cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);}window.addEventListener('resize',resize);resize();
 let data=[];for(let i=0;i<80;i++)data.push(50+Math.sin(i*0.3)*25+Math.random()*10);
-let livePrice=4198.43;
 async function fetchBot(){
-  try{
-    const r=await fetch('/api/bot'); const b=await r.json();
-    livePrice=b.price;
-    document.getElementById('market').innerText=b.status.market;
-    document.getElementById('score').innerText=b.status.scoring;
-    let norm=(livePrice % 100);
-    data.shift(); data.push(30 + norm*0.8 + Math.random()*6);
-    let badge=document.getElementById('badge');
-    badge.textContent=b.running?'RUNNING':'STOPPED';
-    badge.className=b.running?'badge run':'badge stop';
-  }catch(e){}
+ try{
+  let r=await fetch('/api/bot');let b=await r.json();
+  document.getElementById('market').innerText=b.status.market;
+  document.getElementById('score').innerText=b.status.scoring;
+  document.getElementById('badge').textContent=b.running?'RUNNING':'STOPPED';
+  document.getElementById('badge').className=b.running?'badge run':'badge stop';
+  document.getElementById('loginBox').style.display=b.connected?'none':'flex';
+  if(b.running){let norm=(b.price%100);data.shift();data.push(30+norm*0.8+Math.random()*6);}
+ }catch(e){}
 }
-setInterval(fetchBot,1200);
-function draw(){
-  ctx.clearRect(0,0,W,H);
-  ctx.beginPath();
-  data.forEach((v,i)=>{let x=(i/(data.length-1))*W; let y=H*0.15 + (1 - v/100)*H*0.7; if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);});
-  ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.closePath();
-  let g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'rgba(212,160,23,0.28)');g.addColorStop(1,'rgba(212,160,23,0)');ctx.fillStyle=g;ctx.fill();
-  ctx.beginPath();ctx.strokeStyle='#ffcc33';ctx.lineWidth=2.2;ctx.lineCap='round';ctx.lineJoin='round';
-  data.forEach((v,i)=>{let x=(i/(data.length-1))*W; let y=H*0.15 + (1 - v/100)*H*0.7; if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);});
-  ctx.shadowColor='#ffcc33';ctx.shadowBlur=14;ctx.stroke();ctx.shadowBlur=0;
-  requestAnimationFrame(draw);
-}
-draw();
+setInterval(fetchBot,1200);fetchBot();
+function draw(){ctx.clearRect(0,0,W,H);ctx.beginPath();data.forEach((v,i)=>{let x=(i/(data.length-1))*W;let y=H*0.15 + (1 - v/100)*H*0.7;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);});ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.closePath();let g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'rgba(212,160,23,0.28)');g.addColorStop(1,'rgba(212,160,23,0)');ctx.fillStyle=g;ctx.fill();ctx.beginPath();ctx.strokeStyle='#ffcc33';ctx.lineWidth=2.2;ctx.lineCap='round';ctx.lineJoin='round';data.forEach((v,i)=>{let x=(i/(data.length-1))*W;let y=H*0.15 + (1 - v/100)*H*0.7;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);});ctx.shadowColor='#ffcc33';ctx.shadowBlur=14;ctx.stroke();ctx.shadowBlur=0;requestAnimationFrame(draw);}draw();
 function startBot(){fetch('/api/bot/start',{method:'POST'}).then(fetchBot);}
 function stopBot(){fetch('/api/bot/stop',{method:'POST'}).then(fetchBot);}
-fetchBot();
+async function connectMT5(){let login=document.getElementById('login').value;let server=document.getElementById('server').value;if(!login||!server)return alert('Enter login & server');await fetch('/api/connect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({login,server})});document.getElementById('loginBox').style.display='none';fetchBot();}
+function removeAcc(){fetch('/api/remove',{method:'POST'}).then(fetchBot);}
 </script></body></html>
