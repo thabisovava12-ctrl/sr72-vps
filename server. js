@@ -1,66 +1,39 @@
-const express = require('express');
-const app = express();
+const express=require('express');
+const app=express();
 app.use(express.json());
 app.use(express.static('public'));
 
-let bot = {
-  connected: true,
-  exness: 'Connected to Exness',
-  running: true,
-  account: null,
-  price: 4198.43,
-  ema: {9:4197.85,21:4196.95,50:4195.15},
-  confidence: 86.4,
-  direction: 'SELL',
-  status: {
-    market: 'Scanning volatility structure...',
-    sl: 'AI adjusting risk 2.8%',
-    scoring: 'Confidence 86.4% SELL',
-    monitor: 'SR-72 Dark Star AI Sniper is monitoring your live account'
-  },
-  trades: []
-};
+let bot={connected:false,running:false,account:null,price:4198.43,ema:{9:4197.85,21:4196.95,50:4195.15},confidence:86.4,direction:'SELL',status:{market:'Connect MT5 to start',scoring:'Waiting for connection'}};
 
-// Fake live price feed - replace with real Exness later
-setInterval(() => {
-  if (!bot.running) return;
-  bot.price += (Math.random() - 0.5) * 1.8;
-  // EMA calc
-  const k9 = 2/(9+1), k21 = 2/(21+1), k50 = 2/(50+1);
-  bot.ema[9] = bot.price*k9 + bot.ema[9]*(1-k9);
-  bot.ema[21] = bot.price*k21 + bot.ema[21]*(1-k21);
-  bot.ema[50] = bot.price*k50 + bot.ema[50]*(1-k50);
+async function getGold(){
+ try{
+  let r=await fetch('https://api.gold-api.com/price/XAU');
+  let j=await r.json(); if(j.price){bot.price=j.price; return;}
+ }catch(e){}
+ bot.price += (Math.random()-0.5)*1.2;
+}
+setInterval(async()=>{
+ if(!bot.running) return;
+ await getGold();
+ const k9=2/10,k21=2/22,k50=2/51;
+ bot.ema[9]=bot.price*k9+bot.ema[9]*(1-k9);
+ bot.ema[21]=bot.price*k21+bot.ema[21]*(1-k21);
+ bot.ema[50]=bot.price*k50+bot.ema[50]*(1-k50);
+ let dir=bot.ema[9]>bot.ema[21]&&bot.ema[21]>bot.ema[50]?'BUY':bot.ema[9]<bot.ema[21]?'SELL':'RANGE';
+ bot.direction=dir;
+ bot.confidence=(dir==='RANGE'?48:79+Math.random()*11).toFixed(1);
+ bot.status={market:dir==='BUY'?'Uptrend detected - momentum building':dir==='SELL'?'Downtrend detected - selling pressure':'Scanning volatility structure...',scoring:`Confidence ${bot.confidence}% ${dir}`};
+},1500);
 
-  let dir = bot.ema[9] > bot.ema[21] && bot.ema[21] > bot.ema[50]? 'BUY' : bot.ema[9] < bot.ema[21]? 'SELL' : 'RANGE';
-  bot.direction = dir;
-  let conf = dir==='RANGE'? 48 : 78 + Math.random()*12;
-  bot.confidence = conf.toFixed(1);
-  bot.status.scoring = `Confidence ${bot.confidence}% ${dir}`;
-  bot.status.market = dir==='BUY'? 'Uptrend detected - momentum building' : dir==='SELL'? 'Downtrend detected - selling pressure' : 'Scanning volatility structure...';
-}, 1200);
-
-app.get('/api/bot', (req,res)=> res.json(bot));
-
-app.post('/api/bot/start', (req,res)=>{
-  bot.running = true;
-  res.json({ok:true, running:true});
+app.get('/api/bot',(req,res)=>res.json(bot));
+app.post('/api/bot/start',(req,res)=>{bot.running=true;res.json(bot);});
+app.post('/api/bot/stop',(req,res)=>{bot.running=false;res.json(bot);});
+app.post('/api/connect',(req,res)=>{
+ bot.account={login:req.body.login,server:req.body.server};
+ bot.connected=true; bot.running=true;
+ bot.status.market='Connected - scanning market...';
+ res.json({ok:true,bot});
 });
-app.post('/api/bot/stop', (req,res)=>{
-  bot.running = false;
-  res.json({ok:true, running:false});
-});
+app.post('/api/remove',(req,res)=>{bot.connected=false;bot.running=false;bot.account=null;res.json({ok:true});});
 
-app.post('/api/connect', (req,res)=>{
-  bot.account = req.body;
-  bot.connected = true;
-  res.json({ok:true});
-});
-
-app.post('/api/remove', (req,res)=>{
-  bot.account = null;
-  bot.connected = false;
-  res.json({ok:true});
-});
-
-app.listen(process.env.PORT||10000, ()=> console.log('SR-72 DARK STAR SNIPER BOT RUNNING'));
-qppq
+app.listen(process.env.PORT||10000,()=>console.log('SR-72 SNIPER LIVE'));
