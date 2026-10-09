@@ -1,4 +1,4 @@
-<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>SR-72 Dark Star Ai</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800&display=swap" rel="stylesheet"><style>
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>SR-72 Dark Star Ai - REAL</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800&display=swap" rel="stylesheet"><style>
 *{box-sizing:border-box;margin:0;padding:0}body{background:#000;color:#fff;font-family:Inter,sans-serif;padding:10px}.phone{max-width:395px;margin:0 auto;background:#09090d;border:1px solid #1c1c20;border-radius:26px;padding:12px;min-height:840px}
 .top{display:flex;justify-content:space-between;padding:10px 6px 18px}.connected{color:#22c55e;font-weight:800;font-size:14px}.connected small{display:block;color:#8a8a90;font-size:12px;font-weight:600;margin-top:3px}.sr{font-size:11px;color:#7a7a80}
 .card{background:linear-gradient(180deg,#15151a 0%,#0e0e12 100%);border:1px solid #222228;border-radius:20px;padding:16px;margin-bottom:14px}.mt5head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.mt5head b{font-size:11px;letter-spacing:.14em;color:#d4a017;display:flex;gap:6px}.remove{background:#1c1212;border:1px solid #2c1e1e;color:#ff4d4d;font-size:10px;padding:5px 12px;border-radius:20px;font-weight:800}
@@ -9,34 +9,33 @@
 .statusLine{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.statusLine span{font-size:12px;color:#9ca3af}.badge{padding:7px 16px;border-radius:20px;font-size:11px;font-weight:800}.run{background:#0f1f16;color:#22c55e;border:1px solid #1a3323}.stop{background:#1f1212;color:#ef4444;border:1px solid #332020}
 .btns{display:grid;grid-template-columns:1fr 1fr;gap:12px}.btn{padding:15px;border-radius:14px;border:none;font-weight:900;font-size:12px;cursor:pointer}.start{background:#2a2a30;color:#5a5a64}.start.active{background:#22c55e;color:#000;box-shadow:0 0 20px rgba(34,197,94,.4)}.stopBtn{background:#dc2626;color:#fff;box-shadow:0 0 20px rgba(220,38,38,.4)}.stopBtn.off{background:#2a2a30;color:#5a5a64;box-shadow:none}
 .toast{margin-top:14px;background:#12120f;border:1px solid #211f16;border-radius:12px;padding:12px;font-size:10.5px;color:#a1a1aa;display:flex;gap:8px}.dot{width:6px;height:6px;background:#d4a017;border-radius:50%;box-shadow:0 0 8px #d4a017}
-#loginBox{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(12px);display:none;justify-content:center;align-items:center;z-index:99;padding:20px}
 </style></head><body><div class="phone">
-<div class="top"><div><div class="connected">CONNECTED</div><small>Connected to Exness</small></div><div class="sr">◫ SR-72</div></div>
+<div class="top"><div><div class="connected">CONNECTED</div><small id="accInfo">Exness Real - XAUUSDc</small></div><div class="sr">◫ SR-72 REAL</div></div>
 <div class="card">
-<div class="mt5head"><b>◫ MT5 ACCOUNT</b><button class="remove" onclick="removeAcc()">Remove</button></div>
-<div class="live">LIVE ANALYSIS</div>
+<div class="mt5head"><b>◫ MT5 REAL ACCOUNT</b><button class="remove" onclick="removeAcc()">Remove</button></div>
+<div class="live">LIVE ANALYSIS - REAL</div>
 <div class="chartWrap"><canvas id="c"></canvas></div>
 <div id="rows">
-<div class="row"><div class="icon">◍</div><div><b>Detecting market</b><small id="market">Scanning...</small></div></div>
-<div class="row"><div class="icon">◎</div><div><b>Calibrating stop loss</b><small>AI adjusting risk 2.8%</small></div></div>
-<div class="row"><div class="icon">⬙</div><div><b>AI scoring</b><small id="score">Waiting</small></div></div>
-<div class="row"><div class="icon">◈</div><div><b>SR-72 Dark Star AI Sniper is monitoring your live account</b><small>Auto-execution enabled</small></div></div>
+<div class="row"><div class="icon">◍</div><div><b>Detecting market</b><small id="market">Connecting to MetaApi...</small></div></div>
+<div class="row"><div class="icon">◎</div><div><b>Calibrating stop loss</b><small>Risk 2.8% Lot 0.01 Fixed</small></div></div>
+<div class="row"><div class="icon">⬙</div><div><b>AI scoring</b><small id="score">Waiting real price...</small></div></div>
+<div class="row"><div class="icon">◈</div><div><b>SR-72 Dark Star AI Sniper REAL EXECUTION</b><small>Auto 0.01 lot</small></div></div>
 </div>
 </div>
 <div class="card">
-<div class="botTitle">BOT CONTROL</div>
+<div class="botTitle">BOT CONTROL - REAL</div>
 <div class="statusLine"><span>Bot Status</span><span id="badge" class="badge run">RUNNING</span></div>
 <div class="btns"><button id="startBtn" class="btn start active" onclick="startBot()">START BOT</button><button id="stopBtn" class="btn stopBtn" onclick="stopBot()">STOP BOT</button></div>
-<div class="toast"><div class="dot"></div> SR-72 Dark Star AI Sniper is monitoring your live account</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px"><button onclick="testTrade()" style="padding:10px;border-radius:10px;background:#d4a017;color:#000;font-weight:800;border:none;font-size:11px">TEST BUY 0.01 REAL</button><button onclick="window.open('/api/bot','_blank')" style="padding:10px;border-radius:10px;background:#222;color:#fff;font-weight:800;border:none;font-size:11px">DEBUG</button></div>
+<div class="toast"><div class="dot"></div><span id="tokenInfo">Checking token...</span></div>
 </div>
 <div class="card" style="padding:0;overflow:hidden">
-<div style="padding:12px 16px;background:#0e0e12;display:flex;justify-content:space-between;font-size:11px"><span>Balance:</span><span id="bal">20.00</span> USD</div>
-<div style="padding:12px 16px;display:flex;justify-content:space-between;font-size:11px;border-top:1px solid #1a1a20"><span>Equity:</span><span id="eq">20.00</span> USD</div>
-<div style="padding:8px 16px;display:flex;gap:8px;font-size:10px"><span style="color:#ff1a1a">● EMA 9</span><span style="color:#00b7ff">● EMA 21</span><span style="color:#fff">● EMA 50</span><span style="color:#ffcc33;margin-left:auto">LOT 0.01 FIXED</span></div>
+<div style="padding:12px 16px;background:#0e0e12;display:flex;justify-content:space-between;font-size:11px"><span>Balance REAL:</span><span id="bal">--</span> USD</div>
+<div style="padding:12px 16px;display:flex;justify-content:space-between;font-size:11px;border-top:1px solid #1a1a20"><span>Equity REAL:</span><span id="eq">--</span> USD</div>
+<div style="padding:8px 16px;display:flex;gap:8px;font-size:10px"><span style="color:#ff1a1a">● EMA 9</span><span style="color:#00b7ff">● EMA 21</span><span style="color:#fff">● EMA 50</span><span style="color:#ffcc33;margin-left:auto">LOT 0.01 FIXED REAL</span></div>
 <div id="tradeList" style="max-height:340px;overflow-y:auto;background:#000"></div>
 </div>
 </div>
-<div id="loginBox"><div style="background:#15151a;border:1px solid #222228;border-radius:20px;padding:20px;width:100%;max-width:340px"><b style="color:#d4a017;font-size:11px;letter-spacing:.14em">CONNECT EXNESS MT5</b><input id="login" placeholder="MT5 Login" style="width:100%;margin-top:16px;padding:14px;border-radius:12px;background:#0a0a0e;border:1px solid #222;color:#fff"><input id="server" placeholder="Server - Exness-MT5Real" style="width:100%;margin-top:10px;padding:14px;border-radius:12px;background:#0a0a0e;border:1px solid #222;color:#fff"><button onclick="connectMT5()" style="width:100%;margin-top:14px;padding:14px;border-radius:12px;background:#d4a017;color:#000;font-weight:900;border:none">CONNECT & START SNIPER</button></div></div>
 <script>
 const cv=document.getElementById('c'),ctx=cv.getContext('2d');
 let W,H,dpr=2;function resize(){W=cv.parentElement.clientWidth;H=cv.parentElement.clientHeight;cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);}window.addEventListener('resize',resize);resize();
@@ -47,40 +46,13 @@ function draw(){
  ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=1;
  for(let i=1;i<4;i++){ctx.beginPath();ctx.moveTo(0,H*i/4);ctx.lineTo(W,H*i/4);ctx.stroke();}
  let pts=80;
- let wave=(phase,amp,freq)=>{
-  let arr=[];
-  for(let i=0;i<pts;i++){
-   let x=i/pts;
-   let y=50 + Math.sin(x*Math.PI*2*freq + t*2 + phase)*amp + Math.sin(x*Math.PI*4 + t*1.3)*amp*0.3;
-   arr.push(y);
-  }
-  return arr;
- };
- let ema50=wave(0,18,1.8);
- let ema21=wave(0.8,22,1.8);
- let ema9=wave(1.6,26,1.8);
- let price=wave(2.2,28,1.8);
- let drawL=(vals,color,w,glow=false)=>{
-  ctx.beginPath();ctx.strokeStyle=color;ctx.lineWidth=w;
-  if(glow){ctx.shadowColor=color;ctx.shadowBlur=14;}
-  vals.forEach((v,i)=>{let x=(i/(vals.length-1))*W; let y=H*0.15 + (1 - v/100)*H*0.7; if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);});
-  ctx.stroke();ctx.shadowBlur=0;
- };
- drawL(ema50,'rgba(255,255,255,0.7)',1.2);
- drawL(ema21,'#00b7ff',1.6);
- drawL(ema9,'#ff1a1a',1.8);
- drawL(price,'#ffcc33',2.4,true);
- // HORIZONTAL SCANNER - like screenshot, moves top to bottom
- let scanY = (t*22)%H;
- ctx.beginPath();ctx.strokeStyle='rgba(212,160,23,0.6)';ctx.lineWidth=1;ctx.setLineDash([7,7]);
- ctx.moveTo(0,scanY);ctx.lineTo(W,scanY);ctx.stroke();ctx.setLineDash([]);
- ctx.beginPath();ctx.fillStyle='#ffcc33';ctx.shadowColor='#ffcc33';ctx.shadowBlur=12;
- let scanX=(t*85)%W;
- ctx.arc(scanX,scanY,4,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
- // VERTICAL BEAM
- let vScanX=(t*95)%W;
- ctx.beginPath();ctx.strokeStyle='rgba(255,255,255,0.07)';ctx.lineWidth=1;
- ctx.moveTo(vScanX,0);ctx.lineTo(vScanX,H);ctx.stroke();
+ let wave=(phase,amp,freq)=>{let arr=[];for(let i=0;i<pts;i++){let x=i/pts;let y=50 + Math.sin(x*Math.PI*2*freq + t*2 + phase)*amp + Math.sin(x*Math.PI*4 + t*1.3)*amp*0.3;arr.push(y);}return arr;};
+ let ema50=wave(0,18,1.8);let ema21=wave(0.8,22,1.8);let ema9=wave(1.6,26,1.8);let price=wave(2.2,28,1.8);
+ let drawL=(vals,color,w,glow=false)=>{ctx.beginPath();ctx.strokeStyle=color;ctx.lineWidth=w;if(glow){ctx.shadowColor=color;ctx.shadowBlur=14;}vals.forEach((v,i)=>{let x=(i/(vals.length-1))*W; let y=H*0.15 + (1 - v/100)*H*0.7; if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);});ctx.stroke();ctx.shadowBlur=0;};
+ drawL(ema50,'rgba(255,255,255,0.7)',1.2);drawL(ema21,'#00b7ff',1.6);drawL(ema9,'#ff1a1a',1.8);drawL(price,'#ffcc33',2.4,true);
+ let scanY=(t*22)%H;ctx.beginPath();ctx.strokeStyle='rgba(212,160,23,0.6)';ctx.lineWidth=1;ctx.setLineDash([7,7]);ctx.moveTo(0,scanY);ctx.lineTo(W,scanY);ctx.stroke();ctx.setLineDash([]);
+ ctx.beginPath();ctx.fillStyle='#ffcc33';ctx.shadowColor='#ffcc33';ctx.shadowBlur=12;let scanX=(t*85)%W;ctx.arc(scanX,scanY,4,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
+ let vScanX=(t*95)%W;ctx.beginPath();ctx.strokeStyle='rgba(255,255,255,0.07)';ctx.lineWidth=1;ctx.moveTo(vScanX,0);ctx.lineTo(vScanX,H);ctx.stroke();
  requestAnimationFrame(draw);
 }draw();
 async function fetchBot(){
@@ -94,17 +66,18 @@ async function fetchBot(){
   document.getElementById('stopBtn').className=b.running?'btn stopBtn':'btn stopBtn off';
   document.getElementById('bal').innerText=b.balance.toFixed(2);
   document.getElementById('eq').innerText=b.equity.toFixed(2);
-  document.getElementById('loginBox').style.display='none';
+  document.getElementById('tokenInfo').innerText=b.tokenSet?`Token OK LEN ${b.tokenLen} - Real Ready`:`NO TOKEN - Add METAAPI_TOKEN`;
+  document.getElementById('accInfo').innerText=`${b.balance.toFixed(2)} USD - XAUUSDc REAL`;
   let html=''; b.trades.slice().reverse().forEach(t=>{
    let col=t.profit>=0?'#3b82f6':'#ef4444';
-   html+=`<div style="display:flex;justify-content:space-between;padding:10px 16px;border-bottom:1px solid #111;font-size:11px"><div><b style="color:#d4a017">XAUUSD.a, ${t.type} 0.01</b><br><small style="color:#666">${t.entry} -> ${b.price.toFixed(2)}</small></div><div style="color:${col};font-weight:800">${t.profit>=0?'+':''}${t.profit.toFixed(2)}</div></div>`;
+   html+=`<div style="display:flex;justify-content:space-between;padding:10px 16px;border-bottom:1px solid #111;font-size:11px"><div><b style="color:#d4a017">XAUUSDc, ${t.type} ${t.lots} ${t.real?'●REAL':''}</b><br><small style="color:#666">${t.entry} -> ${b.price.toFixed(2)}</small></div><div style="color:${col};font-weight:800">${t.profit>=0?'+':''}${t.profit.toFixed(2)}</div></div>`;
   });
-  document.getElementById('tradeList').innerHTML=html||'<div style="padding:20px;text-align:center;color:#444;font-size:11px">Scanning EMA 9/21/50...</div>';
+  document.getElementById('tradeList').innerHTML=html||'<div style="padding:20px;text-align:center;color:#444;font-size:11px">No real trades - WAITING EMA SIGNAL<br><button onclick="testTrade()" style="margin-top:10px;padding:8px 14px;background:#d4a017;color:#000;border:none;border-radius:8px;font-weight:800">TEST BUY 0.01 NOW</button></div>';
  }catch(e){}
 }
-setInterval(fetchBot,40);fetchBot();
+setInterval(fetchBot,1000);fetchBot();
 function startBot(){fetch('/api/bot/start',{method:'POST'}).then(fetchBot);}
 function stopBot(){fetch('/api/bot/stop',{method:'POST'}).then(fetchBot);}
-async function connectMT5(){let l=document.getElementById('login').value;let s=document.getElementById('server').value;if(!l||!s)return alert('Enter login & server');await fetch('/api/connect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({login:l,server:s})});document.getElementById('loginBox').style.display='none';fetchBot();}
+function testTrade(){fetch('/api/test_trade').then(r=>r.text()).then(txt=>{alert(txt.slice(0,800)); fetchBot();});}
 function removeAcc(){fetch('/api/remove',{method:'POST'}).then(fetchBot);}
 </script></body></html>
