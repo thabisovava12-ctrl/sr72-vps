@@ -1,74 +1,96 @@
-<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>SR-72 Dark Star Ai</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet"><style>
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>SR-72 Dark Star Ai</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800&display=swap" rel="stylesheet"><style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#000;color:#fff;font-family:Inter,sans-serif;min-height:100vh;padding:12px}
-.phone{max-width:390px;margin:0 auto;background:#07070a;border:1px solid #1a1a1a;border-radius:28px;padding:14px;min-height:820px;box-shadow:0 0 60px rgba(251,191,36,0.12)}
-.top{display:flex;justify-content:space-between;align-items:center;padding:8px 4px 16px}
-.connected{color:#22c55e;font-weight:800;font-size:13px;letter-spacing:.08em;text-shadow:0 0 12px #22c55e}
-.connected small{display:block;color:#6b7280;font-size:10px;font-weight:600;margin-top:2px;letter-spacing:0}
-.card{background:linear-gradient(180deg,#141416,#0e0e11);border:1px solid #1f1f23;border-radius:18px;padding:16px;margin-bottom:14px;position:relative;overflow:hidden}
-.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#fbbf2422,transparent)}
-.mt5head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.mt5head b{font-size:11px;letter-spacing:.12em;color:#fbbf24;display:flex;align-items:center;gap:6px}
-.mt5head b::before{content:'◫';font-size:14px}
-.remove{background:#1a0f0f;border:1px solid #2a1a1a;color:#ef4444;font-size:9px;padding:4px 10px;border-radius:20px;font-weight:800;letter-spacing:.06em}
-.live{color:#22c55e;font-size:9px;font-weight:800;letter-spacing:.14em;margin-bottom:10px;display:flex;align-items:center;gap:6px}
-.live::before{content:'';width:6px;height:6px;background:#22c55e;border-radius:50%;box-shadow:0 0 8px #22c55e;animation:pulse 1.5s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-canvas{width:100%;height:92px;display:block;margin:8px 0 14px}
-.row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #15151a;font-size:12px;color:#d1d5db}
+body{background:#000;color:#fff;font-family:Inter,sans-serif;padding:10px}
+.phone{max-width:395px;margin:0 auto;background:#09090d;border:1px solid #1c1c20;border-radius:26px;padding:12px;min-height:840px}
+.top{display:flex;justify-content:space-between;padding:10px 6px 18px}
+.connected{color:#22c55e;font-weight:800;font-size:14px;letter-spacing:.06em}
+.connected small{display:block;color:#8a8a90;font-size:12px;font-weight:600;margin-top:3px;letter-spacing:0}
+.sr{font-size:11px;color:#7a7a80;letter-spacing:.1em}
+.card{background:linear-gradient(180deg,#15151a 0%,#0e0e12 100%);border:1px solid #222228;border-radius:20px;padding:16px;margin-bottom:14px}
+.mt5head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.mt5head b{font-size:11px;letter-spacing:.14em;color:#d4a017;display:flex;align-items:center;gap:6px}
+.remove{background:#1c1212;border:1px solid #2c1e1e;color:#ff4d4d;font-size:10px;padding:5px 12px;border-radius:20px;font-weight:800}
+.live{color:#22c55e;font-size:10px;font-weight:800;letter-spacing:.18em;margin-bottom:0;display:flex;align-items:center;gap:8px}
+.live::before{content:'';width:7px;height:7px;background:#22c55e;border-radius:50%;box-shadow:0 0 10px #22c55e;animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.chartWrap{width:100%;height:110px;margin:10px 0 18px;position:relative;overflow:hidden;border-radius:10px;background:radial-gradient(ellipse at center, rgba(212,160,23,0.10) 0%, transparent 70%);}
+canvas{width:100%;height:100%;display:block}
+.row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid #1a1a20}
 .row:last-child{border:0}
-.icon{width:28px;height:28px;border-radius:50%;background:#1a1508;border:1px solid #2a2310;display:flex;align-items:center;justify-content:center;color:#fbbf24;font-size:13px;flex-shrink:0}
-.row b{color:#fbbf24;font-size:11px}
-.row small{color:#6b7280;font-size:10px;display:block;margin-top:2px}
-.botTitle{font-size:11px;letter-spacing:.12em;color:#fbbf24;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:6px}
-.botTitle::before{content:'◍';font-size:14px}
-.statusLine{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.statusLine span{font-size:11px;color:#9ca3af}
-.badge{padding:6px 14px;border-radius:20px;font-size:10px;font-weight:800;letter-spacing:.08em;border:1px solid}
-.run{background:#0a1a12;color:#22c55e;border-color:#12301e;box-shadow:0 0 12px rgba(34,197,94,.2)}
-.stop{background:#1a0f0f;color:#ef4444;border-color:#2a1a1a}
-.btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.btn{padding:14px;border-radius:14px;border:none;font-weight:900;font-size:12px;letter-spacing:.06em;cursor:pointer;transition:.15s}
-.btn:active{transform:scale(.97)}
-.start{background:#22c55e;color:#000;box-shadow:0 0 18px rgba(34,197,94,.35)}
-.stopBtn{background:#15151a;color:#fff;border:1px solid #23232a}
-.start.off{background:#15151a;color:#555;box-shadow:none;border:1px solid #1e1e24}
-.stopBtn.on{background:#ef4444;color:#fff;border-color:#ef4444;box-shadow:0 0 18px rgba(239,68,68,.35)}
-.toast{margin-top:14px;background:#111110;border:1px solid #1f1e14;border-radius:12px;padding:10px 12px;font-size:10px;color:#9ca3af;display:flex;align-items:center;gap:8px}
-.dot{width:6px;height:6px;background:#fbbf24;border-radius:50%;box-shadow:0 0 8px #fbbf24}
+.icon{width:32px;height:32px;border-radius:50%;background:#18150c;border:1px solid #2a2412;display:flex;align-items:center;justify-content:center;color:#d4a017;font-size:12px;flex-shrink:0}
+.row b{color:#d4a017;font-size:12px;display:block}
+.row small{color:#8a8a90;font-size:11px;display:block;margin-top:3px}
+.botTitle{font-size:11px;letter-spacing:.14em;color:#d4a017;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.botTitle::before{content:'';width:6px;height:6px;background:#d4a017;border-radius:50%;box-shadow:0 0 8px #d4a017}
+.statusLine{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.statusLine span{font-size:12px;color:#9ca3af}
+.badge{padding:7px 16px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:.06em}
+.run{background:#0f1f16;color:#22c55e;border:1px solid #1a3323}
+.stop{background:#1f1212;color:#ef4444;border:1px solid #332020}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn{padding:15px;border-radius:14px;border:none;font-weight:900;font-size:12px;letter-spacing:.05em;cursor:pointer}
+.start{background:#2a2a30;color:#5a5a64}
+.start.active{background:#22c55e;color:#000;box-shadow:0 0 20px rgba(34,197,94,.4)}
+.stopBtn{background:#dc2626;color:#fff;box-shadow:0 0 20px rgba(220,38,38,.4)}
+.stopBtn.off{background:#2a2a30;color:#5a5a64;box-shadow:none}
+.toast{margin-top:14px;background:#12120f;border:1px solid #211f16;border-radius:12px;padding:12px;font-size:10.5px;color:#a1a1aa;display:flex;align-items:center;gap:8px;line-height:1.4}
+.dot{width:6px;height:6px;background:#d4a017;border-radius:50%;flex-shrink:0;box-shadow:0 0 8px #d4a017}
 </style></head><body><div class="phone">
-<div class="top"><div><div class="connected">CONNECTED</div><small style="color:#6b7280;font-size:11px">Connected to Exness</small></div><div style="font-size:10px;color:#3f3f46">◫ SR-72</div></div>
+<div class="top"><div><div class="connected">CONNECTED</div><small>Connected to Exness</small></div><div class="sr">◫ SR-72</div></div>
 
 <div class="card">
-<div class="mt5head"><b>MT5 ACCOUNT</b><button class="remove">Remove</button></div>
+<div class="mt5head"><b>◫ MT5 ACCOUNT</b><button class="remove">Remove</button></div>
 <div class="live">LIVE ANALYSIS</div>
-<canvas id="c"></canvas>
+<div class="chartWrap"><canvas id="c"></canvas></div>
 <div class="row"><div class="icon">◍</div><div><b>Detecting market</b><small>Scanning volatility structure...</small></div></div>
 <div class="row"><div class="icon">◎</div><div><b>Calibrating stop loss</b><small>AI adjusting risk 2.8%</small></div></div>
 <div class="row"><div class="icon">⬙</div><div><b>AI scoring</b><small>Confidence 86.4% SELL</small></div></div>
-<div class="row"><div class="icon">◈</div><div><b>Elite Bot is monitoring your live account</b><small>Auto-execution enabled</small></div></div>
+<div class="row"><div class="icon">◈</div><div><b>SR-72 Dark Star AI Sniper is monitoring your live account</b><small>Auto-execution enabled</small></div></div>
 </div>
 
 <div class="card">
 <div class="botTitle">BOT CONTROL</div>
 <div class="statusLine"><span>Bot Status</span><span id="badge" class="badge run">RUNNING</span></div>
-<div class="btns"><button id="startBtn" class="btn start off" onclick="startBot()">START BOT</button><button id="stopBtn" class="btn stopBtn on" onclick="stopBot()">STOP BOT</button></div>
-<div class="toast"><div class="dot"></div> Elite Bot is monitoring your live account — SR-72 Dark Star Ai</div>
+<div class="btns"><button id="startBtn" class="btn start" onclick="startBot()">START BOT</button><button id="stopBtn" class="btn stopBtn" onclick="stopBot()">STOP BOT</button></div>
+<div class="toast"><div class="dot"></div> SR-72 Dark Star AI Sniper is monitoring your live account — SR-72 Dark Star Ai</div>
 </div>
 
 </div><script>
 const cv=document.getElementById('c'),ctx=cv.getContext('2d');
-function resize(){cv.width=cv.offsetWidth*2;cv.height=92*2;ctx.scale(2,2);}resize();
-let points=[20,35,18,45,22,38,55,30,48,62,40,28,35,50,65,45,58];
+let W,H,dpr=2;
+function resize(){W=cv.parentElement.clientWidth;H=cv.parentElement.clientHeight;cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);}window.addEventListener('resize',resize);resize();
+let data=[];for(let i=0;i<80;i++)data.push(50+Math.sin(i*0.3)*25+Math.random()*10);
+let offset=0;
 function draw(){
-  const w=cv.offsetWidth,h=92;ctx.clearRect(0,0,w,h);
-  ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(w,0);ctx.lineTo(w,h);ctx.lineTo(0,h);ctx.closePath();
-  let grad=ctx.createLinearGradient(0,0,0,h);grad.addColorStop(0,'rgba(251,191,36,0.18)');grad.addColorStop(1,'rgba(251,191,36,0)');ctx.fillStyle=grad;ctx.fill();
-  ctx.beginPath();ctx.strokeStyle='#fbbf24';ctx.lineWidth=2;ctx.lineCap='round';ctx.lineJoin='round';
-  points.forEach((p,i)=>{let x=(i/(points.length-1))*w;let y=h-10-(p/70)*h; if(i==0)ctx.moveTo(x,y);else ctx.lineTo(x,y);});ctx.stroke();
-  ctx.shadowColor='#fbbf24';ctx.shadowBlur=12;ctx.stroke();ctx.shadowBlur=0;
+  ctx.clearRect(0,0,W,H);
+  // gradient fill under line - fits perfect
+  ctx.beginPath();
+  data.forEach((v,i)=>{
+    let x=(i/ (data.length-1))*W;
+    let y=H*0.15 + (1 - v/100)*H*0.7;
+    if(i===0)ctx.moveTo(x,y); else {let px=((i-1)/(data.length-1))*W; let py=H*0.15 + (1 - data[i-1]/100)*H*0.7; let mx=(x+px)/2; ctx.quadraticCurveTo(px,y,mx,(y+py)/2); ctx.lineTo(x,y);}
+  });
+  // close for fill
+  ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.closePath();
+  let g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'rgba(212,160,23,0.28)');g.addColorStop(1,'rgba(212,160,23,0)');ctx.fillStyle=g;ctx.fill();
+  // sharp zig zag line - perfect fit
+  ctx.beginPath();ctx.strokeStyle='#ffcc33';ctx.lineWidth=2.2;ctx.lineCap='round';ctx.lineJoin='round';
+  data.forEach((v,i)=>{
+    let x=(i/(data.length-1))*W;
+    let y=H*0.15 + (1 - v/100)*H*0.7;
+    if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  });
+  ctx.shadowColor='#ffcc33';ctx.shadowBlur=14;ctx.stroke();ctx.shadowBlur=0;
+  // inner glow
+  ctx.beginPath();ctx.strokeStyle='rgba(255,204,51,0.6)';ctx.lineWidth=1;data.forEach((v,i)=>{let x=(i/(data.length-1))*W;let y=H*0.15 + (1 - v/100)*H*0.7;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);});ctx.stroke();
 }
-setInterval(()=>{points.shift();points.push(25+Math.random()*45);draw();},900);draw();
-function startBot(){document.getElementById('badge').innerText='RUNNING';document.getElementById('badge').className='badge run';document.getElementById('startBtn').className='btn start off';document.getElementById('stopBtn').className='btn stopBtn on';fetch('/api/bot/start',{method:'POST'});}
-function stopBot(){document.getElementById('badge').innerText='STOPPED';document.getElementById('badge').className='badge stop';document.getElementById('startBtn').className='btn start';document.getElementById('stopBtn').className='btn stopBtn';fetch('/api/bot/stop',{method:'POST'});}
+function tick(){
+  offset+=0.2;
+  if(offset>1){offset=0;data.shift();let last=data[data.length-1];let next=last + (Math.random()-0.5)*18;next=Math.max(10,Math.min(90,next));data.push(next);}
+  draw();requestAnimationFrame(tick);
+}
+tick();
+function startBot(){document.getElementById('badge').textContent='RUNNING';document.getElementById('badge').className='badge run';document.getElementById('startBtn').classList.add('active');document.getElementById('stopBtn').classList.remove('off');fetch('/api/bot/start',{method:'POST'});}
+function stopBot(){document.getElementById('badge').textContent='STOPPED';document.getElementById('badge').className='badge stop';document.getElementById('startBtn').classList.remove('active');document.getElementById('stopBtn').classList.add('off');fetch('/api/bot/stop',{method:'POST'});}
+startBot();
 </script></body></html>
