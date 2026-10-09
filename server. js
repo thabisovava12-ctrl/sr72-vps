@@ -39,4 +39,4 @@ app.post('/api/bot/start',(req,res)=>{bot.running=true;res.json(bot);});
 app.post('/api/bot/stop',(req,res)=>{bot.running=false;res.json(bot);});
 app.post('/api/connect',(req,res)=>{bot.connected=true;bot.running=true;res.json(bot);});
 app.post('/api/remove',(req,res)=>{bot.trades=[];bot.connected=false;bot.running=false;res.json(bot);});
-app.listen(process.env.PORT||10000,()=>console.log('SR-72 FINAL LIVE'));
+app.listen(process.env.PORT||10000,()=>console.log('SR-72 FINAL ANIMATED LIVE'));
