@@ -1,105 +1,32 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>SR-72 DARK STAR AI CHART • AUTO-DETECT • EMA 9/21/50 VISION</title>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<style>
-:root{--bg:#070a14;--card:#0e1328;--b:#1c274d;--green:#00ff88;--red:#ff3344;--gold:#ffcc33}
-body{margin:0;background:var(--bg);color:#e6e9ff;font-family:Inter,Arial;padding-bottom:20px}
-.top{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#0a1025;border-bottom:1px solid var(--b)}
-.badge{padding:6px 12px;border-radius:20px;font-weight:900;font-size:12px}
-.badge-auto{background:#0a2e1a;color:var(--green);border:1px solid #0a5a2a}
-.badge-live{background:#1a1a0a;color:var(--gold);border:1px solid #5a4a0a}
-.card{background:var(--card);border:1px solid var(--b);border-radius:16px;margin:12px;padding:14px}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-.small{color:#6b7bb0;font-size:12px}
-.btn{width:100%;padding:16px;border:none;border-radius:12px;font-weight:900;cursor:pointer;font-size:16px}
-.btn-sell{background:#ff6a00;color:#fff}.btn-buy{background:#00c060;color:#fff}
-.btn:disabled{opacity:0.3}
-.m1sell{background:#3a0a0a;color:#ff5555} .m5buy,.m15buy,.visionbuy{background:#0a2e1a;color:#00ff88}
-</style>
-</head>
-<body>
-<div class="top">
-<div><b>SR-72 DARK STAR</b> <span style="color:var(--gold)">AI CHART</span> • AUTO-DETECT • EMA 9/21/50 VISION</div>
-<div style="display:flex;gap:8px">
-<div class="badge badge-auto" id="autoBadge">AUTO: XAUUSDc</div>
-<div class="badge" id="confBadge" style="background:#1a1a0a;color:#aaa">--%</div>
-<div class="badge badge-live" id="liveBadge">LIVE --</div>
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>SR-72 DARK STAR</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;800&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<style>*{box-sizing:border-box}body{margin:0;background:#070a14;color:#e6e9ff;font-family:Inter,sans-serif}.h{height:54px;display:flex;justify-content:space-between;align-items:center;padding:0 16px;background:#0a1025;border-bottom:1px solid #1c274d;position:sticky;top:0;z-index:10}.pill{padding:5px 12px;border-radius:20px;font-family:JetBrains Mono;font-size:11px;font-weight:700;border:1px solid}.live{background:#1a160f;color:#fbbf24;border-color:#3d331f}.auto{background:#0f2218;color:#34d399;border-color:#1f4d32}.conf{background:#1a102a;color:#a78bfa;border-color:#2a1f4d}.c{max-width:900px;margin:0 auto;padding:12px}.card{background:#0e1328;border:1px solid #1c274d;border-radius:14px;padding:16px;margin-bottom:10px}.k{font-family:JetBrains Mono;font-size:9px;color:#5a6b9a;text-transform:uppercase;letter-spacing:.08em}.v{font-family:JetBrains Mono;font-size:13px;font-weight:700;margin-top:2px}.row{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:12px}@media(max-width:700px){.row{grid-template-columns:repeat(3,1fr)}}.metric{background:#0a1025;border:1px solid #1c274d;border-radius:10px;padding:10px}.mtf{display:flex;gap:6px}.mtf s{padding:4px 10px;border-radius:20px;font-family:JetBrains Mono;font-size:10px;font-weight:700;border:1px solid;text-decoration:none}.buy{background:#0f2218;color:#34d399;border-color:#1f4d32}.sell{background:#221511;color:#f87171;border-color:#4d1f1f}.range{background:#151a28;color:#6b7280;border-color:#1e2433}.drop{border:1px dashed #2a344b;border-radius:12px;padding:22px;text-align:center;background:#0e1220;cursor:pointer}canvas{width:100%;border-radius:12px;border:1px solid #1e2433;background:#080a10;margin-top:12px;display:none}canvas.on{display:block}.plan{border-radius:12px;border:1px solid;overflow:hidden}.agg{border-color:#1f4d32;background:linear-gradient(180deg,#0f2218,#0e1328)}.cons{border-color:#3d331f;background:linear-gradient(180deg,#1f1a11,#0e1328)}.ph{padding:12px 16px;display:flex;justify-content:space-between;border-bottom:1px solid #1e2433;font-weight:800;font-size:11px}.pb{padding:14px 16px}.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}.btn{width:100%;padding:13px;border-radius:10px;border:none;font-weight:900;font-size:12px;cursor:pointer}.btn:disabled{opacity:.35}.sel{width:100%;background:#0a1025;border:1px solid #1c274d;color:#e6e9ff;border-radius:8px;padding:10px;font-family:JetBrains Mono;font-size:12px}</style>
+</head><body>
+<div class="h"><div><b>SR-72</b> <span style="color:#fbbf24">DARK STAR</span></div><div style="display:flex;gap:6px"><div class="pill auto" id="auto">AUTO: XAUUSDc</div><div class="pill conf" id="confT">--%</div><div class="pill live" id="liveT">--</div></div></div>
+<div class="c">
+<div class="card"><select id="sym" class="sel"><option selected>XAUUSDc</option><option>XAUUSD</option><option>XAGUSDc</option><option>EURUSDc</option><option>GBPUSDc</option><option>US30c</option><option>NAS100c</option><option>BTCUSDc</option></select>
+<div class="drop" id="drop" onclick="document.getElementById('f').click()"><div style="font-weight:800">DROP CHART IMAGE</div><div class="k" style="margin-top:4px">AUTO OCR • VISION • EMA 9/21/50 • 120ms</div><input type="file" id="f" hidden accept="image/*"></div><canvas id="cv"></canvas><div id="st" class="k" style="margin-top:8px"></div></div>
+<div class="card"><div style="display:flex;justify-content:space-between"><div><div class="k" id="ml">SR-72 • XAUUSDc • AUTO</div><div style="font-size:16px;font-weight:800;margin-top:4px">ANALYSIS</div></div><div class="pill conf" id="conf" style="font-size:12px">--%</div></div><div style="display:flex;justify-content:space-between;margin-top:12px"><div class="k">TREND • EMA 9/21/50</div><div class="mtf" id="mtf"></div></div><div class="k" id="tx" style="margin-top:8px;color:#8b9cc5;min-height:16px"></div><div class="row"><div class="metric"><div class="k">LIVE</div><div class="v" id="live" style="color:#fbbf24">--</div></div><div class="metric"><div class="k">EMA 9</div><div class="v" id="e9">--</div></div><div class="metric"><div class="k">EMA 21</div><div class="v" id="e21">--</div></div><div class="metric"><div class="k">EMA 50</div><div class="v" id="e50">--</div></div><div class="metric"><div class="k">H / L</div><div class="v" id="hl">--</div></div><div class="metric"><div class="k">VISION</div><div class="v" id="vis">--</div></div></div></div>
+<div class="card plan agg" id="ag" style="display:none"><div class="ph"><span style="color:#34d399">AGGRESSIVE • MARKET</span><span class="pill conf" id="agS">--</span></div><div class="pb"><div class="g3"><div><div class="k">ENTRY</div><div class="v" id="agE" style="color:#fbbf24">--</div></div><div><div class="k">STOP</div><div class="v" id="agSL" style="color:#f87171">--</div></div><div><div class="k">TP</div><div class="v" id="agTP" style="color:#34d399">--</div></div></div><div class="k" id="agD" style="margin-top:10px;line-height:1.5"></div><button class="btn" id="agB" onclick="goAgg()" style="margin-top:12px;background:#fbbf24;color:#000">EXECUTE</button></div></div>
+<div class="card plan cons" id="co" style="display:none"><div class="ph"><span style="color:#fbbf24">CONSERVATIVE • BREAKOUT</span><span class="pill" id="coS" style="background:#1f1a11;color:#fbbf24;border-color:#3d331f">--</span></div><div class="pb"><div class="g3"><div><div class="k">ZONE</div><div class="v" id="coE">--</div></div><div><div class="k">STOP</div><div class="v" id="coSL" style="color:#f87171">--</div></div><div><div class="k">TP</div><div class="v" id="coTP" style="color:#34d399">--</div></div></div><div class="k" id="coD" style="margin-top:10px;line-height:1.5"></div><button class="btn" onclick="goCons()" style="margin-top:12px;background:#151a28;color:#e6e9ff;border:1px solid #1e2433">EXECUTE</button></div></div>
+<div class="card"><div class="k">EXECUTION</div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn" id="scan" disabled onclick="scan()" style="flex:1;background:#fbbf24;color:#000">SCAN</button><button class="btn" onclick="closeAll()" style="width:100px;background:#1f1414;color:#f87171;border:1px solid #3d1f1f">CLOSE</button></div><div class="k" id="log" style="margin-top:10px">-- • 120ms • Mach 6</div><div id="pos"></div><div id="ord" style="margin-top:6px"></div></div>
 </div>
-</div>
-
-<div class="card">
-<div style="display:flex;justify-content:space-between"><small class="small">SR-72 DARK STAR • XAUUSDc • AUTO-DETECTED • EMA 9/21/50</small><span class="badge" id="conf2" style="background:#2a2005;color:var(--gold)">CONFIDENCE --%</span></div>
-<h2 style="margin:8px 0">Structured Analysis</h2>
-<div id="trendRow" style="display:flex;gap:8px;flex-wrap:wrap"></div>
-<div class="small" id="detailText" style="margin-top:10px;line-height:1.6"></div>
-<div class="grid3" style="margin-top:14px">
-<div class="card" style="margin:0"><div class="small">Live Market</div><b id="liveMarket" style="color:var(--gold);font-size:20px">--</b></div>
-<div class="card" style="margin:0"><div class="small">EMA 9 M1</div><b id="ema9">--</b></div>
-<div class="card" style="margin:0"><div class="small">EMA 21 M1</div><b id="ema21">--</b></div>
-<div class="card" style="margin:0"><div class="small">EMA 50 M1</div><b id="ema50">--</b></div>
-<div class="card" style="margin:0"><div class="small">High / Low</div><b id="hl">--</b></div>
-<div class="card" style="margin:0"><div class="small">Vision Lock</div><b id="vLock">--</b></div>
-</div>
-</div>
-
-<div class="card" style="border-color:#ff6a00;background:#14100a">
-<div style="display:flex;justify-content:space-between"><b style="color:var(--gold)">AGGRESSIVE • Market • EMA 9/21/50</b><span class="badge" id="actionBadge">WAIT</span></div>
-<hr style="border-color:#2a2005">
-<div class="small">ENTRY @ MARKET</div><b id="entry" style="color:var(--gold)">--</b><br><br>
-<div class="small">STOP LOSS</div><b id="sl" style="color:var(--red)">--</b><br><br>
-<div class="small">TAKE PROFIT</div><b id="tp" style="color:var(--green)">--</b>
-<div class="small" id="explain" style="margin-top:12px"></div>
-<button class="btn btn-sell" id="placeBtn" style="margin-top:14px">Place Aggressive @ Market</button>
-<div class="small" id="speed" style="text-align:center;margin-top:8px">Analyze: --ms • Merged Mach 6</div>
-</div>
-
 <script>
-// FIREBASE CONFIG - PASTE YOURS
-const firebaseConfig = {apiKey:"YOUR_API_KEY",authDomain:"YOUR_PROJECT.firebaseapp.com",projectId:"YOUR_PROJECT_ID"};
-firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth();
-
-// FAST POLL - MERGED ENGINE
-let lastPrice=0;
-async function fastLoop(){
- try{
-  const r=await fetch('/api/analyze');
-  const d=await r.json();
-  document.getElementById('liveMarket').innerText=d.price;
-  document.getElementById('liveBadge').innerText='LIVE '+d.price;
-  document.getElementById('ema9').innerText=d.ema9;
-  document.getElementById('ema21').innerText=d.ema21;
-  document.getElementById('ema50').innerText=d.ema50;
-  document.getElementById('confBadge').innerText=d.confidence;
-  document.getElementById('conf2').innerText='CONFIDENCE '+d.confidence;
-  document.getElementById('vLock').innerText=d.visionLock;
-  document.getElementById('entry').innerText=d.entry+' @ '+d.price;
-  document.getElementById('sl').innerText=d.sl;
-  document.getElementById('tp').innerText=d.tp;
-  document.getElementById('speed').innerText='Analyze: '+d.speed+' • MERGED Mach 6 • Price synced from broker';
-  document.getElementById('actionBadge').innerText=d.signal;
-  document.getElementById('trendRow').innerHTML=`<span class="badge ${d.mtf.M1==='SELL'?'m1sell':'m5buy'}">M1 ${d.mtf.M1}</span><span class="badge m5buy">M5 ${d.mtf.M5}</span><span class="badge m15buy">M15 ${d.mtf.M15}</span><span class="badge visionbuy">VISION ${d.vision}</span>`;
-  document.getElementById('detailText').innerText=`XAUUSDc EMA 9 ${d.ema9} 21 ${d.ema21} 50 ${d.ema50} MTF M1 ${d.mtf.M1} M5 ${d.mtf.M5} M15 ${d.mtf.M15} [VISION ${d.vision}] Price ${d.price} [broker: XAUUSDc] [vision: ${d.vision}]`;
-  document.getElementById('explain').innerText=`SR-72 VISION ${d.vision} ${d.price} ${d.mtf.M1} M5 ${d.mtf.M5} IMG ${d.vision} ${d.confidence} ${d.visionLock.includes('LOCKED')?'LOCKED':'ACTIVE'}`;
-
-  const btn=document.getElementById('placeBtn');
-  if(d.signal==='LOCKED_WAIT'){
-    btn.disabled=true; btn.innerText='VISION LOCKED - WAITING FOR ALIGN'; btn.className='btn';
-    document.getElementById('actionBadge').innerText='LOCKED WAIT';
-  }else if(d.signal==='BUY'){
-    btn.disabled=false; btn.innerText='Place Aggressive BUY @ Market'; btn.className='btn btn-buy';
-  }else if(d.signal==='SELL'){
-    btn.disabled=false; btn.innerText='Place Aggressive SELL @ Market'; btn.className='btn btn-sell';
-  }else{btn.disabled=true; btn.innerText='WAIT FOR SETUP';}
- }catch(e){console.log(e)}
- setTimeout(fastLoop,300); // 300ms = Mach 6 speed, was 2000ms
-}
-fastLoop();
+let lastA=null,lastC=null,file=null,sym="XAUUSDc";const $=id=>document.getElementById(id);const sel=$('sym'),cv=$('cv'),cx=cv.getContext('2d');
+function norm(s){ if(!s) return "XAUUSDc"; s=s.trim().replace(/M\d+/i,'').replace(/\s/g,''); let u=s.toUpperCase(); if(u.endsWith('C')&&u.length>3){let b=u.slice(0,-1); if(b.endsWith('C')) b=b.slice(0,-1); return b+'c';} return u;}
+sel.onchange=()=>{ sym=sel.value; $('ml').innerText=`SR-72 • ${sym} • AUTO`; $('auto').innerText=`AUTO: ${sym}`; };
+function det(t){ t=t.toUpperCase(); const p=[/XAUUSD[ C]*/, /XAGUSD[ C]*/, /EURUSD[ C]*/, /GBPUSD[ C]*/, /USDJPY[ C]*/, /US30[ C]*/, /NAS100[ C]*/, /BTCUSD[ C]*/]; for(let r of p){let m=t.match(r); if(m){ return m[0].replace(/C/g,'').replace(/\s/g,'').toUpperCase()+'c';}} return null;}
+async function handle(f){ file=f; const img=new Image(); img.onload=async()=>{ cv.width=img.width; cv.height=img.height; cv.classList.add('on'); cx.drawImage(img,0,0); $('st').innerText=`LOCKED ${f.name}`; $('scan').disabled=false; try{ const {data:{text}} = await Tesseract.recognize(cv,'eng'); let d=det(text); if(d){ d=norm(d); sym=d; if(![...sel.options].some(o=>o.value.toUpperCase()===d.toUpperCase())){ let o=document.createElement('option'); o.value=d; o.text=d+' (Auto)'; sel.appendChild(o);} sel.value=d; $('auto').innerText=`AUTO: ${d}`; $('ml').innerText=`SR-72 • ${d} • AUTO`; $('st').innerText=`AUTO ${d} • READY`;}}catch(e){} }; img.src=URL.createObjectURL(f); }
+$('f').onchange=e=>{ if(e.target.files[0]) handle(e.target.files[0]); };
+$('drop').ondragover=e=>{e.preventDefault(); e.currentTarget.style.borderColor='#fbbf24'}; $('drop').ondragleave=e=>e.currentTarget.style.borderColor='#2a344b'; $('drop').ondrop=e=>{e.preventDefault(); if(e.dataTransfer.files[0]) handle(e.dataTransfer.files[0]);};
+function bc(t){ return t==='BUY'?'buy':t==='SELL'?'sell':'range';}
+async function fast(){ try{ const r=await fetch('/api/analyze').then(r=>r.json()); $('live').innerText=r.price; $('liveT').innerText=r.price; $('conf').innerText=r.confidence; $('confT').innerText=r.confidence; $('e9').innerText=r.ema9; $('e21').innerText=r.ema21; $('e50').innerText=r.ema50; $('hl').innerText=`${r.high} / ${r.low}`; $('vis').innerText=r.visionLock; if(r.mtf){ $('mtf').innerHTML=`<s class="${bc(r.mtf.M1)}">M1 ${r.mtf.M1}</s><s class="${bc(r.mtf.M5)}">M5 ${r.mtf.M5}</s><s class="${bc(r.mtf.M15)}">M15 ${r.mtf.M15}</s><s class="${bc(r.mtf.img)}">VIS ${r.mtf.img}</s>`;} $('log').innerText=`${r.symbol} • ${r.ema9}/${r.ema21}/${r.ema50} • ${r.confidence} • ${r.speed}`;}catch(e){} setTimeout(fast,250);}
+fast();
+async function scan(){ if(!file) return; $('tx').innerText='SCANNING • VISION • EMA 9/21/50'; let fd=new FormData(); fd.append('image',file); fd.append('symbol',sym); let r=await fetch('/api/scan_image',{method:'POST',body:fd}).then(r=>r.json()); const d=r.dec||2; $('live').innerText=r.live.toFixed? r.live.toFixed(d) : r.live; $('liveT').innerText=r.live.toFixed? r.live.toFixed(d) : r.live; $('e9').innerText=r.ema9.toFixed(d); $('e21').innerText=r.ema21.toFixed(d); $('e50').innerText=r.ema50.toFixed(d); $('hl').innerText=`${r.period_high.toFixed(d)} / ${r.period_low.toFixed(d)}`; $('vis').innerText=`${r.mtf.img} LOCKED`; $('conf').innerText=`${r.confidence}%`; $('confT').innerText=`${r.confidence}%`; $('tx').innerText=r.trend; $('mtf').innerHTML=`<s class="${bc(r.mtf.m1)}">M1 ${r.mtf.m1}</s><s class="${bc(r.mtf.m5)}">M5 ${r.mtf.m5}</s><s class="${bc(r.mtf.m15)}">M15 ${r.mtf.m15}</s><s class="${bc(r.mtf.img)}">VIS ${r.mtf.img}</s>`; if(r.aggressive){ lastA=r.aggressive; $('ag').style.display='block'; $('agS').innerText=r.aggressive.side; $('agE').innerText=r.aggressive.entry_mid; $('agSL').innerText=r.aggressive.sl; $('agTP').innerText=`${r.aggressive.tp1} / ${r.aggressive.tp2}`; $('agD').innerText=r.aggressive.desc; const b=$('agB'); const locked=r.confidence<60||r.mtf.img!==r.aggressive.side; b.disabled=locked; b.innerText=locked?'LOCKED • WAIT':`${r.aggressive.side} @ MARKET`; b.style.background=locked?'#151a28':r.aggressive.side==='BUY'?'#00c060':'#ff6a00'; b.style.color=locked?'#5a6b9a':'#fff';} if(r.conservative){ lastC=r.conservative; $('co').style.display='block'; $('coS').innerText=r.conservative.side; $('coE').innerText=`${r.conservative.entry_low} - ${r.conservative.entry_high}`; $('coSL').innerText=r.conservative.sl; $('coTP').innerText=`${r.conservative.tp1} / ${r.conservative.tp2}`; $('coD').innerText=r.conservative.desc;} }
+async function goAgg(){ if(!lastA) return; await fetch('/api/sniper/enter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:lastA})}); }
+async function goCons(){ if(!lastC) return; await fetch('/api/sniper/enter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:lastC})}); }
+function closeAll(){ fetch('/api/close_all',{method:'POST'}).then(()=>{}); }
 </script>
-</body>
-</html>0
+</body></html>
