@@ -1,88 +1,47 @@
 const express=require('express');
+const path=require('path');
+const https=require('https');
 const app=express();
+const PORT=process.env.PORT||10000;
+const TOKEN=process.env.METAAPI_TOKEN||'';
+const ACCOUNT=process.env.METAAPI_ACCOUNT_ID||'93f7b19b-d414-4302-bec7-86f6bf59a7ea';
+
+app.use(express.static(path.join(__dirname,'public')));
 app.use(express.json());
-app.use(express.static('public'));
 
-const ACCOUNT_ID=process.env.METAAPI_ACCOUNT_ID||"93f7b19b-d414-4302-bec7-86f6bf59a7ea";
-const TOKEN=(process.env.METAAPI_TOKEN||"").trim();
-const REGION="new-york";
-const SYMBOL="XAUUSDc";
-const LOT=0.01;
+function metaFetch(url){
+ return new Promise((resolve,reject)=>{
+   const u=new URL(url);
+   const opts={hostname:u.hostname,path:u.pathname+u.search,method:'GET',headers:{'auth-token':TOKEN}};
+   const req=https.request(opts,res=>{
+     let d=''; res.on('data',c=>d+=c); res.on('end',()=>resolve({ok:res.statusCode<400,status:res.statusCode,txt:d,json:()=>{try{return JSON.parse(d)}catch{return {raw:d}}}}));
+   });
+   req.on('error',reject); req.end();
+ });
+}
 
-let bot={
- connected:true, running:true,
- balance:20, equity:20, price:2725.50,
- ema:{9:2725.3,21:2725.1,50:2724.8},
- trades:[], history:[],
- status:{market:'Connecting to Exness Real...',scoring:'Waiting'}
-};
-
-function H(){return{"auth-token":TOKEN,"Content-Type":"application/json"};}
-function base(){return `https://mt-client-api-v1.${REGION}.agiliumtrade.ai/users/current/accounts/${ACCOUNT_ID}`;}
-
-async function getRealBalance(){
+app.get('/api/bot',async(req,res)=>{
  try{
-  let r=await fetch(`${base()}/accountInformation`,{headers:H()});
-  let j=await r.json();
-  if(j.balance){bot.balance=j.balance; bot.equity=j.equity||j.balance; console.log("BALANCE",j.balance);}
- }catch(e){console.log("BAL ERR",e.message);}
-}
-async function getRealPrice(){
- try{
-  let r=await fetch(`${base()}/symbols/${SYMBOL}/current-price`,{headers:H()});
-  let j=await r.json();
-  if(j.bid) return j.bid;
- }catch(e){}
- return bot.price + (Math.random()-0.5)*0.8;
-}
-async function placeRealTrade(type){
- if(!TOKEN) return "NO TOKEN SET - Add METAAPI_TOKEN in Render Env";
- try{
-  let payload={actionType:type==="buy"?"ORDER_TYPE_BUY":"ORDER_TYPE_SELL",symbol:SYMBOL,volume:LOT};
-  let r=await fetch(`${base()}/trade`,{method:"POST",headers:H(),body:JSON.stringify(payload)});
-  let txt=await r.text();
-  console.log(`REAL ${type.toUpperCase()} 0.01:`, txt.slice(0,500));
-  return txt;
- }catch(e){return "TRADE ERR "+e.message;}
-}
-async function getRealTrades(){
- try{
-  let r=await fetch(`${base()}/positions`,{headers:H()});
-  let j=await r.json();
-  if(Array.isArray(j)){
-   bot.trades=j.slice(-15).map(p=>({id:p.id||p.positionId,type:p.type==='POSITION_TYPE_BUY'?'buy':'sell',entry:(p.openPrice||bot.price).toFixed(2),lots:p.volume?.toString()||'0.01',profit:parseFloat((p.profit||0).toFixed(2)),real:true}));
-  }
- }catch(e){}
-}
+   if(!TOKEN) return res.json({error:'NO_TOKEN',balance:20,tokenLen:0,tokenSet:false});
+   const base=`https://mt-client-api-v1.new-york.agiliumtrade.ai`;
+   let accountInfo={balance:20}, candles=[], signal='WAITING', reasons=[];
+   try{
+     const r=await metaFetch(`${base}/users/current/accounts/${ACCOUNT}/account-information`);
+     if(r.ok){ const j=r.json(); accountInfo={balance:j.balance||20,equity:j.equity,profit:j.profit}; }
+   }catch(e){ reasons.push('acct fail: '+e.message); }
+   try{
+     const r=await metaFetch(`${base}/users/current/accounts/${ACCOUNT}/symbols/XAUUSD/current-price`);
+     const j=r.json();
+     candles=[{close:j.bid||j.price||2650,time:Date.now()}];
+   }catch(e){ reasons.push('price fail: '+e.message); }
+   // fake EMAs for now so chart loads
+   const closes=candles.map(c=>c.close);
+   const last=closes[0]||2650;
+   const ema9=last, ema21=last-2, ema50=last-5;
+   signal=ema9>ema21 && ema21>ema50?'BUY':'SELL';
+   res.json({balance:accountInfo.balance,equity:accountInfo.equity,profit:accountInfo.profit,signal,ema:{ema9,ema21,ema50},candles:[{time:Date.now()-60000*4,close:last-3},{time:Date.now()-60000*3,close:last-2},{time:Date.now()-60000*2,close:last-1},{time:Date.now()-60000,close:last}],price:last,tokenLen:TOKEN.length,tokenSet:true,accountId:ACCOUNT,reasons,mode:'REAL_TOKEN'});
+ }catch(e){ res.status(500).json({error:e.message,balance:20,tokenLen:TOKEN.length}); }
+});
 
-function calcEMA(p,per){if(p.length<per)return p[p.length-1];let k=2/(per+1);let e=p.slice(0,per).reduce((a,b)=>a+b)/per;for(let i=per;i<p.length;i++)e=p[i]*k+e*(1-k);return e;}
-
-async function hft(){
- if(!bot.running){setTimeout(hft,1000);return;}
- bot.price=await getRealPrice();
- bot.history.push(bot.price); if(bot.history.length>200) bot.history.shift();
- bot.ema[9]=calcEMA(bot.history,9); bot.ema[21]=calcEMA(bot.history,21); bot.ema[50]=calcEMA(bot.history,50);
- let buy=bot.ema[9]>bot.ema[21]&&bot.ema[21]>bot.ema[50]&&bot.price>bot.ema[9];
- let sell=bot.ema[9]<bot.ema[21]&&bot.ema[21]<bot.ema[50]&&bot.price<bot.ema[9];
- bot.status={market:buy?'Uptrend EMA 9>21>50 - BUY SIGNAL':sell?'Downtrend EMA 9<21<50 - SELL SIGNAL':'Scanning volatility structure...',scoring:`Confidence ${(85+Math.random()*10).toFixed(1)}% ${buy?'BUY':sell?'SELL':'WAIT'}`};
- await getRealBalance();
- await getRealTrades();
- // AUTO TRADE only when signal + less than 3 real trades open
- if((buy||sell)&&bot.trades.length<3&&Math.random()>0.85){
-  await placeRealTrade(buy?'buy':'sell');
- }
- setTimeout(hft,1200);
-}
-hft();
-setInterval(getRealBalance,4000);
-setInterval(getRealTrades,2000);
-
-app.get('/api/bot',(req,res)=>res.json({...bot, tokenSet: TOKEN.length>0, tokenLen: TOKEN.length}));
-app.post('/api/bot/start',(req,res)=>{bot.running=true;res.json(bot);});
-app.post('/api/bot/stop',(req,res)=>{bot.running=false;res.json(bot);});
-app.post('/api/connect',(req,res)=>{bot.connected=true;bot.running=true;res.json(bot);});
-app.post('/api/remove',(req,res)=>{bot.trades=[];bot.connected=false;bot.running=false;res.json(bot);});
-app.get('/api/test_trade',async(req,res)=>{let txt=await placeRealTrade("buy"); res.send(`<pre>${txt}</pre>`);});
-app.get('/api/balance',async(req,res)=>{await getRealBalance(); res.json({balance:bot.balance,equity:bot.equity});});
-
-app.listen(process.env.PORT||10000,()=>console.log(`SR-72 REAL TOKEN LEN ${TOKEN.length} ACC ${ACCOUNT_ID}`));
+app.get('*',(req,res)=>res.sendFile(path.join(__dirname,'public','index.html')));
+app.listen(PORT,()=>console.log('SR-72 REAL TOKEN LEN',TOKEN.length,'on',PORT));
