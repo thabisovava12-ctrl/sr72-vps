@@ -17,7 +17,7 @@
 <div class="live">LIVE ANALYSIS</div>
 <div class="chartWrap"><canvas id="c"></canvas></div>
 <div id="rows">
-<div class="row"><div class="icon">◍</div><div><b>Detecting market</b><small id="market">Connect MT5 to start</small></div></div>
+<div class="row"><div class="icon">◍</div><div><b>Detecting market</b><small id="market">Scanning...</small></div></div>
 <div class="row"><div class="icon">◎</div><div><b>Calibrating stop loss</b><small>AI adjusting risk 2.8%</small></div></div>
 <div class="row"><div class="icon">⬙</div><div><b>AI scoring</b><small id="score">Waiting</small></div></div>
 <div class="row"><div class="icon">◈</div><div><b>SR-72 Dark Star AI Sniper is monitoring your live account</b><small>Auto-execution enabled</small></div></div>
@@ -25,8 +25,8 @@
 </div>
 <div class="card">
 <div class="botTitle">BOT CONTROL</div>
-<div class="statusLine"><span>Bot Status</span><span id="badge" class="badge stop">STOPPED</span></div>
-<div class="btns"><button id="startBtn" class="btn start" onclick="startBot()">START BOT</button><button id="stopBtn" class="btn stopBtn off" onclick="stopBot()">STOP BOT</button></div>
+<div class="statusLine"><span>Bot Status</span><span id="badge" class="badge run">RUNNING</span></div>
+<div class="btns"><button id="startBtn" class="btn start active" onclick="startBot()">START BOT</button><button id="stopBtn" class="btn stopBtn" onclick="stopBot()">STOP BOT</button></div>
 <div class="toast"><div class="dot"></div> SR-72 Dark Star AI Sniper is monitoring your live account — SR-72 Dark Star Ai</div>
 </div>
 <div class="card" style="padding:0;overflow:hidden">
@@ -48,16 +48,12 @@ let W,H,dpr=2;function resize(){W=cv.parentElement.clientWidth;H=cv.parentElemen
 let data=[];for(let i=0;i<80;i++)data.push(50+Math.sin(i*0.3)*25+Math.random()*10);
 function draw(){
  ctx.clearRect(0,0,W,H);
- let drawL=(vals,color,w,alpha=1)=>{
-  ctx.beginPath();ctx.strokeStyle=color;ctx.lineWidth=w;ctx.globalAlpha=alpha;
-  vals.forEach((v,i)=>{let x=(i/(vals.length-1))*W; let y=H*0.15 + (1 - v/100)*H*0.7; if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);});ctx.stroke();ctx.globalAlpha=1;
- };
- drawL(data.map((v,i)=>v*0.92),'#ffffff',1.2,0.5);
+ let drawL=(vals,color,w,alpha=1)=>{ctx.beginPath();ctx.strokeStyle=color;ctx.lineWidth=w;ctx.globalAlpha=alpha;vals.forEach((v,i)=>{let x=(i/(vals.length-1))*W; let y=H*0.15 + (1 - v/100)*H*0.7; if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);});ctx.stroke();ctx.globalAlpha=1;};
+ drawL(data.map(v=>v*0.92),'#ffffff',1.2,0.5);
  drawL(data.map((v,i)=>v*0.97+Math.sin(i*0.12)*1.5),'#00b7ff',1.6,0.9);
  drawL(data.map((v,i)=>v+Math.sin(i*0.15)*2),'#ff1a1a',1.8,0.9);
  ctx.beginPath();ctx.strokeStyle='#ffcc33';ctx.lineWidth=2.2;ctx.shadowColor='#ffcc33';ctx.shadowBlur=14;
  data.forEach((v,i)=>{let x=(i/(data.length-1))*W; let y=H*0.15 + (1 - v/100)*H*0.7; if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);});ctx.stroke();ctx.shadowBlur=0;
- let g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'rgba(212,160,23,0.18)');g.addColorStop(1,'rgba(212,160,23,0)');ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.closePath();ctx.fillStyle=g;ctx.fill();
  requestAnimationFrame(draw);
 }draw();
 async function fetchBot(){
@@ -67,20 +63,22 @@ async function fetchBot(){
   document.getElementById('score').innerText=b.status.scoring;
   document.getElementById('badge').textContent=b.running?'RUNNING':'STOPPED';
   document.getElementById('badge').className=b.running?'badge run':'badge stop';
+  document.getElementById('startBtn').className=b.running?'btn start active':'btn start';
+  document.getElementById('stopBtn').className=b.running?'btn stopBtn':'btn stopBtn off';
   document.getElementById('bal').innerText=b.balance.toFixed(2);
   document.getElementById('eq').innerText=b.equity.toFixed(2);
-  document.getElementById('loginBox').style.display=b.connected?'none':'flex';
+  document.getElementById('loginBox').style.display='none';
   if(b.running){let norm=(b.price%100); data.shift(); data.push(30+norm*0.8+Math.random()*5);}
   let html=''; b.trades.slice().reverse().forEach(t=>{
    let col=t.profit>=0?'#3b82f6':'#ef4444';
    html+=`<div style="display:flex;justify-content:space-between;padding:10px 16px;border-bottom:1px solid #111;font-size:11px"><div><b style="color:#d4a017">XAUUSD.a, ${t.type} 0.01</b><br><small style="color:#666">${t.entry} -> ${b.price.toFixed(2)}</small></div><div style="color:${col};font-weight:800">${t.profit>=0?'+':''}${t.profit.toFixed(2)}</div></div>`;
   });
-  document.getElementById('tradeList').innerHTML=html||'<div style="padding:20px;text-align:center;color:#444;font-size:11px">No trades - START BOT</div>';
+  document.getElementById('tradeList').innerHTML=html||'<div style="padding:20px;text-align:center;color:#444;font-size:11px">Scanning EMA 9/21/50...</div>';
  }catch(e){}
 }
 setInterval(fetchBot,50);fetchBot();
 function startBot(){fetch('/api/bot/start',{method:'POST'}).then(fetchBot);}
 function stopBot(){fetch('/api/bot/stop',{method:'POST'}).then(fetchBot);}
-async function connectMT5(){let login=document.getElementById('login').value;let server=document.getElementById('server').value;if(!login||!server)return alert('Enter login & server');await fetch('/api/connect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({login,server})});document.getElementById('loginBox').style.display='none';fetchBot();}
+async function connectMT5(){let l=document.getElementById('login').value;let s=document.getElementById('server').value;if(!l||!s)return alert('Enter login & server');await fetch('/api/connect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({login:l,server:s})});document.getElementById('loginBox').style.display='none';fetchBot();}
 function removeAcc(){fetch('/api/remove',{method:'POST'}).then(fetchBot);}
 </script></body></html>
