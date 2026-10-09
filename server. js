@@ -4,65 +4,39 @@ app.use(express.json());
 app.use(express.static('public'));
 
 let bot={
- connected:false, running:false,
+ connected:true, running:true,
  balance:20, equity:20, margin:0, price:2725.50,
  ema:{9:2725.3,21:2725.1,50:2724.8},
  direction:'WAIT', confidence:0,
  trades:[], history:[],
- status:{market:'Connect MT5 to start',scoring:'Waiting'}
+ status:{market:'Scanning volatility structure...',scoring:'Confidence 86.4% WAIT'}
 };
 
 let tradeId=1001;
-function calcEMA(prices, period){
- if(prices.length < period) return prices[prices.length-1];
- let k=2/(period+1);
- let ema=prices.slice(0,period).reduce((a,b)=>a+b)/period;
- for(let i=period;i<prices.length;i++) ema=prices[i]*k+ema*(1-k);
- return ema;
-}
-async function getPrice(){
- try{
-  let r=await fetch('https://api.gold-api.com/price/XAU');
-  let j=await r.json(); if(j.price) return j.price;
- }catch(e){}
- return bot.price + (Math.random()-0.5)*0.9;
-}
+function calcEMA(p,per){if(p.length<per)return p[p.length-1];let k=2/(per+1);let e=p.slice(0,per).reduce((a,b)=>a+b)/per;for(let i=per;i<p.length;i++)e=p[i]*k+e*(1-k);return e;}
+async function getPrice(){try{let r=await fetch('https://api.gold-api.com/price/XAU');let j=await r.json();if(j.price)return j.price;}catch(e){}return bot.price+(Math.random()-0.5)*0.9;}
 async function hft(){
- if(!bot.running){ setTimeout(hft,50); return; }
+ if(!bot.running){setTimeout(hft,50);return;}
  bot.price=await getPrice();
- bot.history.push(bot.price);
- if(bot.history.length>200) bot.history.shift();
- bot.ema[9]=calcEMA(bot.history,9);
- bot.ema[21]=calcEMA(bot.history,21);
- bot.ema[50]=calcEMA(bot.history,50);
+ bot.history.push(bot.price); if(bot.history.length>200) bot.history.shift();
+ bot.ema[9]=calcEMA(bot.history,9); bot.ema[21]=calcEMA(bot.history,21); bot.ema[50]=calcEMA(bot.history,50);
  let buy=bot.ema[9]>bot.ema[21]&&bot.ema[21]>bot.ema[50]&&bot.price>bot.ema[9];
  let sell=bot.ema[9]<bot.ema[21]&&bot.ema[21]<bot.ema[50]&&bot.price<bot.ema[9];
  bot.direction=buy?'BUY':sell?'SELL':'WAIT';
  bot.confidence=(buy||sell?(85+Math.random()*10):(40+Math.random()*15)).toFixed(1);
  bot.status={market:buy?'Uptrend detected - EMA 9>21>50':sell?'Downtrend detected - EMA 9<21<50':'Scanning volatility structure...',scoring:`Confidence ${bot.confidence}% ${bot.direction}`};
  if((buy||sell)&&bot.trades.length<35&&Math.random()>0.15){
-  bot.trades.push({id:tradeId++,type:buy?'buy':'sell',entry:bot.price.toFixed(2),lots:'0.01',profit:0});
-  bot.margin+=2.8;
+  bot.trades.push({id:tradeId++,type:buy?'buy':'sell',entry:bot.price.toFixed(2),lots:'0.01',profit:0}); bot.margin+=2.8;
  }
- bot.trades.forEach(t=>{
-  let diff=bot.price-parseFloat(t.entry);
-  let p=t.type==='buy'?diff*10:-diff*10;
-  t.profit=parseFloat((p+(Math.random()-0.5)*0.3).toFixed(2));
- });
- bot.trades=bot.trades.filter(t=>{
-  if(t.profit>=0.25&&Math.random()>0.25) return false;
-  if(t.profit>=0.60) return false;
-  if(t.profit<=-0.90&&Math.random()>0.6) return false;
-  return true;
- });
+ bot.trades.forEach(t=>{let d=bot.price-parseFloat(t.entry);let p=t.type==='buy'?d*10:-d*10; t.profit=parseFloat((p+(Math.random()-0.5)*0.3).toFixed(2));});
+ bot.trades=bot.trades.filter(t=>{if(t.profit>=0.25&&Math.random()>0.25)return false; if(t.profit>=0.60)return false; if(t.profit<=-0.90&&Math.random()>0.6)return false; return true;});
  if(bot.trades.length===0) bot.margin=0;
  bot.equity=bot.balance+bot.trades.reduce((s,t)=>s+t.profit,0);
  setTimeout(hft,50);
-}
-hft();
+}hft();
 app.get('/api/bot',(req,res)=>res.json(bot));
 app.post('/api/bot/start',(req,res)=>{bot.running=true;res.json(bot);});
 app.post('/api/bot/stop',(req,res)=>{bot.running=false;res.json(bot);});
-app.post('/api/connect',(req,res)=>{bot.connected=true;bot.running=true;bot.status.market='Connected - scanning';res.json(bot);});
+app.post('/api/connect',(req,res)=>{bot.connected=true;bot.running=true;res.json(bot);});
 app.post('/api/remove',(req,res)=>{bot.trades=[];bot.connected=false;bot.running=false;res.json(bot);});
-app.listen(process.env.PORT||10000,()=>console.log('SR-72 MERGED HFT LIVE'));
+app.listen(process.env.PORT||10000,()=>console.log('SR-72 FINAL LIVE'));
