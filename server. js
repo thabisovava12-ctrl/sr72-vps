@@ -1,47 +1,96 @@
-const express=require('express');
-const path=require('path');
-const https=require('https');
-const app=express();
-const PORT=process.env.PORT||10000;
-const TOKEN=process.env.METAAPI_TOKEN||'';
-const ACCOUNT=process.env.METAAPI_ACCOUNT_ID||'93f7b19b-d414-4302-bec7-86f6bf59a7ea';
+const express = require('express');
+const path = require('path');
+const https = require('https');
+const app = express();
+const PORT = process.env.PORT || 10000;
 
-app.use(express.static(path.join(__dirname,'public')));
-app.use(express.json());
+let BOT_RUNNING = false;
+let CURRENT_LOT_COUNT = 3;
+let LAST_ACTION = 'WAITING';
+let PREV_PRICE = 4270.00;
+let lastPrice = 4270.00;
+let balance = 20.00;
+let equity = 20.00;
 
-function metaFetch(url){
- return new Promise((resolve,reject)=>{
-   const u=new URL(url);
-   const opts={hostname:u.hostname,path:u.pathname+u.search,method:'GET',headers:{'auth-token':TOKEN}};
-   const req=https.request(opts,res=>{
-     let d=''; res.on('data',c=>d+=c); res.on('end',()=>resolve({ok:res.statusCode<400,status:res.statusCode,txt:d,json:()=>{try{return JSON.parse(d)}catch{return {raw:d}}}}));
-   });
-   req.on('error',reject); req.end();
+const TOKEN = process.env.METAAPI_TOKEN || '';
+const ACCOUNT = process.env.METAAPI_ACCOUNT_ID || '93f7b19b-d414-4302-bec7-86f6bf59a7ea';
+const BASE = 'mt-client-api-v1.new-york.agiliumtrade.ai';
+
+function metaReq(method, pathStr, body){
+ return new Promise((resolve)=>{
+  const data = body ? JSON.stringify(body) : null;
+  const opts = { hostname: BASE, path: pathStr, method, headers: { 'auth-token': TOKEN, 'Content-Type':'application/json' } };
+  if(data) opts.headers['Content-Length'] = Buffer.byteLength(data);
+  const req = https.request(opts, r=>{
+    let d=''; r.on('data',c=>d+=c); r.on('end',()=>{ try{ resolve({s:r.statusCode, j:JSON.parse(d)}); }catch{ resolve({s:r.statusCode, j:{}}); } });
+  });
+  req.on('error',()=>resolve({s:500,j:{}}));
+  if(data) req.write(data); req.end();
  });
 }
 
-app.get('/api/bot',async(req,res)=>{
+app.use(express.json());
+app.use(express.static(__dirname));
+
+app.get('/api/bot', async (req,res)=>{
  try{
-   if(!TOKEN) return res.json({error:'NO_TOKEN',balance:20,tokenLen:0,tokenSet:false});
-   const base=`https://mt-client-api-v1.new-york.agiliumtrade.ai`;
-   let accountInfo={balance:20}, candles=[], signal='WAITING', reasons=[];
-   try{
-     const r=await metaFetch(`${base}/users/current/accounts/${ACCOUNT}/account-information`);
-     if(r.ok){ const j=r.json(); accountInfo={balance:j.balance||20,equity:j.equity,profit:j.profit}; }
-   }catch(e){ reasons.push('acct fail: '+e.message); }
-   try{
-     const r=await metaFetch(`${base}/users/current/accounts/${ACCOUNT}/symbols/XAUUSD/current-price`);
-     const j=r.json();
-     candles=[{close:j.bid||j.price||2650,time:Date.now()}];
-   }catch(e){ reasons.push('price fail: '+e.message); }
-   // fake EMAs for now so chart loads
-   const closes=candles.map(c=>c.close);
-   const last=closes[0]||2650;
-   const ema9=last, ema21=last-2, ema50=last-5;
-   signal=ema9>ema21 && ema21>ema50?'BUY':'SELL';
-   res.json({balance:accountInfo.balance,equity:accountInfo.equity,profit:accountInfo.profit,signal,ema:{ema9,ema21,ema50},candles:[{time:Date.now()-60000*4,close:last-3},{time:Date.now()-60000*3,close:last-2},{time:Date.now()-60000*2,close:last-1},{time:Date.now()-60000,close:last}],price:last,tokenLen:TOKEN.length,tokenSet:true,accountId:ACCOUNT,reasons,mode:'REAL_TOKEN'});
- }catch(e){ res.status(500).json({error:e.message,balance:20,tokenLen:TOKEN.length}); }
+   if(TOKEN){
+     try{
+       const acc = await metaReq('GET', `/users/current/accounts/${ACCOUNT}/account-information`);
+       if(acc.j && acc.j.balance){ balance = acc.j.balance; equity = acc.j.equity || balance; }
+       const pr = await metaReq('GET', `/users/current/accounts/${ACCOUNT}/symbols/XAUUSDm/current-price`);
+       if(pr.j && pr.j.bid) lastPrice = pr.j.bid;
+       else if(pr.j && pr.j.price) lastPrice = pr.j.price;
+     }catch{}
+   } else {
+     if(!BOT_RUNNING) lastPrice += (Math.random()-0.5)*0.5;
+   }
+
+   res.json({
+     price: lastPrice.toFixed(2),
+     balance: balance,
+     equity: equity,
+     signal: LAST_ACTION,
+     running: BOT_RUNNING,
+     tradesCount: CURRENT_LOT_COUNT,
+     login: '56197382',
+     mode: 'WITH_MARKET',
+     log: BOT_RUNNING ? `${new Date().toLocaleTimeString()} - ${LAST_ACTION} ${CURRENT_LOT_COUNT}x 0.01 at ${lastPrice.toFixed(2)}` : ''
+   });
+
+   if(BOT_RUNNING && TOKEN){
+     let trendSide = 'BUY';
+     if(lastPrice > PREV_PRICE) trendSide = 'BUY';
+     else if(lastPrice < PREV_PRICE) trendSide = 'SELL';
+     else trendSide = LAST_ACTION.includes('BUY') ? 'BUY' : 'SELL';
+
+     LAST_ACTION = trendSide + ' WITH MARKET';
+     PREV_PRICE = lastPrice;
+
+     for(let i=0;i<CURRENT_LOT_COUNT;i++){
+       await metaReq('POST', `/users/current/accounts/${ACCOUNT}/trade`, {
+         actionType: trendSide==='BUY'?'ORDER_TYPE_BUY':'ORDER_TYPE_SELL',
+         symbol: 'XAUUSDm',
+         volume: 0.01
+       });
+     }
+   } else {
+     PREV_PRICE = lastPrice;
+   }
+
+ }catch(e){
+   res.json({ price: lastPrice, balance, running: BOT_RUNNING, tradesCount: CURRENT_LOT_COUNT, signal: LAST_ACTION });
+ }
 });
 
-app.get('*',(req,res)=>res.sendFile(path.join(__dirname,'public','index.html')));
-app.listen(PORT,()=>console.log('SR-72 REAL TOKEN LEN',TOKEN.length,'on',PORT));
+app.post('/api/start', (req,res)=>{ BOT_RUNNING=true; LAST_ACTION='STARTING'; res.json({running:true}); });
+app.post('/api/stop', (req,res)=>{ BOT_RUNNING=false; LAST_ACTION='STOPPED'; res.json({running:false}); });
+app.post('/api/result', (req,res)=>{
+ const { profit } = req.body || {};
+ if(profit>0) CURRENT_LOT_COUNT=6;
+ else CURRENT_LOT_COUNT=3;
+ res.json({next:CURRENT_LOT_COUNT});
+});
+
+app.get('*',(req,res)=>res.sendFile(path.join(__dirname,'index.html')));
+app.listen(PORT,()=>console.log('ELITE WITH_MARKET LIVE ON',PORT));
